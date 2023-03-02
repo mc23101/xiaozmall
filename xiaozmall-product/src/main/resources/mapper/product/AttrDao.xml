@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhangsisiyao.xiaozmall.product.dao.AttrDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhangsisiyao.xiaozmall.product.entity.AttrEntity" id="attrMap">
+        <result property="attrId" column="attr_id"/>
+        <result property="attrName" column="attr_name"/>
+        <result property="searchType" column="search_type"/>
+        <result property="icon" column="icon"/>
+        <result property="valueSelect" column="value_select"/>
+        <result property="attrType" column="attr_type"/>
+        <result property="enable" column="enable"/>
+        <result property="catelogId" column="catelog_id"/>
+        <result property="showDesc" column="show_desc"/>
+    </resultMap>
+
+    <select id="queryWithAttrGroup" parameterType="String" resultMap="attrMap">
+        SELECT pms_attr.*
+        FROM pms_attr_group
+                 INNER JOIN pms_attr_attrgroup_relation ON pms_attr_group.`attr_group_id`=pms_attr_attrgroup_relation.`attr_group_id`
+                 INNER JOIN pms_attr ON pms_attr_attrgroup_relation.`attr_id`=pms_attr.`attr_id`
+        WHERE pms_attr_group.`attr_group_id`=#{groupId}
+    </select>
+
+</mapper>
