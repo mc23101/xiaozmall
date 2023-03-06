@@ -66,7 +66,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         if(set.size()!=0){
             attrEntityQueryWrapper=attrEntityQueryWrapper.notIn("attr_id", set);
         }
-        System.out.println(set);
+
         IPage<AttrEntity> page = attrService.page(
                 new Query<AttrEntity>().getPage(params),
                 attrEntityQueryWrapper
@@ -84,7 +84,6 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             AttrGroupWithAttrsVo cur=new AttrGroupWithAttrsVo(attrGroupEntity);
             List<AttrEntity> attrEntities = attrService.queryWithAttrGroup(String.valueOf(attrGroupEntity.getAttrGroupId()));
             if(attrEntities!=null){
-                System.out.println(attrEntities.size());
                 cur.getAttrs().addAll(attrEntities);
             }
             attrGroupWithAttrsVos.add(cur);

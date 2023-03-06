@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -76,16 +77,16 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         //TODO 优化储存
         //存储SpuInfo
         SpuInfoEntity spuInfo=new SpuInfoEntity();
+        spuInfo.setCreateTime(new Date());
+        spuInfo.setUpdateTime(new Date());
         BeanUtils.copyProperties(product,spuInfo);
         this.baseMapper.insert(spuInfo);
-        System.out.println(spuInfo);
 
         //存储SpuInfoDescEntity
         List<String> decript=product.getDecript();
         SpuInfoDescEntity desc = new SpuInfoDescEntity();
         desc.setSpuId(spuInfo.getId());
         desc.setDecript(String.join(",",decript));
-        System.out.println(desc);
         spuInfoDescService.saveOrUpdate(desc);
 
         //储存SpuImageEntity
@@ -150,5 +151,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     }
 
+    @Override
+    public void updateSpuPublishStatus(Long spuid) {
+        SpuInfoEntity entity = this.query().eq("id", spuid).one();
+        entity.setPublishStatus(1-entity.getPublishStatus());
+        entity.setUpdateTime(new Date());
+        this.updateById(entity);
+    }
 
 }

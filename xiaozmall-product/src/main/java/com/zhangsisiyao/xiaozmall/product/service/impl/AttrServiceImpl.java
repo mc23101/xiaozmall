@@ -2,7 +2,12 @@ package com.zhangsisiyao.xiaozmall.product.service.impl;
 
 import com.zhangsisiyao.xiaozmall.product.dao.AttrDao;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
+import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrService;
+import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
+import com.zhangsisiyao.xiaozmall.product.vo.BaseAttrVo;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +21,9 @@ import com.zhangsisiyao.common.utils.Query;
 
 @Service("attrService")
 public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements AttrService {
+
+    @Autowired
+    ProductAttrValueService productAttrValueService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -87,5 +95,21 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     public List<AttrEntity> queryWithAttrGroup(String groupId) {
         return this.baseMapper.queryWithAttrGroup(groupId);
     }
+
+    @Override
+    public List<ProductAttrValueEntity> queryListForSpu(Long spuId) {
+        return productAttrValueService.query().eq("spu_id", spuId).list();
+    }
+
+    @Override
+    public void UpdateAttrsBySpuId(List<BaseAttrVo> attrs, String spuid) {
+        System.out.println(attrs);
+        attrs.forEach((attrVo)->{
+            ProductAttrValueEntity one = productAttrValueService.query().eq("spu_id", spuid).eq("attr_id", attrVo.getAttrId()).one();
+            one.setAttrValue(attrVo.getAttrValues());
+            productAttrValueService.updateById(one);
+        });
+    }
+
 
 }

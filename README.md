@@ -3370,6 +3370,121 @@ Docker部署Nacos-Server：
    private Integer deleted;
    ```
 
+# ElasticSearch用法介绍
+
+## 基本概念
+
+- 索引：与数据库DataBase类似，是ElasticSearch的最上级目录。
+
+- 类型：与数据库的表类似。
+
+- 文档：与数据库中表内的数据行列字段值。
+
+## 使用docker部署ElasticSearch
+
+```shell
+docker pull elasticsearch:7.17.9
+
+mkdir -p /mydata/elasticsearch/config
+mkdir -p /mydata/elasticsearch/data
+echo "http.host: 0.0.0.0" >> /mydata/elasticsearch/config/elasticsearch.yml
+
+# 设置文件可读可写权限
+chmod -R 777 /mydata/elasticsearch/
+
+docker run --name elasticsearch -p 9200:9200 -p 9300:9300 \
+-e "discovery.type=single-node" \
+-e ES_JAVA_OPTS="-Xms64m -Xmx512m" \
+-v /mydata/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml \
+-v /mydata/elasticsearch/data:/usr/share/elasticsearch/data \
+-v /mydata/elasticsearch/plugins:/usr/share/elasticsearch/plugins \
+-d elasticsearch:7.17.9
+```
+
+## 基本命令
+
+### _cat命令
+
+```shell
+#查询ElasticSearch的健康状况   
+GET /_cat/health
+#查询ElasticSearch的主节点信息  
+GET /_cat/master
+#查询ElasticSearch的所有节点
+GET /_cat/nodes
+#查询ElasticSearch的所有索引
+GER /_cat/indices
+```
+
+## ES入门
+
+###   索引创建、查询、删除
+
+- 创建索引
+
+  ```shell
+  # 创建名为name的索引,请求为PUT请求
+  PUT /{name}
+  ```
+
+- 查询索引
+
+  ```shell
+  # 查询名为name的索引信息，请求为GET请求
+  GET /{name}
+  ```
+
+- 删除索引
+
+  ```shell
+  # 删除名为name的索引，请求为DELETE请求
+  DELETE /{name}
+  ```
+
+### 文档创建、更新、删除、查询
+
+- 创建文档
+
+  ```shell
+  # 创建文档
+  # 参数:
+  # name: 索引名称
+  # id: 自定义文档id(选填)
+  POST /{name}/_doc/{id}
+  POST /{name}/_create/{id}
+  
+  # 请求体为文档信息
+  {
+  	"name":"zhangsiyao",
+  	"age":17,
+  }
+  ```
+
+- 查询文档
+
+  主键查询
+
+  ```shell
+  # 查询主键为id的文档
+  # 参数:
+  # name: 索引名称
+  # id: 文档id
+  GET /{name}/_doc/{id}
+  ```
+
+  全查询
+
+  ```shell
+  # 查询索引内的所有文档
+  # 参数:
+  # name: 索引名称
+  GET /{name}/_search
+  ```
+
+  
+
+- 删除文档
+
 # 数据检验
 
 ## 基本校验

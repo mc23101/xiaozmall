@@ -11,9 +11,8 @@
           </el-form-item>
           <el-form-item label="状态">
             <el-select style="width:160px" v-model="dataForm.status" clearable>
-              <el-option label="新建" :value="0"></el-option>
+              <el-option label="下架" :value="0"></el-option>
               <el-option label="上架" :value="1"></el-option>
-              <el-option label="下架" :value="2"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="检索">
@@ -32,59 +31,59 @@
 </template>
 
 <script>
-import PubSub from "pubsub-js";
-import CategoryCascader from "../common/category-cascader";
-import BrandSelect from "../common/brand-select";
-import Spuinfo from "./spuinfo";
+import PubSub from 'pubsub-js'
+import CategoryCascader from '../common/category-cascader'
+import BrandSelect from '../common/brand-select'
+import Spuinfo from './spuinfo'
 export default {
-  //import引入的组件需要注入到对象中才能使用
+  // import引入的组件需要注入到对象中才能使用
   components: { CategoryCascader, Spuinfo, BrandSelect },
   props: {},
-  data() {
-    //这里存放数据
+  data () {
+    // 这里存放数据
     return {
       catId: 0,
       catalogPath: [],
       dataForm: {
-        status: "",
-        key: "",
+        status: '',
+        key: '',
         brandId: 0,
         catalogId: 0
       },
       catPathSub: null,
       brandIdSub: null
 
-    };
-  },
-  //计算属性 类似于data概念
-  computed: {},
-  //监控data中的数据变化
-  watch: {},
-  //方法集合
-  methods: {
-    test(){
-      console.log(this.catId)
-    },
-    searchSpuInfo() {
-      console.log("搜索条件", this.dataForm);
-      this.dataForm.catalogId=this.catalogPath[this.catalogPath.length-1]
-      PubSub.publish("dataForm",this.dataForm);
     }
   },
-  created() {},
-  mounted() {
-    this.catPathSub = PubSub.subscribe("catPath", (msg, val) => {
-      this.dataForm.catalogId = val[val.length-1];
-    });
-    this.brandIdSub = PubSub.subscribe("brandId", (msg, val) => {
-      this.dataForm.brandId = val;
-    });
+  // 计算属性 类似于data概念
+  computed: {},
+  // 监控data中的数据变化
+  watch: {},
+  // 方法集合
+  methods: {
+    test () {
+      console.log(this.catId)
+    },
+    searchSpuInfo () {
+      console.log('搜索条件', this.dataForm)
+      this.dataForm.catalogId = this.catalogPath[this.catalogPath.length - 1]
+      PubSub.publish('dataForm', this.dataForm)
+    }
   },
-  beforeDestroy() {
-     PubSub.unsubscribe(this.catPathSub);
-     PubSub.unsubscribe(this.brandIdSub);
+  created () {},
+  mounted () {
+    this.catPathSub = PubSub.subscribe('catPath', (msg, val) => {
+      this.dataForm.catalogId = val[val.length - 1]
+    })
+    this.brandIdSub = PubSub.subscribe('brandId', (msg, val) => {
+      this.dataForm.brandId = val
+    })
   },
-};
+  beforeDestroy () {
+    PubSub.unsubscribe(this.catPathSub)
+    PubSub.unsubscribe(this.brandIdSub)
+  }
+}
 </script>
 <style scoped>
 </style>

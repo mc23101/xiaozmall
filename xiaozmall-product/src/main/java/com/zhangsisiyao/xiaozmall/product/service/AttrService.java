@@ -3,6 +3,8 @@ package com.zhangsisiyao.xiaozmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
+import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
+import com.zhangsisiyao.xiaozmall.product.vo.BaseAttrVo;
 
 import java.util.List;
 import java.util.Map;
@@ -27,5 +29,8 @@ public interface AttrService extends IService<AttrEntity> {
     public PageUtils querySaleAttr(Long catId,Map<String, Object> params);
 
     List<AttrEntity> queryWithAttrGroup(String groupId);
-}
 
+    List<ProductAttrValueEntity> queryListForSpu(Long spuId);
+
+    void UpdateAttrsBySpuId(List<BaseAttrVo> attrs,String spuid);
+}

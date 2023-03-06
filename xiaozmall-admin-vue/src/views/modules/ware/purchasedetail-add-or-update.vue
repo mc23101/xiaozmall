@@ -42,80 +42,81 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       visible: false,
       wareList: [],
       dataForm: {
         id: 0,
-        purchaseId: "",
-        skuId: "",
-        skuNum: "",
-        skuPrice: "",
-        wareId: "",
+        purchaseId: '',
+        skuId: '',
+        skuNum: '',
+        skuPrice: '',
+        wareId: '',
         status: 0
       },
       dataRule: {
         skuId: [
-          { required: true, message: "采购商品id不能为空", trigger: "blur" }
+          { required: true, message: '采购商品id不能为空', trigger: 'blur' }
         ],
         skuNum: [
-          { required: true, message: "采购数量不能为空", trigger: "blur" }
+          { required: true, message: '采购数量不能为空', trigger: 'blur' }
         ],
-        wareId: [{ required: true, message: "仓库id不能为空", trigger: "blur" }]
+        wareId: [{ required: true, message: '仓库id不能为空', trigger: 'blur' }]
       }
-    };
+    }
   },
-  created(){
-    this.getWares();
+  created () {
+    this.getWares()
   },
   methods: {
-    getWares() {
+    getWares () {
       this.$http({
-        url: this.$http.adornUrl("/ware/wareinfo/list"),
-        method: "get",
+        url: this.$http.adornUrl('/ware/wareinfo/list'),
+        method: 'get',
         params: this.$http.adornParams({
           page: 1,
-          limit: 500
+          limit: 500,
+          key: ''
         })
       }).then(({ data }) => {
-        this.wareList = data.page.list;
-      });
+        this.wareList = data.page.list
+      })
     },
-    init(id) {
-      this.dataForm.id = id || 0;
-      this.visible = true;
+    init (id) {
+      this.dataForm.id = id || 0
+      this.visible = true
       this.$nextTick(() => {
-        this.$refs["dataForm"].resetFields();
+        this.$refs['dataForm'].resetFields()
         if (this.dataForm.id) {
           this.$http({
             url: this.$http.adornUrl(
               `/ware/purchasedetail/info/${this.dataForm.id}`
             ),
-            method: "get",
+            method: 'get',
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.purchaseId = data.purchaseDetail.purchaseId;
-              this.dataForm.skuId = data.purchaseDetail.skuId;
-              this.dataForm.skuNum = data.purchaseDetail.skuNum;
-              this.dataForm.skuPrice = data.purchaseDetail.skuPrice;
-              this.dataForm.wareId = data.purchaseDetail.wareId;
-              this.dataForm.status = data.purchaseDetail.status;
+              this.dataForm.purchaseId = data.purchaseDetail.purchaseId
+              this.dataForm.skuId = data.purchaseDetail.skuId
+              this.dataForm.skuNum = data.purchaseDetail.skuNum
+              this.dataForm.skuPrice = data.purchaseDetail.skuPrice
+              this.dataForm.wareId = data.purchaseDetail.wareId
+              this.dataForm.status = data.purchaseDetail.status
             }
-          });
+          })
         }
-      });
+      })
     },
     // 表单提交
-    dataFormSubmit() {
-      this.$refs["dataForm"].validate(valid => {
+    dataFormSubmit () {
+      this.$refs['dataForm'].validate(valid => {
         if (valid) {
           this.$http({
             url: this.$http.adornUrl(
-              `/ware/purchasedetail/${!this.dataForm.id ? "save" : "update"}`
+              `/ware/purchasedetail/${!this.dataForm.id ? 'save' : 'update'}`
             ),
-            method: "post",
+            method: 'post',
             data: this.$http.adornData({
               id: this.dataForm.id || undefined,
               purchaseId: this.dataForm.purchaseId,
@@ -128,21 +129,21 @@ export default {
           }).then(({ data }) => {
             if (data && data.code === 0) {
               this.$message({
-                message: "操作成功",
-                type: "success",
+                message: '操作成功',
+                type: 'success',
                 duration: 1500,
                 onClose: () => {
-                  this.visible = false;
-                  this.$emit("refreshDataList");
+                  this.visible = false
+                  this.$emit('refreshDataList')
                 }
-              });
+              })
             } else {
-              this.$message.error(data.msg);
+              this.$message.error(data.msg)
             }
-          });
+          })
         }
-      });
+      })
     }
   }
-};
+}
 </script>

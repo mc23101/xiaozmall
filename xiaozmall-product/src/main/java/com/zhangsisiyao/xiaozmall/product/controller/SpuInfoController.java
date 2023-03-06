@@ -43,6 +43,15 @@ public class SpuInfoController {
     }
 
 
+    @RequestMapping("/up/{spuid}")
+    //@RequiresPermissions("product:spuinfo:list")
+    public R SpuUpdate(@PathVariable Long spuid){
+        this.spuInfoService.updateSpuPublishStatus(spuid);
+        return R.ok("success");
+    }
+
+
+
     /**
      * 信息
      */

@@ -1,11 +1,15 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
+import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrService;
+import com.zhangsisiyao.xiaozmall.product.vo.BaseAttrVo;
+import com.zhangsisiyao.xiaozmall.product.vo.ProductVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +39,12 @@ public class AttrController {
     public R baseList(@PathVariable Long catId,@RequestParam Map<String,Object> params){
         PageUtils pageUtils = attrService.queryBaseAttr(catId,params);
         return R.ok().put("page",pageUtils);
+    }
+
+    @RequestMapping("/base/listforspu/{spuId}")
+    public R baseListforSpu(@PathVariable Long spuId){
+        List<ProductAttrValueEntity> entities = attrService.queryListForSpu(spuId);
+        return R.ok().put("data",entities);
     }
 
     @RequestMapping("/sale/list/{catId}")
@@ -83,6 +93,13 @@ public class AttrController {
     public R update(@RequestBody AttrEntity attr){
 		attrService.updateById(attr);
 
+        return R.ok();
+    }
+
+    @RequestMapping("/update/{spuId}")
+    //@RequiresPermissions("product:attr:update")
+    public R updateSpu(@RequestBody List<BaseAttrVo> attrs, @PathVariable String spuId){
+        attrService.UpdateAttrsBySpuId(attrs,spuId);
         return R.ok();
     }
 

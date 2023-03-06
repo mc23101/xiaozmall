@@ -21,5 +21,7 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
     PageUtils queryPageLimit(Map<String, Object> params);
 
     void saveProduct(ProductVo product);
+    
+    void updateSpuPublishStatus(Long spuid);
 }
 

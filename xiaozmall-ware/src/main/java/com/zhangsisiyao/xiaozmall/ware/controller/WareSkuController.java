@@ -31,6 +31,13 @@ public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
 
+    @RequestMapping("/count/{skuid}")
+    public R getSkuCount(@PathVariable String skuid){
+        long count = this.wareSkuService.getSkuCountById(skuid);
+        return R.ok().put("data",count);
+    }
+
+
     /**
      * 列表
      */

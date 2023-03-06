@@ -20,59 +20,59 @@
 </template>
 
 <script>
-//这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
-//例如：import 《组件名称》 from '《组件路径》';
+// 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
+// 例如：import 《组件名称》 from '《组件路径》';
 
-import PubSub from "pubsub-js";
+import PubSub from 'pubsub-js'
 
 export default {
-  //import引入的组件需要注入到对象中才能使用
+  // import引入的组件需要注入到对象中才能使用
   components: {},
-  //接受父组件传来的值
+  // 接受父组件传来的值
   props: {
     catalogPath: {
       type: Array,
-      default(){
-        return [];
+      default () {
+        return []
       }
     }
   },
-  data() {
-    //这里存放数据
+  data () {
+    // 这里存放数据
     return {
       setting: {
-        value: "catId",
-        label: "name",
-        children: "children"
+        value: 'catId',
+        label: 'name',
+        children: 'children'
       },
       categories: [],
       paths: this.catalogPath
-    };
+    }
   },
-  watch:{
-    catalogPath(v){
-      this.paths = this.catalogPath;
+  watch: {
+    catalogPath (v) {
+      this.paths = this.catalogPath
     },
-    paths(v){
-      this.$emit("update:catalogPath",v);
-      PubSub.publish("catPath",v);
+    paths (v) {
+      this.$emit('update:catalogPath', v)
+      PubSub.publish('catPath', v)
     }
   },
-  //方法集合
+  // 方法集合
   methods: {
-    getCategories() {
+    getCategories () {
       this.$http({
-        url: this.$http.adornUrl("/product/category/list/tree"),
-        method: "get"
+        url: this.$http.adornUrl('/product/category/list/tree'),
+        method: 'get'
       }).then(({ data }) => {
-        this.categories = data.data;
-      });
+        this.categories = data.data
+      })
     }
   },
-  created() {
-    this.getCategories();
+  created () {
+    this.getCategories()
   }
-};
+}
 </script>
 <style scoped>
 </style>

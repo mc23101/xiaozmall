@@ -30,9 +30,10 @@
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="id" header-align="center" align="center" label="id"></el-table-column>
       <el-table-column prop="skuId" header-align="center" align="center" label="商品id"></el-table-column>
+      <el-table-column prop="skuName" header-align="center" align="center" label="商品名称"></el-table-column>
       <el-table-column prop="wareId" header-align="center" align="center" label="仓库id"></el-table-column>
+      <el-table-column prop="wareId" header-align="center" align="center" label="仓库名称"></el-table-column>
       <el-table-column prop="stock" header-align="center" align="center" label="库存数"></el-table-column>
-      <el-table-column prop="skuName" header-align="center" align="center" label="sku_name"></el-table-column>
       <el-table-column prop="stockLocked" header-align="center" align="center" label="锁定库存"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
@@ -56,14 +57,14 @@
 </template>
 
 <script>
-import AddOrUpdate from "./waresku-add-or-update";
+import AddOrUpdate from './waresku-add-or-update'
 export default {
-  data() {
+  data () {
     return {
       wareList: [],
       dataForm: {
-        wareId: "",
-        skuId: ""
+        wareId: '',
+        skuId: ''
       },
       dataList: [],
       pageIndex: 1,
@@ -72,39 +73,39 @@ export default {
       dataListLoading: false,
       dataListSelections: [],
       addOrUpdateVisible: false
-    };
+    }
   },
   components: {
     AddOrUpdate
   },
-  activated() {
-    console.log("接收到", this.$route.query.skuId);
+  activated () {
+    console.log('接收到', this.$route.query.skuId)
     if (this.$route.query.skuId) {
-      this.dataForm.skuId = this.$route.query.skuId;
+      this.dataForm.skuId = this.$route.query.skuId
     }
-    this.getWares();
-    this.getDataList();
+    this.getWares()
+    this.getDataList()
   },
   methods: {
-    getWares() {
+    getWares () {
       this.$http({
-        url: this.$http.adornUrl("/ware/wareinfo/list"),
-        method: "get",
+        url: this.$http.adornUrl('/ware/wareinfo/list'),
+        method: 'get',
         params: this.$http.adornParams({
-          page: 1,
-          limit: 500
+          'page': 1,
+          'limit': 500,
+          'key': ''
         })
       }).then(({ data }) => {
-        console.log(data)
-        this.wareList = data.page.list;
-      });
+        this.wareList = data.page.list
+      })
     },
     // 获取数据列表
-    getDataList() {
-      this.dataListLoading = true;
+    getDataList () {
+      this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl("/ware/waresku/list"),
-        method: "get",
+        url: this.$http.adornUrl('/ware/waresku/list'),
+        method: 'get',
         params: this.$http.adornParams({
           page: this.pageIndex,
           limit: this.pageSize,
@@ -112,74 +113,75 @@ export default {
           wareId: this.dataForm.wareId
         })
       }).then(({ data }) => {
+        console.log(data)
         if (data && data.code === 0) {
-          this.dataList = data.page.list;
-          this.totalPage = data.page.totalCount;
+          this.dataList = data.page.list
+          this.totalPage = data.page.totalCount
         } else {
-          this.dataList = [];
-          this.totalPage = 0;
+          this.dataList = []
+          this.totalPage = 0
         }
-        this.dataListLoading = false;
-      });
+        this.dataListLoading = false
+      })
     },
     // 每页数
-    sizeChangeHandle(val) {
-      this.pageSize = val;
-      this.pageIndex = 1;
-      this.getDataList();
+    sizeChangeHandle (val) {
+      this.pageSize = val
+      this.pageIndex = 1
+      this.getDataList()
     },
     // 当前页
-    currentChangeHandle(val) {
-      this.pageIndex = val;
-      this.getDataList();
+    currentChangeHandle (val) {
+      this.pageIndex = val
+      this.getDataList()
     },
     // 多选
-    selectionChangeHandle(val) {
-      this.dataListSelections = val;
+    selectionChangeHandle (val) {
+      this.dataListSelections = val
     },
     // 新增 / 修改
-    addOrUpdateHandle(id) {
-      this.addOrUpdateVisible = true;
+    addOrUpdateHandle (id) {
+      this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id);
-      });
+        this.$refs.addOrUpdate.init(id)
+      })
     },
     // 删除
-    deleteHandle(id) {
+    deleteHandle (id) {
       var ids = id
         ? [id]
         : this.dataListSelections.map(item => {
-            return item.id;
-          });
+          return item.id
+        })
       this.$confirm(
-        `确定对[id=${ids.join(",")}]进行[${id ? "删除" : "批量删除"}]操作?`,
-        "提示",
+        `确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`,
+        '提示',
         {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         }
       ).then(() => {
         this.$http({
-          url: this.$http.adornUrl("/ware/waresku/delete"),
-          method: "post",
+          url: this.$http.adornUrl('/ware/waresku/delete'),
+          method: 'post',
           data: this.$http.adornData(ids, false)
         }).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message({
-              message: "操作成功",
-              type: "success",
+              message: '操作成功',
+              type: 'success',
               duration: 1500,
               onClose: () => {
-                this.getDataList();
+                this.getDataList()
               }
-            });
+            })
           } else {
-            this.$message.error(data.msg);
+            this.$message.error(data.msg)
           }
-        });
-      });
+        })
+      })
     }
   }
-};
+}
 </script>
