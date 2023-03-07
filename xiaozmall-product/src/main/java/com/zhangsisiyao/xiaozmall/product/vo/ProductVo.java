@@ -50,5 +50,6 @@ public class ProductVo implements Serializable {
 
     List<BaseAttrVo> baseAttrs;
 
+    @Size(min = 1)
     List<SkuVo> skus;
 }

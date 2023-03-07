@@ -8,6 +8,7 @@ import com.zhangsisiyao.xiaozmall.product.vo.ProductVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 
+import javax.validation.Valid;
 
 
 /**
@@ -68,9 +70,16 @@ public class SpuInfoController {
      */
     @RequestMapping("/save")
     //@RequiresPermissions("product:spuinfo:save")
-    public R save(@RequestBody ProductVo product){
-        spuInfoService.saveProduct(product);
-        return R.ok();
+    public R save(@Valid @RequestBody ProductVo product,BindingResult result){
+        if(result.hasErrors()){
+            return R.error();
+        }
+        boolean b = spuInfoService.saveProduct(product);
+        if(b){
+            return R.ok();
+        }else {
+            return R.error();
+        }
     }
 
     /**

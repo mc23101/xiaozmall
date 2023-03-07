@@ -41,6 +41,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     @Autowired
     SkuSaleAttrValueService skuSaleAttrValueService;
 
+    @Autowired
+    AttrService attrService;
+
+    @Autowired
+    AttrGroupService attrGroupService;
+
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<SpuInfoEntity> page = this.page(
@@ -73,7 +79,18 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     }
 
     @Override
-    public void saveProduct(ProductVo product) {
+    public boolean saveProduct(ProductVo product) {
+        long catalogId=product.getCatalogId();
+        int size=0;
+        List<AttrGroupEntity> groups = this.attrGroupService.query().eq("catalog_id", catalogId).list();
+        for(AttrGroupEntity group:groups){
+            size+=attrService.queryWithAttrGroup(String.valueOf(group.getAttrGroupId())).size();
+        }
+        System.out.println(product.getBaseAttrs().size());
+        System.out.println(size);
+        if(product.getBaseAttrs().size()<size){
+            return false;
+        }
         //TODO 优化储存
         //存储SpuInfo
         SpuInfoEntity spuInfo=new SpuInfoEntity();
@@ -148,7 +165,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             });
 
         });
-
+        return true;
     }
 
     @Override
