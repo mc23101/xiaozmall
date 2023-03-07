@@ -25,9 +25,8 @@
                     v-model="dataResp.baseAttrs[gidx][aidx].attrValues"
                     :multiple="attr.valueType === 1"
                     filterable
-                    allow-create
                     default-first-option
-                    placeholder="请选择或输入值"
+                    placeholder="请选择参数"
                   >
                     <el-option
                       v-for="(val,vidx) in attr.valueSelect.split(';')"
@@ -82,7 +81,6 @@ export default {
         url: this.$http.adornUrl(`/product/attr/base/listforspu/${this.spuId}`),
         method: 'get'
       }).then(({ data }) => {
-        console.log(data)
         data.data.forEach(item => {
           this.spuAttrsMap['' + item.attrId] = item
         })
@@ -132,25 +130,17 @@ export default {
       console.log('·····', this.dataResp.baseAttrs)
       // spu_id  attr_id  attr_name             attr_value             attr_sort  quick_show
       let submitData = []
-      this.dataResp.baseAttrs.forEach(item => {
-        item.forEach(attr => {
-          let val = ''
-          if (attr.attrValues instanceof Array) {
-            val = attr.attrValues.join(';')
-          } else {
-            val = attr.attrValues
-          }
-
-          if (val !== '') {
-            submitData.push({
-              attrId: attr.attrId,
-              attrName: attr.attrName,
-              attrValues: val,
-              showDesc: attr.showDesc
-            })
-          }
-        })
-      })
+      for (let i = 0; i < this.dataResp.attrGroups.length; i++) {
+        let group = this.dataResp.attrGroups[i]
+        for (let j = 0; j < group.attrs.length; j++) {
+          submitData.push({
+            attrId: this.dataResp.baseAttrs[i][j].attrId,
+            attrValues: this.dataResp.baseAttrs[i][j].attrValues,
+            showDesc: this.dataResp.baseAttrs[i][j].showDesc
+          })
+        }
+      }
+      console.log(submitData)
 
       this.$confirm('修改商品规格信息, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -177,14 +167,7 @@ export default {
         })
     }
   },
-  created () {
-    this.clearData()
-    this.getQueryParams()
-    if (this.spuId && this.catalogId) {
-      this.showBaseAttrs()
-      this.getSpuBaseAttrs()
-    }
-  },
+  created () {},
   activated () {
     this.clearData()
     this.getQueryParams()

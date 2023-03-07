@@ -1,6 +1,7 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -40,6 +41,12 @@ public class ProductAttrValueController {
         PageUtils page = productAttrValueService.queryPage(params);
 
         return R.ok().put("page", page);
+    }
+
+    @RequestMapping("/value/{spuId}")
+    public R productattrvalueWithSpu(@PathVariable String spuId){
+        List<ProductAttrValueEntity> list = productAttrValueService.queryBySpuId(spuId);
+        return R.ok().put("data",list);
     }
 
 
