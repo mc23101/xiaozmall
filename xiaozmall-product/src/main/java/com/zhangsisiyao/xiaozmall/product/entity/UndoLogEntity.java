@@ -18,7 +18,7 @@ import lombok.Data;
 @TableName("undo_log")
 public class UndoLogEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	//TODO 数据校验未完成
 	/**
 	 * 
 	 */

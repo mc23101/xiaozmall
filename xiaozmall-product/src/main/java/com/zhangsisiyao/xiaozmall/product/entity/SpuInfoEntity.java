@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
+import javax.validation.constraints.*;
+
 /**
  * spu信息
  * 
@@ -24,38 +26,48 @@ public class SpuInfoEntity implements Serializable {
 	 * 商品id
 	 */
 	@TableId
+	@Min(value = 1)
 	private Long id;
 	/**
 	 * 商品名称
 	 */
+	@NotEmpty
 	private String spuName;
 	/**
 	 * 商品描述
 	 */
+	@NotEmpty
 	private String spuDescription;
 	/**
 	 * 所属分类id
 	 */
+	@Min(value = 1)
 	private Long catalogId;
 	/**
 	 * 品牌id
 	 */
+	@Min(value = 1)
 	private Long brandId;
 	/**
 	 * 
 	 */
+	@NotNull
 	private BigDecimal weight;
 	/**
 	 * 上架状态[0 - 下架，1 - 上架]
 	 */
+	@Min(value = 0)
+	@Min(value = 1)
 	private Integer publishStatus;
 	/**
 	 * 
 	 */
+	@NotNull
 	private Date createTime;
 	/**
 	 * 
 	 */
+	@NotNull
 	private Date updateTime;
 
 }

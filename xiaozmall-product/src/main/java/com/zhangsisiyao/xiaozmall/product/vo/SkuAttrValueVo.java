@@ -5,10 +5,11 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class BaseAttrVo implements Serializable {
+public class SkuAttrValueVo implements Serializable {
+
     Long attrId;
 
-    String attrValues;
+    String attrName;
 
-    Integer showDesc;
+    String attrValue;
 }

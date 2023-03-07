@@ -5,8 +5,7 @@ import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrService;
 import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
-import com.zhangsisiyao.xiaozmall.product.vo.BaseAttrVo;
-import org.springframework.beans.BeanUtils;
+import com.zhangsisiyao.xiaozmall.product.vo.BaseAttrValueVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -102,7 +101,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
-    public void UpdateAttrsBySpuId(List<BaseAttrVo> attrs, String spuid) {
+    public void UpdateAttrsBySpuId(List<BaseAttrValueVo> attrs, String spuid) {
         System.out.println(attrs);
         attrs.forEach((attrVo)->{
             ProductAttrValueEntity one = productAttrValueService.query().eq("spu_id", spuid).eq("attr_id", attrVo.getAttrId()).one();

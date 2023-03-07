@@ -7,6 +7,10 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+
 /**
  * spu图片
  * 
@@ -23,26 +27,33 @@ public class SpuImagesEntity implements Serializable {
 	 * id
 	 */
 	@TableId
+	@Min(value = 1)
 	private Long id;
 	/**
 	 * spu_id
 	 */
+	@Min(value = 1)
 	private Long spuId;
 	/**
 	 * 图片名
 	 */
+	@NotEmpty
 	private String imgName;
 	/**
 	 * 图片地址
 	 */
+	@NotEmpty
 	private String imgUrl;
 	/**
 	 * 顺序
 	 */
+	@Min(value = 0)
 	private Integer imgSort;
 	/**
 	 * 是否默认图
 	 */
+	@Min(value = 0)
+	@Max(value = 1)
 	private Integer defaultImg;
 
 }

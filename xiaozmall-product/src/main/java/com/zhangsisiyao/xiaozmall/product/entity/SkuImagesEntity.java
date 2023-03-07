@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+
 /**
  * sku图片
  * 
@@ -23,22 +26,28 @@ public class SkuImagesEntity implements Serializable {
 	 * id
 	 */
 	@TableId
+	@Min(value = 1)
 	private Long id;
 	/**
 	 * sku_id
 	 */
+	@Min(value = 1)
 	private Long skuId;
 	/**
 	 * 图片地址
 	 */
+	@NotEmpty
 	private String imgUrl;
 	/**
 	 * 排序
 	 */
+	@Min(value = 0)
 	private Integer imgSort;
 	/**
 	 * 默认图[0 - 不是默认图，1 - 是默认图]
 	 */
+	@Min(value = 0)
+	@Min(value = 1)
 	private String defaultImg;
 
 }

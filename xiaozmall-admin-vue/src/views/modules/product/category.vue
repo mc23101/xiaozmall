@@ -85,7 +85,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       category: {
         name: null,
@@ -105,21 +105,21 @@ export default {
         children: 'children',
         label: 'name'
       }
-    };
+    }
   },
   methods: {
-    getMenus() {
+    getMenus () {
       this.$http({
         url: this.$http.adornUrl('/product/category/list/tree'),
         method: 'get'
       }).then(({data}) => {
-        //console.log(data.data)
+        // console.log(data.data)
         this.data = data.data
       })
     },
-    remove(node,data) {
-      //console.log(data);
-      this.category={
+    remove (node, data) {
+      // console.log(data);
+      this.category = {
         name: data.name,
         parentCid: data.parentCid,
         catLevel: data.catLevel,
@@ -129,35 +129,35 @@ export default {
         icon: data.icon,
         catId: data.catId,
         children: data.children
-      };
+      }
       this.$confirm('此操作将永久删除该分类, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-          this.removeCategory();
+        this.removeCategory()
       }).catch(() => {
         this.$message({
           type: 'info',
           message: '已取消删除'
-        });
-      });
+        })
+      })
     },
-    removeCategory(){
+    removeCategory () {
       this.$http({
-        url: this.$http.adornUrl("/product/category/delete"),
-        method: "post",
-        data: this.$http.adornData([this.category.catId],false)
-      }).then(({data})=>{
+        url: this.$http.adornUrl('/product/category/delete'),
+        method: 'post',
+        data: this.$http.adornData([this.category.catId], false)
+      }).then(({data}) => {
         this.$message({
           type: 'success',
           message: '删除成功!'
-        });
-        this.getMenus();
-      });
+        })
+        this.getMenus()
+      })
     },
-    append(data) {
-      this.category={
+    append (data) {
+      this.category = {
         name: null,
         parentCid: null,
         catLevel: null,
@@ -167,48 +167,48 @@ export default {
         icon: null,
         catId: null,
         children: null
-      };
-      this.appendDialogVisible=true;
-      this.category.parentCid=data.catId;
-      this.category.catLevel=data.catLevel*1+1;
+      }
+      this.appendDialogVisible = true
+      this.category.parentCid = data.catId
+      this.category.catLevel = data.catLevel * 1 + 1
     },
-    addCategory(){
-      this.appendDialogVisible = false;
+    addCategory () {
+      this.appendDialogVisible = false
       this.$http({
-        url: this.$http.adornUrl("/product/category/save"),
-        method: "post",
-        data: this.$http.adornData(this.category,false)
-      }).then(({data})=>{
+        url: this.$http.adornUrl('/product/category/save'),
+        method: 'post',
+        data: this.$http.adornData(this.category, false)
+      }).then(({data}) => {
         this.$message({
-          message: "添加成功",
-          type: "success"
-        });
-        this.getMenus();
-      });
+          message: '添加成功',
+          type: 'success'
+        })
+        this.getMenus()
+      })
     },
-    edit(node,data){
-      this.editDialogVisible=true;
-      this.category={...data};
+    edit (node, data) {
+      this.editDialogVisible = true
+      this.category = {...data}
     },
-    editCategory(){
-      this.editDialogVisible = false;
+    editCategory () {
+      this.editDialogVisible = false
       this.$http({
-        url: this.$http.adornUrl("/product/category/update"),
-        method: "post",
-        data: this.$http.adornData(this.category,false)
-      }).then(({data})=>{
+        url: this.$http.adornUrl('/product/category/update'),
+        method: 'post',
+        data: this.$http.adornData(this.category, false)
+      }).then(({data}) => {
         this.$message({
-          message: "修改成功",
-          type: "success"
-        });
-        this.getMenus();
-      });
+          message: '修改成功',
+          type: 'success'
+        })
+        this.getMenus()
+      })
     },
-    removeAll(){
-      let checkedNodes = this.$refs.trees.getCheckedNodes(false,false);
-      let Nodes=[];
-      for(let i=0;i<checkedNodes.length;i++){
-        Nodes.push(checkedNodes[i].catId);
+    removeAll () {
+      let checkedNodes = this.$refs.trees.getCheckedNodes(false, false)
+      let Nodes = []
+      for (let i = 0; i < checkedNodes.length; i++) {
+        Nodes.push(checkedNodes[i].catId)
       }
       this.$confirm('此操作将永久删除该分类, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -216,26 +216,26 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl("/product/category/delete"),
-          method: "post",
-          data: this.$http.adornData(Nodes,false)
-        }).then(({data})=>{
+          url: this.$http.adornUrl('/product/category/delete'),
+          method: 'post',
+          data: this.$http.adornData(Nodes, false)
+        }).then(({data}) => {
           this.$message({
             type: 'success',
             message: '批量删除成功!'
-          });
-          this.getMenus();
-        });
+          })
+          this.getMenus()
+        })
       }).catch(() => {
         this.$message({
           type: 'info',
           message: '已取消删除'
-        });
-      });
+        })
+      })
     }
   },
-  created() {
-    this.getMenus();
+  created () {
+    this.getMenus()
   }
-};
+}
 </script>

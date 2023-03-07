@@ -114,7 +114,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         spuImagesService.getBaseMapper().insert(spuImage);
         
         //存储SpuAttr
-        List<BaseAttrVo> baseAttrs = product.getBaseAttrs();
+        List<BaseAttrValueVo> baseAttrs = product.getBaseAttrs();
         baseAttrs.forEach((attr)->{
             ProductAttrValueEntity productAttr = new ProductAttrValueEntity();
             productAttr.setAttrId(attr.getAttrId());
@@ -154,7 +154,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             skuImagesService.getBaseMapper().insert(skuImagesEntity);
 
             //储存SkuAttrValue
-            List<SkuAttrVo> attrs = skuVo.getAttr();
+            List<SkuAttrValueVo> attrs = skuVo.getAttr();
             attrs.forEach((attr)->{
                 SkuSaleAttrValueEntity attrValue = new SkuSaleAttrValueEntity();
                 attrValue.setAttrId(attr.getAttrId());

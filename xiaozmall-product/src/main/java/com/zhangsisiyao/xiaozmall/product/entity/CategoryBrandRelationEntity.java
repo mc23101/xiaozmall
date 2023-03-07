@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+
 /**
  * 品牌分类关联
  * 
@@ -23,22 +26,27 @@ public class CategoryBrandRelationEntity implements Serializable {
 	 * 
 	 */
 	@TableId
+	@Min(value = 1)
 	private Long id;
 	/**
 	 * 品牌id
 	 */
+	@Min(value = 1)
 	private Long brandId;
 	/**
 	 * 分类id
 	 */
+	@Min(value = 1)
 	private Long catalogId;
 	/**
 	 * 
 	 */
+	@NotEmpty
 	private String brandName;
 	/**
 	 * 
 	 */
+	@NotEmpty
 	private String catalogName;
 
 }

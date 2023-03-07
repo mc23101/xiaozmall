@@ -48,7 +48,7 @@ public class ProductVo implements Serializable {
 
     BoundsVo bounds;
 
-    List<BaseAttrVo> baseAttrs;
+    List<BaseAttrValueVo> baseAttrs;
 
     @Size(min = 1)
     List<SkuVo> skus;

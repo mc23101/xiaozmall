@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
-import com.zhangsisiyao.xiaozmall.product.vo.BaseAttrVo;
+import com.zhangsisiyao.xiaozmall.product.vo.BaseAttrValueVo;
 
 import java.util.List;
 import java.util.Map;
@@ -32,5 +32,5 @@ public interface AttrService extends IService<AttrEntity> {
 
     List<ProductAttrValueEntity> queryListForSpu(Long spuId);
 
-    void UpdateAttrsBySpuId(List<BaseAttrVo> attrs,String spuid);
+    void UpdateAttrsBySpuId(List<BaseAttrValueVo> attrs, String spuid);
 }

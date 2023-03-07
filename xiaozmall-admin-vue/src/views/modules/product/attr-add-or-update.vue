@@ -90,166 +90,166 @@
 </template>
 
 <script>
-import CategoryCascader from "../common/category-cascader";
+import CategoryCascader from '../common/category-cascader'
 export default {
-  data() {
+  data () {
     return {
       visible: false,
       dataForm: {
         attrId: 0,
-        attrName: "",
+        attrName: '',
         searchType: 0,
         valueType: 1,
-        icon: "",
-        valueSelect: "",
+        icon: '',
+        valueSelect: '',
         attrType: 1,
         enable: 1,
-        catalogId: "",
-        attrGroupId: "",
+        catalogId: '',
+        attrGroupId: '',
         showDesc: 0
       },
       catalogPath: [],
       attrGroups: [],
       dataRule: {
         attrName: [
-          { required: true, message: "属性名不能为空", trigger: "blur" }
+          { required: true, message: '属性名不能为空', trigger: 'blur' }
         ],
         searchType: [
           {
             required: true,
-            message: "是否需要检索不能为空",
-            trigger: "blur"
+            message: '是否需要检索不能为空',
+            trigger: 'blur'
           }
         ],
         valueType: [
           {
             required: true,
-            message: "值类型不能为空",
-            trigger: "blur"
+            message: '值类型不能为空',
+            trigger: 'blur'
           }
         ],
         icon: [
-          { required: true, message: "属性图标不能为空", trigger: "blur" }
+          { required: true, message: '属性图标不能为空', trigger: 'blur' }
         ],
         attrType: [
           {
             required: true,
-            message: "属性类型不能为空",
-            trigger: "blur"
+            message: '属性类型不能为空',
+            trigger: 'blur'
           }
         ],
         enable: [
           {
             required: true,
-            message: "启用状态不能为空",
-            trigger: "blur"
+            message: '启用状态不能为空',
+            trigger: 'blur'
           }
         ],
         catalogId: [
           {
             required: true,
-            message: "需要选择正确的三级分类数据",
-            trigger: "blur"
+            message: '需要选择正确的三级分类数据',
+            trigger: 'blur'
           }
         ],
         showDesc: [
           {
             required: true,
-            message: "快速展示不能为空",
-            trigger: "blur"
+            message: '快速展示不能为空',
+            trigger: 'blur'
           }
         ]
       }
-    };
+    }
   },
-  props:{
-    type:{
+  props: {
+    type: {
       type: Number,
       default: 1
     }
   },
   watch: {
-    catalogPath(path) {
-      //监听到路径变化需要查出这个三级分类的分组信息
-      console.log("路径变了", path);
-      this.attrGroups = [];
-      this.dataForm.attrGroupId = "";
-      this.dataForm.catalogId = path[path.length - 1];
+    catalogPath (path) {
+      // 监听到路径变化需要查出这个三级分类的分组信息
+      console.log('路径变了', path)
+      this.attrGroups = []
+      this.dataForm.attrGroupId = ''
+      this.dataForm.catalogId = path[path.length - 1]
       if (path && path.length === 3) {
         this.$http({
           url: this.$http.adornUrl(
             `/product/attrgroup/list/${path[path.length - 1]}`
           ),
-          method: "get",
+          method: 'get',
           params: this.$http.adornParams({ page: 1, limit: 10000000 })
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.attrGroups = data.page.list;
+            this.attrGroups = data.page.list
           } else {
-            this.$message.error(data.msg);
+            this.$message.error(data.msg)
           }
-        });
+        })
       } else if (path.length === 0) {
-        this.dataForm.catalogId = "";
+        this.dataForm.catalogId = ''
       } else {
-        this.$message.error("请选择正确的分类");
-        this.dataForm.catalogId = "";
+        this.$message.error('请选择正确的分类')
+        this.dataForm.catalogId = ''
       }
     }
   },
   components: { CategoryCascader },
   methods: {
-    init(id) {
-      this.dataForm.attrId = id || 0;
-      this.dataForm.attrType = this.type;
-      this.visible = true;
+    init (id) {
+      this.dataForm.attrId = id || 0
+      this.dataForm.attrType = this.type
+      this.visible = true
       this.$nextTick(() => {
-        this.$refs["dataForm"].resetFields();
+        this.$refs['dataForm'].resetFields()
         if (this.dataForm.attrId) {
           this.$http({
             url: this.$http.adornUrl(
               `/product/attr/info/${this.dataForm.attrId}`
             ),
-            method: "get",
+            method: 'get',
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.attrName = data.attr.attrName;
-              this.dataForm.searchType = data.attr.searchType;
-              this.dataForm.valueType = data.attr.valueType;
-              this.dataForm.icon = data.attr.icon;
-              this.dataForm.valueSelect = data.attr.valueSelect.split(";");
-              this.dataForm.attrType = data.attr.attrType;
-              this.dataForm.enable = data.attr.enable;
-              this.dataForm.catalogId = data.attr.catalogId;
-              this.dataForm.showDesc = data.attr.showDesc;
-              //attrGroupId
-              //catalogPath
-              this.catalogPath = data.attr.catalogPath;
+              this.dataForm.attrName = data.attr.attrName
+              this.dataForm.searchType = data.attr.searchType
+              this.dataForm.valueType = data.attr.valueType
+              this.dataForm.icon = data.attr.icon
+              this.dataForm.valueSelect = data.attr.valueSelect.split(';')
+              this.dataForm.attrType = data.attr.attrType
+              this.dataForm.enable = data.attr.enable
+              this.dataForm.catalogId = data.attr.catalogId
+              this.dataForm.showDesc = data.attr.showDesc
+              // attrGroupId
+              // catalogPath
+              this.catalogPath = data.attr.catalogPath
               this.$nextTick(() => {
-                this.dataForm.attrGroupId = data.attr.attrGroupId;
-              });
+                this.dataForm.attrGroupId = data.attr.attrGroupId
+              })
             }
-          });
+          })
         }
-      });
+      })
     },
     // 表单提交
-    dataFormSubmit() {
-      this.$refs["dataForm"].validate(valid => {
+    dataFormSubmit () {
+      this.$refs['dataForm'].validate(valid => {
         if (valid) {
           this.$http({
             url: this.$http.adornUrl(
-              `/product/attr/${!this.dataForm.attrId ? "save" : "update"}`
+              `/product/attr/${!this.dataForm.attrId ? 'save' : 'update'}`
             ),
-            method: "post",
+            method: 'post',
             data: this.$http.adornData({
               attrId: this.dataForm.attrId || undefined,
               attrName: this.dataForm.attrName,
               searchType: this.dataForm.searchType,
               valueType: this.dataForm.valueType,
               icon: this.dataForm.icon,
-              valueSelect: this.dataForm.valueSelect.join(";"),
+              valueSelect: this.dataForm.valueSelect.join(';'),
               attrType: this.dataForm.attrType,
               enable: this.dataForm.enable,
               catalogId: this.dataForm.catalogId,
@@ -259,25 +259,25 @@ export default {
           }).then(({ data }) => {
             if (data && data.code === 0) {
               this.$message({
-                message: "操作成功",
-                type: "success",
+                message: '操作成功',
+                type: 'success',
                 duration: 1500,
                 onClose: () => {
-                  this.visible = false;
-                  this.$emit("refreshDataList");
+                  this.visible = false
+                  this.$emit('refreshDataList')
                 }
-              });
+              })
             } else {
-              this.$message.error(data.msg);
+              this.$message.error(data.msg)
             }
-          });
+          })
         }
-      });
+      })
     },
-    //dialogClose
-    dialogClose() {
-      this.catalogPath = [];
+    // dialogClose
+    dialogClose () {
+      this.catalogPath = []
     }
   }
-};
+}
 </script>

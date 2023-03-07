@@ -20,7 +20,7 @@ public class SkuVo implements Serializable {
 
     List<String> descar;
 
-    List<SkuAttrVo> attr;
+    List<SkuAttrValueVo> attr;
 
     BigDecimal fullCount;
 

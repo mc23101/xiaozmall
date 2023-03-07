@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+
 /**
  * spu信息介绍
  * 
@@ -24,10 +27,12 @@ public class SpuInfoDescEntity implements Serializable {
 	 * 商品id
 	 */
 	@TableId(type = IdType.INPUT)
+	@Min(value = 1)
 	private Long spuId;
 	/**
 	 * 商品介绍
 	 */
+	@NotEmpty
 	private String decript;
 
 }

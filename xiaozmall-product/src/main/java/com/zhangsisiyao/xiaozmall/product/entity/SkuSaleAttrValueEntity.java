@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+
 /**
  * sku销售属性&值
  * 
@@ -23,26 +26,32 @@ public class SkuSaleAttrValueEntity implements Serializable {
 	 * id
 	 */
 	@TableId
+	@Min(value = 1)
 	private Long id;
 	/**
 	 * sku_id
 	 */
+	@Min(value = 1)
 	private Long skuId;
 	/**
 	 * attr_id
 	 */
+	@Min(value = 1)
 	private Long attrId;
 	/**
 	 * 销售属性名
 	 */
+	@NotEmpty
 	private String attrName;
 	/**
 	 * 销售属性值
 	 */
+	@NotEmpty
 	private String attrValue;
 	/**
 	 * 顺序
 	 */
+	@Min(value = 0)
 	private Integer attrSort;
 
 }

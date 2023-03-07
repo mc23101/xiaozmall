@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 /**
  * 属性&属性分组关联
  * 
@@ -23,18 +26,22 @@ public class AttrAttrgroupRelationEntity implements Serializable {
 	 * id
 	 */
 	@TableId
+	@Min(value = 1)
 	private Long id;
 	/**
 	 * 属性id
 	 */
+	@Min(value = 1)
 	private Long attrId;
 	/**
 	 * 属性分组id
 	 */
+	@Min(value = 1)
 	private Long attrGroupId;
 	/**
 	 * 属性组内排序
 	 */
+	@Min(value = 0)
 	private Integer attrSort;
 
 }

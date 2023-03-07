@@ -8,6 +8,10 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 /**
  * sku信息
  * 
@@ -24,46 +28,57 @@ public class SkuInfoEntity implements Serializable {
 	 * skuId
 	 */
 	@TableId
+	@Min(value = 1)
 	private Long skuId;
 	/**
 	 * spuId
 	 */
+	@Min(value = 1)
 	private Long spuId;
 	/**
 	 * sku名称
 	 */
+	@NotEmpty
 	private String skuName;
 	/**
 	 * sku介绍描述
 	 */
+	@NotEmpty
 	private String skuDesc;
 	/**
 	 * 所属分类id
 	 */
+	@Min(value = 10)
 	private Long catalogId;
 	/**
 	 * 品牌id
 	 */
+	@Min(value = 1)
 	private Long brandId;
 	/**
 	 * 默认图片
 	 */
+	@NotEmpty
 	private String skuDefaultImg;
 	/**
 	 * 标题
 	 */
+	@NotEmpty
 	private String skuTitle;
 	/**
 	 * 副标题
 	 */
+	@NotEmpty
 	private String skuSubtitle;
 	/**
 	 * 价格
 	 */
+	@NotNull
 	private BigDecimal price;
 	/**
 	 * 销量
 	 */
+	@Min(value = 1)
 	private Long saleCount;
 
 }
