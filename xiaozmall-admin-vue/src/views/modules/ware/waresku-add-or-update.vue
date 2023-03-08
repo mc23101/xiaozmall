@@ -11,7 +11,16 @@
       @keyup.enter.native="dataFormSubmit()"
       label-width="120px"
     >
-      <el-form-item label="sku_id" prop="skuId">
+      <el-form-item label="分类" prop="skuId">
+        <category-cascader :catalogPath.sync="catalogPath"></category-cascader>
+      </el-form-item>
+      <el-form-item label="品牌" prop="skuId">
+        <brand-select :enable="catalogPath.length===0" placehold='请先选择分类'></brand-select>
+      </el-form-item>
+      <el-form-item label="spu" prop="skuId">
+        <el-input v-model="dataForm.skuId" placeholder="sku_id"></el-input>
+      </el-form-item>
+      <el-form-item label="sku" prop="skuId">
         <el-input v-model="dataForm.skuId" placeholder="sku_id"></el-input>
       </el-form-item>
       <el-form-item label="仓库" prop="wareId">
@@ -37,11 +46,15 @@
 </template>
 
 <script>
+import CategoryCascader from "../common/category-cascader";
+import BrandSelect from "../common/brand-select";
 export default {
+  components: {BrandSelect, CategoryCascader},
   data () {
     return {
       visible: false,
       wareList: [],
+      catalogPath: [],
       dataForm: {
         id: 0,
         skuId: '',

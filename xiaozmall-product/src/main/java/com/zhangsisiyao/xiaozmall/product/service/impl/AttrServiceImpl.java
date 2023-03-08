@@ -105,8 +105,17 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         System.out.println(attrs);
         attrs.forEach((attrVo)->{
             ProductAttrValueEntity one = productAttrValueService.query().eq("spu_id", spuid).eq("attr_id", attrVo.getAttrId()).one();
-            one.setAttrValue(attrVo.getAttrValues());
-            productAttrValueService.updateById(one);
+            if(one!=null){
+                one.setAttrValue(attrVo.getAttrValues());
+                productAttrValueService.updateById(one);
+            }else{
+                ProductAttrValueEntity newValue=new ProductAttrValueEntity();
+                newValue.setAttrValue(attrVo.getAttrValues());
+                newValue.setSpuId(Long.valueOf(spuid));
+                newValue.setQuickShow(attrVo.getShowDesc());
+                newValue.setAttrId(attrVo.getAttrId());
+                productAttrValueService.save(newValue);
+            }
         });
     }
 

@@ -157,6 +157,8 @@ export default {
               type: 'success',
               message: '属性修改成功!'
             })
+            this.$store.dispatch('tagsView/delView', this.$route)
+            this.$router.go(-1)
           })
         })
         .catch((e) => {
@@ -167,8 +169,7 @@ export default {
         })
     }
   },
-  created () {},
-  activated () {
+  created () {
     this.clearData()
     this.getQueryParams()
     if (this.spuId && this.catalogId) {

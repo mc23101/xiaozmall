@@ -35,11 +35,6 @@ public class SpuImagesEntity implements Serializable {
 	@Min(value = 1)
 	private Long spuId;
 	/**
-	 * 图片名
-	 */
-	@NotEmpty
-	private String imgName;
-	/**
 	 * 图片地址
 	 */
 	@NotEmpty

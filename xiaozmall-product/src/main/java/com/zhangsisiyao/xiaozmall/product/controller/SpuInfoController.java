@@ -70,10 +70,7 @@ public class SpuInfoController {
      */
     @RequestMapping("/save")
     //@RequiresPermissions("product:spuinfo:save")
-    public R save(@Valid @RequestBody ProductVo product,BindingResult result){
-        if(result.hasErrors()){
-            return R.error();
-        }
+    public R save(@Valid @RequestBody ProductVo product){
         boolean b = spuInfoService.saveProduct(product);
         if(b){
             return R.ok();
@@ -87,7 +84,7 @@ public class SpuInfoController {
      */
     @RequestMapping("/update")
     //@RequiresPermissions("product:spuinfo:update")
-    public R update(@RequestBody SpuInfoEntity spuInfo){
+    public R update(@Valid @RequestBody SpuInfoEntity spuInfo){
 		spuInfoService.updateById(spuInfo);
 
         return R.ok();
@@ -99,8 +96,7 @@ public class SpuInfoController {
     @RequestMapping("/delete")
     //@RequiresPermissions("product:spuinfo:delete")
     public R delete(@RequestBody Long[] ids){
-		spuInfoService.removeByIds(Arrays.asList(ids));
-
+		spuInfoService.deleteSpu(ids);
         return R.ok();
     }
 

@@ -113,7 +113,7 @@ export default {
         url: this.$http.adornUrl('/product/category/list/tree'),
         method: 'get'
       }).then(({data}) => {
-        // console.log(data.data)
+        console.log(data.data)
         this.data = data.data
       })
     },

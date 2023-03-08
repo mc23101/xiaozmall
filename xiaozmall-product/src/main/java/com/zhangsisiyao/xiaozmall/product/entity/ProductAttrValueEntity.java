@@ -2,12 +2,12 @@ package com.zhangsisiyao.xiaozmall.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
 /**
  * spu属性值
@@ -40,18 +40,11 @@ public class ProductAttrValueEntity implements Serializable {
 	/**
 	 * 属性名
 	 */
-	@NotEmpty
-	private String attrName;
 	/**
 	 * 属性值
 	 */
 	@NotEmpty
 	private String attrValue;
-	/**
-	 * 顺序
-	 */
-	@Min(value = 0)
-	private Integer attrSort;
 	/**
 	 * 快速展示【是否展示在介绍上；0-否 1-是】
 	 */

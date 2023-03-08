@@ -37,6 +37,7 @@
             @click="productUp(scope.row.id)"
           >下架</el-button>
           <el-button type="text" size="small" @click="attrUpdateShow(scope.row)">规格</el-button>
+          <el-button type="text" size="small" @click="attrUpdateShow(scope.row)">新增sku</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -80,6 +81,9 @@ export default {
     this.getDataList()
   },
   methods: {
+    handleCommand (event) {
+
+    },
     getDataListLoading () {
       return this.dataListLoading
     },
@@ -103,7 +107,6 @@ export default {
       })
     },
     attrUpdateShow (row) {
-      console.log(row)
       this.$router.push({
         path: '/product-attrupdate',
         query: { spuId: row.id, catalogId: row.catalogId }
@@ -146,6 +149,7 @@ export default {
     // 多选
     selectionChangeHandle (val) {
       this.dataListSelections = val
+      PubSub.publish('selectionChange', this.dataListSelections)
     },
     // 新增 / 修改
     addOrUpdateHandle (id) {}

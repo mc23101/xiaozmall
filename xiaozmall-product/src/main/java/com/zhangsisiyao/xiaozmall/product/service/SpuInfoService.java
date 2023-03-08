@@ -23,5 +23,7 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
     boolean saveProduct(ProductVo product);
     
     void updateSpuPublishStatus(Long spuid);
+
+    void deleteSpu(Long[] ids);
 }
 

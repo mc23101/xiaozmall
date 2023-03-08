@@ -37,7 +37,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
         return allEntities.stream()
                 .filter((menu) -> menu.getCatLevel() == 1)
-                .peek((menu) -> menu.setChildren(getChildren(menu, allEntities)))
+                .peek((menu) -> {
+                    menu.setPath(menu.getName());
+                    menu.setChildren(getChildren(menu, allEntities));
+                })
                 .sorted(Comparator.comparingInt(CategoryEntity::getSort))
                 .collect(Collectors.toList());
     }
@@ -45,7 +48,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     public List<CategoryEntity> getChildren(CategoryEntity root, List<CategoryEntity> all) {
         return all.stream()
                 .filter((menu) -> Objects.equals(menu.getParentCid(), root.getCatId()))
-                .peek((menu) -> menu.setChildren(getChildren(menu, all)))
+                .peek((menu) -> {
+                    menu.setPath(root.getPath()+"/"+menu.getName());
+                    menu.setChildren(getChildren(menu, all));
+                })
                 .sorted(Comparator.comparingInt(CategoryEntity::getSort))
                 .collect(Collectors.toList());
     }

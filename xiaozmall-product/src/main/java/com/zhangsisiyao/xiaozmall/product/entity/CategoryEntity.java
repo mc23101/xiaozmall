@@ -11,6 +11,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.checkerframework.framework.qual.NoDefaultQualifierForUse;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -77,6 +78,10 @@ public class CategoryEntity implements Serializable {
 	@Min(value = 0)
 	private Integer productCount;
 
+
+	@TableField(exist = false)
+	@Value(value = "")
+	private String path;
 
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	@TableField(exist = false)

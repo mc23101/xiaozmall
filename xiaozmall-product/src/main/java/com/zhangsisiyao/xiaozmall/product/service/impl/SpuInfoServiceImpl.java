@@ -113,7 +113,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         spuImage.setImgUrl(String.join(",",images));
         spuImagesService.getBaseMapper().insert(spuImage);
         
-        //存储SpuAttr
+        //存储SpuAttrValue
         List<BaseAttrValueVo> baseAttrs = product.getBaseAttrs();
         baseAttrs.forEach((attr)->{
             ProductAttrValueEntity productAttr = new ProductAttrValueEntity();
@@ -174,6 +174,48 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         entity.setPublishStatus(1-entity.getPublishStatus());
         entity.setUpdateTime(new Date());
         this.updateById(entity);
+    }
+
+    @Override
+    public void deleteSpu(Long[] ids) {
+        for (Long spuId : ids) {
+            //删除SpuInfoEntity
+            this.removeById(spuId);
+
+            //删除SpuInfoDescEntity
+            this.spuInfoDescService.removeById(spuId);
+
+            //删除SpuImageEntity
+            List<SpuImagesEntity> spuImagesEntities = this.spuImagesService.query().eq("spu_id", spuId).list();
+            spuImagesEntities.forEach((image) -> {
+                this.spuImagesService.removeById(image.getId());
+            });
+
+            //删除ProductAttrValueEntity
+            List<ProductAttrValueEntity> productAttrValueEntities = this.productAttrValueService.query().eq("spu_id", spuId).list();
+            productAttrValueEntities.forEach((attrValue) -> {
+                productAttrValueService.removeById(attrValue.getId());
+            });
+
+            //删除所有sku
+            List<SkuInfoEntity> skus = skuInfoService.query().eq("spu_id", spuId).list();
+            skus.forEach((sku)->{
+                Long skuId=sku.getSkuId();
+                skuInfoService.removeById(skuId);
+
+                //删除sku图片
+                List<SkuImagesEntity> skuImage = skuImagesService.query().eq("sku_id", skuId).list();
+                skuImage.forEach((image)->{
+                    skuImagesService.removeById(image.getId());
+                });
+                //删除skuAttrValues
+                List<SkuSaleAttrValueEntity> skuAttrValues = skuSaleAttrValueService.query().eq("sku_id", skuId).list();
+                skuAttrValues.forEach((value)->{
+                    skuSaleAttrValueService.removeById(value.getId());
+                });
+            });
+
+        }
     }
 
 }
