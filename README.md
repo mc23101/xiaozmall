@@ -3173,8 +3173,8 @@ Docker部署Nacos-Server：
    -e JVM_XMX=128m \
    -e MODE=standalone \
    -e PREFER_HOST_MODE=hostname \
-   -v /mydata/nacos/logs:/home/nacos/logs \
-   -v /mydata/nacos/conf/application.properties:/home/nacos/conf/application.properties \
+   -v /mydata/nacos/logs:/home.vue/nacos/logs \
+   -v /mydata/nacos/conf/application.properties:/home.vue/nacos/conf/application.properties \
    -d nacos/nacos-server:2.0.3
    ```
 

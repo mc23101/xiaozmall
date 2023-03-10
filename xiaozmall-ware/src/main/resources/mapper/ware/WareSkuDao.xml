@@ -14,4 +14,48 @@
     </resultMap>
 
 
+
+    <resultMap type="com.zhangsisiyao.xiaozmall.ware.vo.WareSkuVo" id="WareSkuVo">
+        <result property="id" column="id"/>
+        <result property="skuId" column="sku_id"/>
+        <result property="wareId" column="ware_id"/>
+        <result property="stock" column="stock"/>
+        <result property="skuName" column="sku_name"/>
+        <result property="stockLocked" column="stock_locked"/>
+        <result property="name" column="name"/>
+        <result property="address" column="address"/>
+        <result property="areacode" column="areacode"/>
+    </resultMap>
+
+    <select id="queryWareSkuPage" parameterType="int" resultMap="WareSkuVo">
+        SELECT wms_ware_sku.*,wms_ware_info.`address`,wms_ware_info.`areacode`,wms_ware_info.`name`
+        FROM wms_ware_sku
+        INNER JOIN wms_ware_info ON wms_ware_info.`id`=wms_ware_sku.`ware_id`
+        <if test="(wareId !='' and wareId !=null) or (skuId != '' and skuId != null)">
+            WHERE
+                <if test="(wareId !='' and wareId !=null) ">
+                    wms_ware_sku.`ware_id`=#{wareId}
+                </if>
+                <if test="(skuId != '' and skuId != null)">
+                    wms_ware_sku.`sku_id`=#{skuId}
+                </if>
+        </if>
+        LIMIT ${limit*(page-1)},#{limit}
+    </select>
+
+    <select id="queryWareSkuCount" parameterType="int" resultType="int">
+        SELECT count(*)
+        FROM wms_ware_sku
+        <if test="(wareId !='' and wareId !=null) or (skuId != '' and skuId != null)">
+            WHERE
+            <if test="(wareId !='' and wareId !=null) ">
+                wms_ware_sku.`ware_id`=#{wareId}
+            </if>
+            <if test="(skuId != '' and skuId != null)">
+                wms_ware_sku.`sku_id`=#{skuId}
+            </if>
+        </if>
+    </select>
+
+
 </mapper>

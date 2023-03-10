@@ -2,10 +2,12 @@ package com.zhangsisiyao.xiaozmall.product.service.impl;
 
 import com.zhangsisiyao.xiaozmall.product.dao.SkuInfoDao;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuInfoEntity;
+import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SkuInfoService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -51,6 +53,11 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
                 queryWrapper
         );
         return new PageUtils(page);
+    }
+
+    @Override
+    public List<SkuInfoEntity> listWithCatalogBrandSpu(String catalog, String brand, String spu) {
+        return this.query().eq("catalog_id",catalog).eq("brand_id",brand).eq("spu_id",spu).list();
     }
 
 }

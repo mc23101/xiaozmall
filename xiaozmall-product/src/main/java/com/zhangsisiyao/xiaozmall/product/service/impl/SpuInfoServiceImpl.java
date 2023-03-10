@@ -218,4 +218,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         }
     }
 
+    @Override
+    public List<SpuInfoEntity> getWithCatalogAndBrand(String catalog, String brand) {
+        return this.query().eq("catalog_id",catalog).eq("brand_id",brand).list();
+    }
+
 }

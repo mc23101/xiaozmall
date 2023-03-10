@@ -5,6 +5,7 @@ import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.vo.ProductVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,5 +26,7 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
     void updateSpuPublishStatus(Long spuid);
 
     void deleteSpu(Long[] ids);
+
+    List<SpuInfoEntity> getWithCatalogAndBrand(String catalog,String brand);
 }
 

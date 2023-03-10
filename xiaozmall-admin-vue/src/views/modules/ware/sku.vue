@@ -28,13 +28,20 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="id"></el-table-column>
       <el-table-column prop="skuId" header-align="center" align="center" label="商品id"></el-table-column>
       <el-table-column prop="skuName" header-align="center" align="center" label="商品名称"></el-table-column>
       <el-table-column prop="wareId" header-align="center" align="center" label="仓库id"></el-table-column>
-      <el-table-column prop="wareId" header-align="center" align="center" label="仓库名称"></el-table-column>
+      <el-table-column prop="name" header-align="center" align="center" label="仓库名称"></el-table-column>
       <el-table-column prop="stock" header-align="center" align="center" label="库存数"></el-table-column>
-      <el-table-column prop="stockLocked" header-align="center" align="center" label="锁定库存"></el-table-column>
+      <el-table-column header-align="center" align="center" label="锁定库存">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.stockLocked===1"
+            active-color="#13ce66"
+            inactive-color="#ff4949" disabled>
+          </el-switch>
+        </template>
+      </el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>

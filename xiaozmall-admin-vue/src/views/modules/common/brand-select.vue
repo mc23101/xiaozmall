@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-select placeholder="请选择" v-model="brandId" :disabled="this.enable" @click.native="BrandSelectClick" filterable clearable>
+    <el-select placeholder="请选择" v-model="brandId"  :disabled="this.enable" @click.native="BrandSelectClick" filterable clearable>
       <el-option
         v-for="item in brands"
         :key="item.brandId"
@@ -17,12 +17,11 @@ import PubSub from 'pubsub-js'
 export default {
   components: {},
   props: {
-    enable: true,
   },
   data () {
     return {
       catId: 0,
-
+      enable: true,
       brands: [
         {
           label: 'a',
@@ -66,9 +65,12 @@ export default {
     this.subscribe = PubSub.subscribe('catPath', (msg, val) => {
       if (val.length === 0) {
         this.brands = []
+        this.brandId = null
+        this.enable = true
         return
       }
       this.catId = val[val.length - 1]
+      this.enable = false
       this.getCatBrands()
     })
   },

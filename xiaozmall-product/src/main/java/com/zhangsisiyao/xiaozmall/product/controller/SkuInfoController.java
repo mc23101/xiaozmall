@@ -1,6 +1,7 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -40,6 +41,14 @@ public class SkuInfoController {
         PageUtils page = skuInfoService.queryPageLimit(params);
 
         return R.ok().put("page", page);
+    }
+
+    @RequestMapping("/list/{catalog}/{brand}/{spu}")
+    //@RequiresPermissions("product:skuinfo:list")
+    public R listWithCatalogBrandSpu(@PathVariable String brand, @PathVariable String catalog, @PathVariable String spu){
+        List<SkuInfoEntity> entities = skuInfoService.listWithCatalogBrandSpu(catalog, brand, spu);
+
+        return R.ok().put("data", entities);
     }
 
 

@@ -1,11 +1,13 @@
 package com.zhangsisiyao.xiaozmall.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 import com.zhangsisiyao.xiaozmall.ware.entity.WareSkuEntity;
 import com.zhangsisiyao.xiaozmall.ware.service.WareSkuService;
+import com.zhangsisiyao.xiaozmall.ware.vo.WareSkuVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,9 +45,8 @@ public class WareSkuController {
      */
     @RequestMapping("/list")
     //@RequiresPermissions("ware:waresku:list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = wareSkuService.queryPage(params);
-
+    public R list(@RequestParam Map<String,String> params){
+        PageUtils page = wareSkuService.queryWareSkuPage(params);
         return R.ok().put("page", page);
     }
 

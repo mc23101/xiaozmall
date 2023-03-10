@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.ware.service.impl;
 
+import com.zhangsisiyao.xiaozmall.ware.vo.WareSkuVo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,6 +41,17 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public PageUtils queryWareSkuPage(Map<String, String> params) {
+        int limit=Integer.parseInt(params.get("limit"));
+        int page=Integer.parseInt(params.get("page"));
+        String wareId=params.get("wareId");
+        String skuId=params.get("skuId");
+        int totalCount=this.baseMapper.queryWareSkuCount(wareId,skuId);
+        List<WareSkuVo> list = this.baseMapper.queryWareSkuPage(limit,page ,wareId,skuId);
+        return new PageUtils(list,totalCount,limit,page);
     }
 
 }

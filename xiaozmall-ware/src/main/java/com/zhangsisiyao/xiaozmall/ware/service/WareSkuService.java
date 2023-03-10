@@ -3,7 +3,9 @@ package com.zhangsisiyao.xiaozmall.ware.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.ware.entity.WareSkuEntity;
+import com.zhangsisiyao.xiaozmall.ware.vo.WareSkuVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,5 +20,7 @@ public interface WareSkuService extends IService<WareSkuEntity> {
     long getSkuCountById(String skuid);
 
     PageUtils queryPage(Map<String, Object> params);
+
+    PageUtils queryWareSkuPage(Map<String,String> params);
 }
 

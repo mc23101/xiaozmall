@@ -11,17 +11,17 @@
       @keyup.enter.native="dataFormSubmit()"
       label-width="120px"
     >
-      <el-form-item label="分类" prop="skuId">
-        <category-cascader :catalogPath.sync="catalogPath"></category-cascader>
+      <el-form-item label="分类" prop="catId">
+        <category-cascader></category-cascader>
       </el-form-item>
-      <el-form-item label="品牌" prop="skuId">
-        <brand-select :enable="catalogPath.length===0" placehold='请先选择分类'></brand-select>
+      <el-form-item label="品牌" prop="brandId">
+        <brand-select></brand-select>
       </el-form-item>
-      <el-form-item label="spu" prop="skuId">
-        <el-input v-model="dataForm.skuId" placeholder="sku_id"></el-input>
+      <el-form-item label="spu" prop="spuId">
+        <spu-select></spu-select>
       </el-form-item>
       <el-form-item label="sku" prop="skuId">
-        <el-input v-model="dataForm.skuId" placeholder="sku_id"></el-input>
+        <sku-select></sku-select>
       </el-form-item>
       <el-form-item label="仓库" prop="wareId">
         <el-select v-model="dataForm.wareId" placeholder="请选择仓库" clearable>
@@ -29,13 +29,16 @@
         </el-select>
       </el-form-item>
       <el-form-item label="库存数" prop="stock">
-        <el-input v-model="dataForm.stock" placeholder="库存数"></el-input>
-      </el-form-item>
-      <el-form-item label="sku_name" prop="skuName">
-        <el-input v-model="dataForm.skuName" placeholder="sku_name"></el-input>
+        <div>
+          <el-input v-model="dataForm.stock" placeholder="库存数" ></el-input>
+        </div>
       </el-form-item>
       <el-form-item label="锁定库存" prop="stockLocked">
-        <el-input v-model="dataForm.stockLocked" placeholder="锁定库存"></el-input>
+        <el-switch
+          v-model="dataForm.stockLocked"
+          active-color="#13ce66"
+          inactive-color="#ff4949">
+        </el-switch>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -44,34 +47,47 @@
     </span>
   </el-dialog>
 </template>
-
+<style>
+.el-input{
+  width: 300px;
+}
+</style>
 <script>
-import CategoryCascader from "../common/category-cascader";
-import BrandSelect from "../common/brand-select";
+import CategoryCascader from '../common/category-cascader'
+import BrandSelect from '../common/brand-select'
+import SpuSelect from '../common/spu-select'
+import PubSub from 'pubsub-js'
+import SkuSelect from '../common/sku-select'
 export default {
-  components: {BrandSelect, CategoryCascader},
+  components: {SkuSelect, BrandSelect, CategoryCascader, SpuSelect},
   data () {
     return {
       visible: false,
       wareList: [],
-      catalogPath: [],
+      brandSub: null,
+      catSub: null,
+      spuSub: null,
+      skuSub: null,
       dataForm: {
-        id: 0,
+        catId: '',
+        brandId: '',
+        id: '',
+        spuId: '',
         skuId: '',
         wareId: '',
-        stock: 0,
+        stock: '',
         skuName: '',
         stockLocked: 0
       },
       dataRule: {
-        skuId: [{ required: true, message: 'sku_id不能为空', trigger: 'blur' }],
+        catId: [{ required: true, message: '分类不能为空', trigger: 'blur' }],
+        brandId: [{ required: true, message: '品牌不能为空', trigger: 'blur' }],
+        spuId: [{ required: true, message: 'spu不能为空', trigger: 'blur' }],
+        skuId: [{ required: true, message: 'sku不能为空', trigger: 'blur' }],
         wareId: [
           { required: true, message: '仓库id不能为空', trigger: 'blur' }
         ],
-        stock: [{ required: true, message: '库存数不能为空', trigger: 'blur' }],
-        skuName: [
-          { required: true, message: 'sku_name不能为空', trigger: 'blur' }
-        ]
+        stock: [{ required: true, message: '库存数不能为空', trigger: 'blur' }]
       }
     }
   },
@@ -89,7 +105,8 @@ export default {
           key: ''
         })
       }).then(({ data }) => {
-        this.wareList = data.page.list
+        this.wareList = data.page
+        console.log(this.wareList)
       })
     },
     init (id) {
@@ -117,6 +134,7 @@ export default {
     },
     // 表单提交
     dataFormSubmit () {
+      console.log(this.dataForm)
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
           this.$http({
@@ -130,7 +148,7 @@ export default {
               wareId: this.dataForm.wareId,
               stock: this.dataForm.stock,
               skuName: this.dataForm.skuName,
-              stockLocked: this.dataForm.stockLocked
+              stockLocked: this.dataForm.stockLocked ? 0:1
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
@@ -150,6 +168,28 @@ export default {
         }
       })
     }
+  },
+  mounted () {
+    this.brandSub = PubSub.subscribe('brandId', (msg, val) => {
+      this.dataForm.brandId = val
+    })
+    this.catSub = PubSub.subscribe('catPath', (msg, val) => {
+      this.dataForm.catId = val[val.length - 1]
+    })
+    this.spuSub = PubSub.subscribe('spuId', (msg, val) => {
+      this.dataForm.spuId = val
+    })
+    this.skuSub = PubSub.subscribe('skuId', (msg, val) => {
+      this.dataForm.skuId = val.skuId
+      this.dataForm.skuName = val.skuName
+      console.log(this.dataForm)
+    })
+  },
+  beforeDestroy () {
+    PubSub.unsubscribe(this.brandSub)
+    PubSub.unsubscribe(this.catSub)
+    PubSub.unsubscribe(this.spuSub)
+    PubSub.unsubscribe(this.skuSub)
   }
 }
 </script>

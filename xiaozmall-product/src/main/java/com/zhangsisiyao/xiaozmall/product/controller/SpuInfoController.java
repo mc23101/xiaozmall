@@ -1,6 +1,7 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -33,6 +34,15 @@ import javax.validation.Valid;
 public class SpuInfoController {
     @Autowired
     private SpuInfoService spuInfoService;
+
+
+    @RequestMapping("/list/{catalog}/{brand}")
+    //@RequiresPermissions("product:spuinfo:list")
+    public R listWithCatalogAndBrand( @PathVariable String catalog,@PathVariable String brand){
+        List<SpuInfoEntity> list = spuInfoService.getWithCatalogAndBrand(catalog, brand);
+        return R.ok().put("data", list);
+    }
+
 
     /**
      * 列表

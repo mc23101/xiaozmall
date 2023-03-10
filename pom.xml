@@ -19,6 +19,7 @@
 		<module>xiaozmall-common</module>
 		<module>xiaozmall-gateway</module>
 		<module>xiaozmall-thirdpart</module>
+		<module>xiaozmall-system</module>
 	</modules>
 
 </project>
