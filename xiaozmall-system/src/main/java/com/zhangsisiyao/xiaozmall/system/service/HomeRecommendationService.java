@@ -1,8 +1,8 @@
-package com.zhangsisiyao.system.system.service;
+package com.zhangsisiyao.xiaozmall.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
-import com.zhangsisiyao.system.system.entity.HomeRecommendationEntity;
+import com.zhangsisiyao.xiaozmall.system.entity.HomeRecommendationEntity;
 
 import java.util.Map;
 

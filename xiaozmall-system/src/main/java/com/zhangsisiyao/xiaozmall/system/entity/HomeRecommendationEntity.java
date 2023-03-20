@@ -1,4 +1,4 @@
-package com.zhangsisiyao.system.system.entity;
+package com.zhangsisiyao.xiaozmall.system.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -28,6 +28,8 @@ public class HomeRecommendationEntity implements Serializable {
 	 * 展示图片url
 	 */
 	private String imageUrl;
+
+	private String description;
 	/**
 	 * 点击转跳页面url
 	 */

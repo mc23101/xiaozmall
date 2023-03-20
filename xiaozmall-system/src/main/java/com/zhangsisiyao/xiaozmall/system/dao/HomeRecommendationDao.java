@@ -1,7 +1,7 @@
-package com.zhangsisiyao.system.system.dao;
+package com.zhangsisiyao.xiaozmall.system.dao;
 
-import com.zhangsisiyao.system.system.entity.HomeRecommendationEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhangsisiyao.xiaozmall.system.entity.HomeRecommendationEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

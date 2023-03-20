@@ -1,5 +1,8 @@
-package com.zhangsisiyao.system.system.service.impl;
+package com.zhangsisiyao.xiaozmall.system.service.impl;
 
+import com.zhangsisiyao.xiaozmall.system.dao.HomeRecommendationDao;
+import com.zhangsisiyao.xiaozmall.system.entity.HomeRecommendationEntity;
+import com.zhangsisiyao.xiaozmall.system.service.HomeRecommendationService;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,9 +11,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
 
-import com.zhangsisiyao.system.system.dao.HomeRecommendationDao;
-import com.zhangsisiyao.system.system.entity.HomeRecommendationEntity;
-import com.zhangsisiyao.system.system.service.HomeRecommendationService;
 
 
 @Service("homeRecommendationService")

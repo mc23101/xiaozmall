@@ -3441,7 +3441,7 @@ GER /_cat/indices
   DELETE /{name}
   ```
 
-### 文档创建、更新、删除、查询
+### 文档创建、更新、删除
 
 - 创建文档
 
@@ -3460,9 +3460,63 @@ GER /_cat/indices
   }
   ```
 
-- 查询文档
 
-  主键查询
+
+
+- 修改文档
+
+  全量修改
+
+  ```shell
+  # 全量(覆盖)修改文档
+  # 参数:
+  # name: 索引名称
+  # id: 文档id
+  PUT /{name}/_doc/{id}
+  
+  # 请求体只需要提供修改的部分字段
+  {
+  	"price":2001
+  }
+  ```
+
+  局部修改
+
+  ```shell
+  # 局部修改文档
+  # 参数:
+  # name: 索引名称
+  # id: 文档id
+  POST /{name}/_update/{id}
+  
+  # 请求体只需要提供修改的部分字段
+  # 字段必须包含在"doc"内部
+  {
+  	"doc":{
+  		"price":2000
+  	}
+  }
+  ```
+
+- 删除文档
+
+  ```shell
+  # 删除文档
+  # 参数:
+  # name: 索引名称
+  # id: 文档id
+  DELETE /{name}/_doc/{id}
+  ```
+  
+### 文档查询
+
+#### 查询的基本标签
+
+- `match`：根据字段查询索引内所有文档信息
+- `match_all`：查询索引内所有文档信息
+- `match_phrase`：关闭分词查询，查询索引内所有文档信息
+
+#### 主键查询
 
   ```shell
   # 查询主键为id的文档
@@ -3472,7 +3526,7 @@ GER /_cat/indices
   GET /{name}/_doc/{id}
   ```
 
-  全查询
+#### 全文检索
 
   ```shell
   # 查询索引内的所有文档
@@ -3481,9 +3535,433 @@ GER /_cat/indices
   GET /{name}/_search
   ```
 
-  
+#### 单条件查询
 
-- 删除文档
+  ```json
+  /* 条件查询
+  * 参数:
+  * name: 索引名称
+  */
+  GET /{name}/_search
+  {
+      "query":{
+          "match":{
+          	//查询条件
+          }
+          /*查询全部
+          "match_all:{
+          
+          }"*/
+      }
+  }
+  ```
+
+#### 分页查询
+
+  ```json
+  /* 分页查询
+  * 参数:
+  * name: 索引名称
+  */
+  GET /{name}/_search
+  {
+      "query":{
+          "match_all":{
+          }
+      },
+      "from": 0,  //起始下标
+      "size": 2   //每页大小
+  }
+  ```
+
+#### 排序查询
+
+  ```json
+  /* 排序查询
+  * 参数:
+  * name: 索引名称
+  */
+  GET /{name}/_search
+  {
+      "query":{
+          "match_all":{
+          }
+      },
+      "from": 0,  //起始下标
+      "size": 2,   //每页大小
+      "sort":{
+      	"price":{
+      		"order":"desc"
+  		}
+  	}
+  }
+  ```
+
+#### 多条件查询
+
+如果需要多个查询条件拼接在一起，则需要用`bool`
+
+bool包含以下几个操作符：
+
+- `must`：多个查询完全匹配，相当于 `and`
+- `should`：至少对应一个匹配条件，相当于 `or`
+- `must_not`：多个查询的相反匹配，相当于 `not`
+
+  ```json
+  /* 多条件查询
+  * 参数:
+  * name: 索引名称
+  */
+  GET /{name}/_search
+  {
+      "query":{
+         "bool":{ //合并所有查询条件
+              "should":[
+                  {
+                      "match_phrase":{
+                          "title":"小米"
+                      }
+                  },
+                  {
+                      "match_phrase":{
+                          "title":"锤子"
+                      }
+                  }
+              ],
+              "must_not":[
+                  {
+                      "match":{
+                          "price": 6000
+                      }
+                  }
+              ]    
+         }
+      }
+  }
+  ```
+
+#### 聚合查询
+
+聚合类型
+
+- `terms`统计字段值相同的个数
+- `avg` 取字段的平均值
+
+```json
+/* 聚合查询(统计个数)
+* 参数:
+* name: 索引名称
+*/
+GET /{name}/_search
+{
+    "aggs":{ //聚合查询
+        "price_count":{ //自定义名称
+            "terms":{ //聚合类型
+                "field":"price",//参与聚合的字段
+                "size":10, //聚合的结果数
+                "order":{ //对聚合的结果，进行升序排序
+                    "_count":"asc"
+                }
+            },
+            //可对已经分组后的结果，再进行求平均值等计算操作
+            "aggs":{
+                "score_status":{
+                    "stats":{
+                        "field":"price"
+                    }
+                }
+            }
+        }
+    },
+    "size":0
+}
+```
+
+### Java api操作
+
+#### 导入依赖
+
+```xml
+<dependency>
+	<groupId>co.elastic.clients</groupId>
+	<artifactId>elasticsearch-java</artifactId>
+    <version>8.6.2</version>
+</dependency>
+<dependency>
+	<groupId>com.fasterxml.jackson.core</groupId>
+	<artifactId>jackson-databind</artifactId>
+	<version>2.12.3</version>
+</dependency>
+```
+
+#### 连接ElasticSearch
+
+```java
+RestClient restClient=RestClient.builder(new HttpHost("8.130.71.9",9200,"http")).build();
+ElasticsearchTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
+ElasticsearchClient client=new ElasticsearchClient(transport);
+/*
+* 对ElasticSearch进行操作
+*/
+//连接关闭，遵循先开后关原则
+transport.close();
+restClient.close();
+```
+
+#### 索引创建、查询、删除
+
+- 索引创建
+
+  ```java
+  //创建索引
+  CreateIndexResponse createIndexResponse = elasticsearchClient.indices().create(c -> c.index("user"));
+  System.out.println(createIndexResponse.acknowledged());
+  ```
+
+
+- 索引查询
+
+  ```java
+  //索引查询
+  GetIndexResponse user = elasticsearchClient.indices().get(c -> c.index("test"));
+  System.out.println(user.toString());
+  ```
+  
+- 索引删除
+
+  ```java
+  //删除索引
+  DeleteIndexResponse delete = client.indices().delete(c -> c.index("test"));
+  System.out.println(delete.toString());
+  ```
+
+#### 文档创建、更新、删除、批量操作
+
+- 文档创建
+
+  ```java
+  // 创建一个需要保存至ES的对象
+  User test = new User();
+  test.setName("添加测试");
+  test.setSex("男");
+  test.setAge(24);
+   
+  // 构建一个创建Doc的请求
+  CreateResponse createResponse = client.create(e->e.index("test").id("1003").document(test));
+   
+  // 打印请求结果
+  System.out.println(createResponse.result());
+  ```
+
+- 文档更新
+
+  ```java
+  // 构建需要修改的内容，这里使用了Map
+  Map<String, Object> map = new HashMap<>();
+  map.put("age", 35);
+   
+  // 构建修改文档的请求
+  UpdateResponse<Test> response = client.update(e -> e.index("test").id("1003").doc(map), User.class);
+   
+  // 打印请求结果
+  System.out.println(response.result());
+  ```
+
+- 文档删除
+
+  ```java
+  // 构建删除文档请求
+  DeleteResponse response = client.delete(e -> e.index("test").id("1001"));
+   
+  // 打印请求结果
+  System.out.println(response.result());
+  ```
+
+- 文档批量操作
+
+  ```java
+  //批量文档创建
+  List<BulkOperation> bulkOperations=new ArrayList<>();
+  bulkOperations.add(new BulkOperation.Builder().create(d -> d.document(new User()).id("3001").index("test")).build());
+  bulkOperations.add(new BulkOperation.Builder().create(d -> d.document(new User()).id("3002").index("test")).build());
+  bulkOperations.add(new BulkOperation.Builder().create(d -> d.document(new User()).id("3003").index("test")).build());
+  bulkOperations.add(new BulkOperation.Builder().create(d -> d.document(new User()).id("3004").index("test")).build());
+  client.bulk(s->s.operations(bulkOperations));
+  ```
+
+#### 文档查询
+
+##### 主键查询
+
+  ```java
+  // 构建查询请求
+  GetResponse<Test> response = client.get(e -> e.index("test").id("1003"), User.class);
+  // 打印查询结果
+  System.out.println(response.source().toString());
+  ```
+
+##### 全文检索
+
+  ```java
+  SearchResponse<Object> search = client.search(s -> s, Object.class);
+  search.hits().hits().forEach((hit)-> System.out.println(hit.toString()));
+  ```
+
+##### 单条件查询
+
+  ```java
+  SearchResponse<Object> search = client.search(s ->
+  	s.query(q->q.match(m->m.field("title").query("小米"))),
+  	Object.class);
+  search.hits().hits().forEach((hit)-> System.out.println(hit.toString()));
+  ```
+
+##### 分页查询
+
+  Elasticsearch Java API Client客户端中的分页查询主要使用SearchResponse的from和size方法传入参数，其中from代表数据开始的下表位置，size代表每次查询需要获取到的文档数量。
+
+  ```java
+  SearchResponse<Object> search = client.search(s ->
+  	s.query(q->q.matchAll(m->m))
+  		.from(0)
+  		.size(2),
+  	Object.class);
+  search.hits().hits().forEach((hit)-> System.out.println(hit.toString()));
+  ```
+
+##### 排序查询
+
+  Elasticsearch Java API Client客户端中的查询排序主要使用sort方法传入排序参数，我这里使用了lambda形式传入参数。与RestAPI一致，需要传入field名称以及排序方式，如ASC、DESC。
+
+  ```java
+  SearchResponse<Object> search = client.search(s ->
+  	s.query(q->q.matchAll(
+  		m->m
+  	))
+      .sort(sort->sort.field(
+  		f->f.field("price").order(SortOrder.Asc)
+  	)),
+      Object.class);
+  search.hits().hits().forEach((hit)-> System.out.println(hit.toString()));
+  ```
+
+##### 过滤字段
+
+  ```java
+        SearchResponse<Object> search = client.search(s ->
+                  s.query(q->q.matchAll(
+                              m->m
+                          )).source(
+                              source->source.filter(
+                                      filter->filter.includes("title"))
+                          )
+                  ,
+                  Object.class);
+          search.hits().hits().forEach((hit)-> System.out.println(hit.toString()));
+  ```
+
+##### 多条件查询
+
+  ```java
+          SearchResponse<Object> search = client.search(s ->
+                  s.index("test").query(q->q.bool(
+                              b->b.must(
+                                      must->must.match(
+                                              m->m.field("title").query("小米")
+                                      )
+                              ).must(
+                                      must->must.match(
+                                              m->m.field("price").query(6000)
+                                      )
+                              )
+                          )
+                  ),
+                  Object.class);
+          search.hits().hits().forEach((hit)-> System.out.println(hit.toString()));
+  ```
+
+##### 范围查询
+
+  1. `ge`：大于
+  2. `gte`：大于等于
+  3. `lt`：小于
+  4. `lte`：小于等于
+
+  ```java
+  // 范围查询
+  SearchResponse<Object> response7 = client.search(s -> s
+                  .index("test")
+                  .query(q -> q
+                          .range(r -> r
+                                  .field("age")
+                                  .gte(JsonData.of(30))
+                                  .lt(JsonData.of(40))
+                          )
+                  )
+          , Object.class);
+  System.out.println(response7.took());
+  System.out.println(response7.hits().total().value());
+  response7.hits().hits().forEach(e -> System.out.println(e.source().toString()));
+  ```
+
+##### 模糊查询
+
+  ```java
+  // 模糊查询
+  SearchResponse<Test> response8 = client.search(s -> s
+                  .index("newapi")
+                  .query(q -> q
+                          .fuzzy(f -> f
+                                  .field("name")
+                                  .value("wangwu")
+                                  .fuzziness("1"))
+                  )
+          , Test.class);
+  System.out.println(response8.took());
+  System.out.println(response8.hits().total().value());
+  response8.hits().hits().forEach(e -> System.out.println(e.source().toString()));
+  ```
+
+##### 高亮查询
+
+Elasticsearch Java API Client客户端中的高亮查询，主要用于给查询出的关键词添加一个标识符，便于前端展示。使用highlight字段，其中fields的key代表需要标记的字段名称，preTags代表需要添加标记的前缀，postTags代表需要添加标记的后缀。
+
+```java
+// 高亮查询
+SearchResponse<Object> response9 = client.search(s -> s
+                .index("test")
+                .query(q -> q
+                        .term(t -> t
+                                .field("name")
+                                .value("wangwu")
+                        )
+                )
+                .highlight(h -> h
+                        .fields("name", f -> f
+                                .preTags("<font color='red'>")
+                                .postTags("</font>")
+                        )
+                )
+        , Object.class)
+```
+
+##### 聚合查询
+
+Elasticsearch Java API Client客户端中的聚合查询，主要用于数据的统计，这里演示一下获取最大值。首先使用的是aggregations方法，aggregations方法的key可以自行起名，max代表最大值，可以参照api获取更多的查询方式，这里只演示下max方法，其他方法与其类似。field代表需要获取最大值的字段名称。
+
+```java
+//聚合查询
+SearchResponse<Object> response10 = client.search(s -> s
+                .index("test")
+                .aggregations("maxAge", a -> a
+                        .max(m -> m
+                                .field("age")
+                        )
+                )
+        , Object.class);
+```
+
+## ES环境
 
 # 数据检验
 
