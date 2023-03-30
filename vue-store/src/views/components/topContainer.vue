@@ -53,11 +53,9 @@ export default {
       this.register = val;
     },
     searchClick() {
-      if (this.search != "") {
-        // 跳转到全部商品页面,并传递搜索条件
-        this.$router.push({ path: "/goods", query: { search: this.search } });
-        this.search = "";
-      }
+      // 跳转到全部商品页面,并传递搜索条件
+      this.$router.push({ path: "/goods", query: { search: this.search } });
+      this.search = "";
     }
   }
 }

@@ -1,8 +1,17 @@
 package com.zhangsisiyao.xiaozmall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhangsisiyao.common.utils.PageUtils;
+import com.zhangsisiyao.common.utils.Query;
 import com.zhangsisiyao.xiaozmall.product.dao.CategoryDao;
 import com.zhangsisiyao.xiaozmall.product.entity.CategoryEntity;
 import com.zhangsisiyao.xiaozmall.product.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -11,15 +20,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zhangsisiyao.common.utils.PageUtils;
-import com.zhangsisiyao.common.utils.Query;
-
 
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
+
+    @Autowired
+    StringRedisTemplate redisTemplate;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -32,9 +38,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     @Override
+    @Cacheable(cacheNames = {"category"},sync = true,key="'category'")
     public List<CategoryEntity> listWithTree() {
+        System.out.println("获取分类");
         List<CategoryEntity> allEntities = baseMapper.selectList(null);
-
         return allEntities.stream()
                 .filter((menu) -> menu.getCatLevel() == 1)
                 .peek((menu) -> {
@@ -43,6 +50,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 })
                 .sorted(Comparator.comparingInt(CategoryEntity::getSort))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @CacheEvict(cacheNames = {"category"},key = "'category'")
+    public Map<Long, CategoryEntity> listWithMap() {
+        return null;
     }
 
     public List<CategoryEntity> getChildren(CategoryEntity root, List<CategoryEntity> all) {

@@ -1,0 +1,19 @@
+.search{
+    width: 1225px;
+    display:flex;
+    display:-webkit-flex;/*Safari*/
+    justify-content:space-between;
+    margin: 0 auto;
+}
+.so{
+    width: 800px;
+    margin: auto auto;
+}
+
+.breadcrumb{
+    width: 1225px;
+    height: 20px;
+    margin: auto;
+    padding-top: 20px;
+    padding-left: 25px;
+}

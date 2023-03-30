@@ -20,6 +20,7 @@
 		<module>xiaozmall-gateway</module>
 		<module>xiaozmall-thirdpart</module>
 		<module>xiaozmall-system</module>
-	</modules>
+        <module>xiaozmall-search</module>
+    </modules>
 
 </project>

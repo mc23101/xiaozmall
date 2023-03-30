@@ -39,6 +39,12 @@ public class CategoryController {
         return R.ok().put("data",entities);
     }
 
+    @RequestMapping("/list/map")
+    public R  listWithMap(){
+        Map<Long, CategoryEntity> entityMap = categoryService.listWithMap();
+        return R.ok().put("data",entityMap);
+    }
+
     /**
      * 列表
      */

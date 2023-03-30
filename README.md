@@ -99,32 +99,6 @@ docker run -p 3306:3306 --name mysql \
 docker exec -it mysql mysql -uroot -proot
 ```
 
-## 使用Docker安装Redis
-
-### 安装redis
-
-```shell
-sudo docker pull redis
-```
-
-### 启动redis
-
-```Linux
-mkdir -p /mydata/redis/conf
-
-touch /mydata/redis/conf/redis.conf
-
-docker run -p 6379:6379 --name redis -v /mydata/redis/data:/data \
--v /mydata/redis/conf/redis.conf:/etc/redis/redis.conf \
--d redis redis-server /etc/redis/redis.conf
-```
-
-### 连接redis
-
-```shell
-docker exec -it redis redis-cli
-```
-
 ## 配置git
 
 ## 安装Node.js
@@ -3383,7 +3357,7 @@ Docker部署Nacos-Server：
 ## 使用docker部署ElasticSearch
 
 ```shell
-docker pull elasticsearch:7.17.9
+docker pull elasticsearch:7.6.2
 
 mkdir -p /mydata/elasticsearch/config
 mkdir -p /mydata/elasticsearch/data
@@ -3398,10 +3372,10 @@ docker run --name elasticsearch -p 9200:9200 -p 9300:9300 \
 -v /mydata/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml \
 -v /mydata/elasticsearch/data:/usr/share/elasticsearch/data \
 -v /mydata/elasticsearch/plugins:/usr/share/elasticsearch/plugins \
--d elasticsearch:7.17.9
+-d elasticsearch:7.6.2
 ```
 
-## 基本命令
+## 基本操作
 
 ### _cat命令
 
@@ -3415,8 +3389,6 @@ GET /_cat/nodes
 #查询ElasticSearch的所有索引
 GER /_cat/indices
 ```
-
-## ES入门
 
 ###   索引创建、查询、删除
 
@@ -3677,9 +3649,11 @@ GET /{name}/_search
 }
 ```
 
-### Java api操作
 
-#### 导入依赖
+
+## elasticsearch-java客户端操作
+
+### 导入依赖
 
 ```xml
 <dependency>
@@ -3694,7 +3668,7 @@ GET /{name}/_search
 </dependency>
 ```
 
-#### 连接ElasticSearch
+### 连接ElasticSearch
 
 ```java
 RestClient restClient=RestClient.builder(new HttpHost("8.130.71.9",9200,"http")).build();
@@ -3708,7 +3682,7 @@ transport.close();
 restClient.close();
 ```
 
-#### 索引创建、查询、删除
+### 索引创建、查询、删除
 
 - 索引创建
 
@@ -3735,7 +3709,7 @@ restClient.close();
   System.out.println(delete.toString());
   ```
 
-#### 文档创建、更新、删除、批量操作
+### 文档创建、更新、删除、批量操作
 
 - 文档创建
 
@@ -3789,9 +3763,9 @@ restClient.close();
   client.bulk(s->s.operations(bulkOperations));
   ```
 
-#### 文档查询
+### 文档查询
 
-##### 主键查询
+#### 主键查询
 
   ```java
   // 构建查询请求
@@ -3800,14 +3774,14 @@ restClient.close();
   System.out.println(response.source().toString());
   ```
 
-##### 全文检索
+#### 全文检索
 
   ```java
   SearchResponse<Object> search = client.search(s -> s, Object.class);
   search.hits().hits().forEach((hit)-> System.out.println(hit.toString()));
   ```
 
-##### 单条件查询
+#### 单条件查询
 
   ```java
   SearchResponse<Object> search = client.search(s ->
@@ -3816,7 +3790,7 @@ restClient.close();
   search.hits().hits().forEach((hit)-> System.out.println(hit.toString()));
   ```
 
-##### 分页查询
+#### 分页查询
 
   Elasticsearch Java API Client客户端中的分页查询主要使用SearchResponse的from和size方法传入参数，其中from代表数据开始的下表位置，size代表每次查询需要获取到的文档数量。
 
@@ -3829,7 +3803,7 @@ restClient.close();
   search.hits().hits().forEach((hit)-> System.out.println(hit.toString()));
   ```
 
-##### 排序查询
+#### 排序查询
 
   Elasticsearch Java API Client客户端中的查询排序主要使用sort方法传入排序参数，我这里使用了lambda形式传入参数。与RestAPI一致，需要传入field名称以及排序方式，如ASC、DESC。
 
@@ -3845,7 +3819,7 @@ restClient.close();
   search.hits().hits().forEach((hit)-> System.out.println(hit.toString()));
   ```
 
-##### 过滤字段
+#### 过滤字段
 
   ```java
         SearchResponse<Object> search = client.search(s ->
@@ -3860,7 +3834,7 @@ restClient.close();
           search.hits().hits().forEach((hit)-> System.out.println(hit.toString()));
   ```
 
-##### 多条件查询
+#### 多条件查询
 
   ```java
           SearchResponse<Object> search = client.search(s ->
@@ -3880,7 +3854,7 @@ restClient.close();
           search.hits().hits().forEach((hit)-> System.out.println(hit.toString()));
   ```
 
-##### 范围查询
+#### 范围查询
 
   1. `ge`：大于
   2. `gte`：大于等于
@@ -3904,7 +3878,7 @@ restClient.close();
   response7.hits().hits().forEach(e -> System.out.println(e.source().toString()));
   ```
 
-##### 模糊查询
+#### 模糊查询
 
   ```java
   // 模糊查询
@@ -3922,7 +3896,7 @@ restClient.close();
   response8.hits().hits().forEach(e -> System.out.println(e.source().toString()));
   ```
 
-##### 高亮查询
+#### 高亮查询
 
 Elasticsearch Java API Client客户端中的高亮查询，主要用于给查询出的关键词添加一个标识符，便于前端展示。使用highlight字段，其中fields的key代表需要标记的字段名称，preTags代表需要添加标记的前缀，postTags代表需要添加标记的后缀。
 
@@ -3945,7 +3919,7 @@ SearchResponse<Object> response9 = client.search(s -> s
         , Object.class)
 ```
 
-##### 聚合查询
+#### 聚合查询
 
 Elasticsearch Java API Client客户端中的聚合查询，主要用于数据的统计，这里演示一下获取最大值。首先使用的是aggregations方法，aggregations方法的key可以自行起名，max代表最大值，可以参照api获取更多的查询方式，这里只演示下max方法，其他方法与其类似。field代表需要获取最大值的字段名称。
 
@@ -3962,6 +3936,688 @@ SearchResponse<Object> response10 = client.search(s -> s
 ```
 
 ## ES环境
+
+# Redis用法介绍
+
+## 使用docker部署单节点Redis
+### 安装redis
+
+```shell
+sudo docker pull redis
+```
+
+### 启动redis
+
+```Linux
+mkdir -p /mydata/redis/conf
+
+touch /mydata/redis/conf/redis.conf
+
+docker run -p 6379:6379 --name redis -v /mydata/redis/data:/data \
+-v /mydata/redis/conf/redis.conf:/etc/redis/redis.conf \
+-d redis redis-server /etc/redis/redis.conf
+```
+
+### 连接redis
+
+```shell
+docker exec -it redis redis-cli
+```
+## 使用dokcer部署Redis集群
+
+## Redis可视化操作客户端
+
+
+
+## Redis的Java客户端
+
+## SpringData集成Redis
+
+### 更换SpringData的Redis客户端
+
+```xml
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-data-redis</artifactId>
+	<exclusions>
+		<exclusion>
+		<groupId>io.lettuce</groupId>
+		<artifactId>lettuce-core</artifactId>
+		</exclusion>
+	</exclusions>
+</dependency>
+<dependency>
+	<groupId>redis.clients</groupId>
+	<artifactId>jedis</artifactId>
+	<version>3.3.0</version>
+</dependency>
+```
+
+### 基本操作
+
+# Redisson用法介绍
+
+## 分布式锁和同步器
+
+### lock锁
+
+- 同步lock锁
+
+  ```java
+  RLock lock = redisson.getLock("myLock");
+  
+  // traditional lock method
+  lock.lock();
+  
+  // or acquire lock and automatically unlock it after 10 seconds
+  lock.lock(10, TimeUnit.SECONDS);
+  
+  // or wait for lock aquisition up to 100 seconds 
+  // and automatically unlock it after 10 seconds
+  boolean res = lock.tryLock(100, 10, TimeUnit.SECONDS);
+  
+  try {
+  
+  } finally {
+  	lock.unlock();
+  }
+  ```
+
+- 异步lock锁
+
+  ```java
+  RLock lock = redisson.getLock("myLock");
+  
+  RFuture<Void> lockFuture = lock.lockAsync();
+  
+  // or acquire lock and automatically unlock it after 10 seconds
+  RFuture<Void> lockFuture = lock.lockAsync(10, TimeUnit.SECONDS);
+  
+  // or wait for lock aquisition up to 100 seconds 
+  // and automatically unlock it after 10 seconds
+  RFuture<Boolean> lockFuture = lock.tryLockAsync(100, 10, TimeUnit.SECONDS);
+  
+  lockFuture.whenComplete((res, exception) -> {
+  
+      // ...
+  
+      lock.unlockAsync();
+  });
+  ```
+
+  
+
+### 公平锁
+
+### 多重锁
+
+
+
+
+
+# SpringCache用法介绍
+
+## 配置SpringCache参数
+
+```properties
+# 缓存类型
+spring.cache.type=
+
+# 缓存名称
+spring.cache.cache-names=
+```
+
+## 启用缓存
+
+```java
+@SpringBootApplication
+@EnableCaching //启用缓存功能
+public class TestApplication {
+	public static void main(String[] args) {
+		SpringApplication.run(TestApplication.class, args);
+	}
+}
+```
+
+## 缓存注解
+
+#### @Cacheable注解
+
+- 功能：将方法的结果保存到缓存
+
+- 参数：
+
+  `value`和`cacheNames`：保存数据的缓存分区，可设置多个值，将数据保存到多个分区。
+
+  `key`：用于生成缓存key，默认为SpEl表达式，如要使用字符串，需要在加上单引号如`key="'coustom'"`。
+
+  `keyGenerator`：使用自定义的key生成器，与`key`参数互斥。
+
+#### @CacheEvict注解
+
+- 功能：将方法的结果从缓存中删除
+
+#### @CachePut注解
+
+- 功能：不影响方法更新缓存
+
+#### @Caching注解
+
+- 功能：组合以上多个缓存操作
+
+#### @CacheConfig注解
+
+- 功能：在类级别下，共享缓存配置
+
+## 自定义缓存配置
+
+```java
+    @Bean
+    public RedisCacheConfiguration redisCacheConfiguration(CacheProperties cacheProperties) {
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        CacheProperties.Redis redisProperties = cacheProperties.getRedis();
+        RedisCacheConfiguration config = RedisCacheConfiguration
+                .defaultCacheConfig();
+        config = config.serializeValuesWith(RedisSerializationContext.SerializationPair
+                .fromSerializer(serializer));
+        if (redisProperties.getTimeToLive() != null) {
+            config = config.entryTtl(redisProperties.getTimeToLive());
+        }
+        if (redisProperties.getKeyPrefix() != null) {
+            config = config.prefixKeysWith(redisProperties.getKeyPrefix());
+        }
+        if (!redisProperties.isCacheNullValues()) {
+            config = config.disableCachingNullValues();
+        }
+        if (!redisProperties.isUseKeyPrefix()) {
+            config = config.disableKeyPrefix();
+        }
+        return config;
+    }
+```
+
+
+
+## 常见问题
+
+- Redis缓存击穿
+
+  解决方法：@Cacheable(sync=true)，使用本地锁，如需使用分布式锁，需要使用redis客户端和Redisson来实现
+
+- Redis缓存雪崩
+
+  解决方法：添加缓存过期时间，`spring.cache.redis.time-to-live=3600000`，无法设置随机时间，不能有效解决雪崩
+
+- Redis缓存穿透
+
+  解决方法：添加配置`spring.cache.redis.cache-null-values=true`
+
+# RabbitMQ用法介绍
+
+## 使用docker部署单机模式RabbitMQ
+
+### 拉取RabbitMQ镜像
+
+```shell
+# 需要拉取带management的rabbitmq，才有管理界面
+docker pull rabbitmq:management
+```
+
+### 运行RabbitMQ
+
+```
+docker run -d --name rabbitmq --publish 5672:5672 --publish 15672:15672 rabbitmq:management
+```
+
+## RabbitMQ客户端使用介绍
+
+### 连接RabbitMQ
+
+```java
+//创建连接工厂
+ConnectionFactory factory=new ConnectionFactory();
+factory.setHost("zhangsiyao.top");
+factory.setPort(5672);
+factory.setUsername("guest");
+factory.setPassword("guest");
+//创建新连接
+Connection connection = factory.newConnection();
+//创建连接通道        
+Channel channel = connection.createChannel();
+/*
+* 生成一个队列
+* 参数:
+* 2.队列的消息是否持久化，默认储存在内存中
+* 3.该队列是否只供一个消费者消费，true可以多个消费者消费，false只能一个消费者消费
+* 4.是否自动删除
+* 5.其他参数
+* */
+channel.queueDeclare("hello",false,false,false,null);
+```
+
+### 发送消息给RabbitMQ
+
+```java
+/*
+* 发送一个消息
+* 参数:
+* 1.发送到哪个交换机
+* 2.路由的key是哪个，本次是队列的名称
+* 3.其它参数信息
+* 4.发送消息的消息体
+* */
+channel.basicPublish("","hello",null,"test".getBytes(StandardCharsets.UTF_8));
+```
+
+### 从RabbitMQ接收消息
+
+```java
+//接收消息的回调方法
+DeliverCallback callback = (consumerTag, message) -> {
+	System.out.println(new String(message.getBody()));
+};
+//消息取消的回调方法
+CancelCallback cancelCallback = (consumerTag) -> {
+	System.out.println("取消消息");
+};
+channel.basicConsume("hello",true,callback,cancelCallback);
+```
+
+### 消息应答
+
+当我们的消费者，正在处理一个长任务时，我们之前的代码，会接受到消息后，立即删除RabbitMQ的消息，无法确保这个任务是否成功执行完成。因此，我们需要消息应答机制来解决这个问题，当我们成功处理完问题时，通知RabbitMQ删除消息，如果不成功，则不删除消息。
+
+```java
+channel.basicQos(1); // accept only one unack-ed message at a time (see below)
+
+DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+  String message = new String(delivery.getBody(), "UTF-8");
+
+  System.out.println(" [x] Received '" + message + "'");
+  try {
+    doWork(message);
+  } finally {
+    System.out.println(" [x] Done");
+      
+    //消息应答，如果任务执行完毕，则发送falsle给RabbitMQ
+    channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+  }
+};
+boolean autoAck = false;
+//需要关闭自动应答
+channel.basicConsume(TASK_QUEUE_NAME, autoAck, deliverCallback, consumerTag -> { });
+```
+
+### 消息持久化
+
+#### 开启队列持久化
+
+```java
+//确保队列没有被声明和定义，否则无法覆写，定义持久化
+boolean durable = true;
+channel.queueDeclare("task_queue", durable, false, false, null);
+```
+
+#### 生产者设置消息持久化
+
+```java
+channel.basicPublish("", "task_queue",
+            MessageProperties.PERSISTENT_TEXT_PLAIN,
+            message.getBytes());
+```
+
+注意：PERSISTENT_TEXT_PLAIN参数**无法完全保证数据不会丢失**，因为接收数据到保存到磁盘之间有个窗口期，有可能在这个窗口期，RabbitMQ意外崩溃，导致数据没有持久化储存。
+
+### 不公平分发
+
+当一个消费者任务过重时，另一个消费者几乎没有任务，公平分发就会出现问题，任务过重的消费者，不应该再接收新的消息，应处理完现阶段的任务，再接收新的消息，此时应限定接收消息的数量，实现不公平分发机制。
+
+```java
+int prefetchCount = 1;
+channel.basicQos(prefetchCount);
+```
+
+### 交换机模式
+
+#### 扇形交换机(fanout)
+
+**不处理路由键**。你只需要简单的将队列绑定到交换机上。一个发送到交换机的消息都会被转发到与该交换机绑定的所有队列上。很像子网广播，每台子网内的主机都获得了一份复制的消息。Fanout交换机转发消息是最快的。
+
+#### 直接交换机(direct)
+
+**处理路由键**。需要将一个队列绑定到交换机上，要求该消息与一个特定的路由键完全匹配。这是一个完整的匹配。如果一个队列绑定到该交换机上要求路由键 “abc”，则只有被标记为“abc”的消息才被转发。
+
+#### 主题交换机(topic)
+
+**处理路由键**。需要将一个队列绑定到交换机上，必须满足路由健与消息正则匹配，比如`*.orange.*`、`#.pink.#`，满足这些匹配规则，则可以接收到消息。
+
+#### 头交换机(headers)
+
+### 消息确认机制
+
+```java
+ //消息确认成功 回调函数
+ConfirmCallback ackCallback = (deliverTag,multiple)->{
+	System.out.println("确认的消息："+deliverTag);
+};
+//消息确认失败 回调函数
+ConfirmCallback nckCallback = (deliverTag,multiple)->{
+	System.out.println("未确认的消息："+deliverTag);
+};
+//准备消息监听器  监听那些消息成功 那些失败
+channel.addConfirmListener(ackCallback,nckCallback);
+```
+
+
+
+### 工作模式
+
+#### 工作队列模式(轮询模式)
+
+默认情况下，RabbitMQ会轮询发送消息给所有消费者，RabbitMQ的默认模式就是轮询模式。
+
+#### 发布/订阅模式(广播模式)
+
+发布/订阅模式是指：生产者发送消息到RabbitMQ时，所有消费者同时处理这个消息。
+
+生产者代码：
+
+```java
+//声明交换机名称、类型
+channel.exchangeDeclare("logs","fanout");
+int index=0;
+while (true){
+	Thread.sleep(1000);
+	//发布消息到交换机
+	channel.basicPublish("logs","",null,(index+"test").getBytes(StandardCharsets.UTF_8));
+	index++;
+}
+```
+
+消费者代码：
+
+```java
+//声明交换机名称、类型
+channel.exchangeDeclare("logs", "fanout");
+String queueName = channel.queueDeclare().getQueue();
+//将队列与交换机绑定
+channel.queueBind(queueName, "logs", "");
+
+DeliverCallback callback = (consumerTag, message) -> {
+	System.out.println(new String(message.getBody()));
+};
+
+channel.basicConsume(queueName,true,callback,(consumerTag)->{});
+   
+```
+
+#### 路由模式(选择性接收消息)
+
+在日志系统中，我们需要把error信息存储到磁盘下，而info和warning不存储到磁盘下，则可以使用这个模式。
+
+生产者代码：
+
+```java
+channel.exchangeDeclare("logs", "direct");
+//severity：路由key
+//可选值为：error,info,warning
+//代表日志系统中的不同信息
+channel.basicPublish("logs", severity, null, message.getBytes("UTF-8"));
+```
+
+消费者代码：
+
+```java
+channel.exchangeDeclare("logs", "direct");
+String queueName = channel.queueDeclare().getQueue();
+//处理error信息业务，如果全要处理则全部绑定
+channel.queueBind(queueName, EXCHANGE_NAME, "error");
+//channel.queueBind(queueName, EXCHANGE_NAME, "info");
+//channel.queueBind(queueName, EXCHANGE_NAME, "warning");
+//.....
+DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+        String message = new String(delivery.getBody(), "UTF-8");
+        System.out.println("message");
+};
+channel.basicConsume(queueName, true, deliverCallback, consumerTag -> { });
+```
+
+#### RPC模式
+
+常见的浏览器响应模式，客户端发送请求给服务端，服务端处理数据，返回给客户端 。
+
+客户端代码：
+
+```java
+final String corrId = UUID.randomUUID().toString();
+
+String replyQueueName = channel.queueDeclare().getQueue();
+AMQP.BasicProperties props = new AMQP.BasicProperties
+	.Builder()
+	.correlationId(corrId)
+	.replyTo(replyQueueName)
+	.build();
+
+channel.basicPublish("", "rpc_queue", props, ("发送请求").getBytes("UTF-8"));
+
+final CompletableFuture<String> response = new CompletableFuture<>();
+
+channel.basicConsume(replyQueueName, true, (consumerTag, delivery) -> {
+	if (delivery.getProperties().getCorrelationId().equals(corrId)) {
+		System.out.println(new String(delivery.getBody(), "UTF-8"));
+	}
+}, consumerTag -> {});
+```
+
+服务端代码：
+
+```java
+channel.queueDeclare("rpc_queue", false, false, false, null);
+channel.queuePurge("rpc_queue");
+        
+channel.basicQos(1);
+
+DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+	AMQP.BasicProperties replyProps = new AMQP.BasicProperties
+		.Builder()
+		.correlationId(delivery.getProperties().getCorrelationId())
+		.build();
+	String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+
+	System.out.println(message);
+
+    channel.basicPublish("", delivery.getProperties().getReplyTo(), replyProps, ("响应消息").getBytes(StandardCharsets.UTF_8));
+    channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+};
+
+channel.basicConsume("rpc_queue", false, deliverCallback, (consumerTag -> {}));
+```
+
+#### 死信队列
+
+死信指的是**无法被消费**的消息，由于**消息TTL过期**、**队列达到最大长度**、**消息被拒绝**等原因，导致队列中一些消息无法被消费，这样的消息如果没有进行后续的处理，就会变成死信。为了保证消息数据不丢失，需要使用死信队列机制。
+
+生产者代码：
+
+```java
+AMQP.BasicProperties properties = new AMQP.BasicProperties().builder().expiration("10000").build();
+
+for (int i = 0; i <= 10; i++) {
+	String message = "info" + i;
+	channel.basicPublish(NORMAL_EXCHANGE, "zhangsan", properties, message.getBytes("UTF-8"));
+}
+
+```
+
+普通队列消费者代码：
+
+```java
+//声明普通交换机和死信交换机
+channel.exchangeDeclare("normal_exchange", BuiltinExchangeType.DIRECT);
+channel.exchangeDeclare("dead_exchange", BuiltinExchangeType.DIRECT);
+//声明普通队列
+Map<String, Object> arguments = new HashMap<>();
+//arguments.put("x-message-ttl","10000"); //设置TTL过期时间为10s
+arguments.put("x-dead-letter-exchange", "dead_exchange");  //给普通队列设置死信交换机
+arguments.put("x-dead-letter-routing-key", "lisi");  //设置死信交换机的routingKey
+channel.queueDeclare("normal_queue", false, false, false, arguments);
+//声明死信队列
+channel.queueDeclare("dead_queue", false, false, false, null);
+//绑定普通队列和普通交换机
+channel.queueBind("normal_queue", "normal_exchange", "zhangsan");
+//绑定死信队列和死信交换机
+channel.queueBind("dead_queue", "dead_exchange", "lisi");
+
+//声明接收消息回调函数 和 取消消息消费时的回调函数
+DeliverCallback deliverCallback = (consumerTag, message) -> {
+String msg = new String(message.getBody(), "UTF-8");
+	System.out.println("Consumer01接收消息：" + msg);
+};
+
+CancelCallback cancelCallback = (consumerTag) -> {
+	System.out.println("取消消息消费");
+};
+
+channel.basicConsume("normal_queue", true, deliverCallback, cancelCallback);
+```
+
+死信队列消费者代码：
+
+```java
+DeliverCallback deliverCallback = (consumerTag, message) -> {
+	String msg = new String(message.getBody(), "UTF-8");
+	System.out.println("Consumer02接收消息：" + msg);
+};
+
+CancelCallback cancelCallback = (consumerTag) -> {
+	System.out.println("取消消息消费");
+};
+
+channel.basicConsume(DEAD_QUEUE, true, deliverCallback, cancelCallback);
+```
+
+#### 延迟队列
+
+## SpringBoot集成RabbitMQ
+
+### 导入依赖
+
+```xml
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-amqp</artifactId>
+</dependency>
+```
+
+### 配置RabbitMQ信息
+
+```properties
+spring.rabbitmq.host=zhangsiyao.top
+spring.rabbitmq.port=5672
+```
+
+### 配置RabbitMQ交换机队列信息(通过@Configuration实现)
+
+```java
+@Configuration
+public class DirectRabbitConfig {
+ 
+    //队列 起名：TestDirectQueue
+    @Bean
+    public Queue TestDirectQueue() {
+        // durable:是否持久化,默认是false,持久化队列：会被存储在磁盘上，当消息代理重启时仍然存在，暂存队列：当前连接有效
+        // exclusive:默认也是false，只能被当前创建的连接使用，而且当连接关闭后队列即被删除。此参考优先级高于durable
+        // autoDelete:是否自动删除，当没有生产者或者消费者使用此队列，该队列会自动删除。
+        // return new Queue("TestDirectQueue",true,true,false);
+ 
+        //一般设置一下队列的持久化就好,其余两个就是默认false
+        return new Queue("TestDirectQueue",true);
+    }
+ 
+    //Direct交换机 起名：TestDirectExchange
+    @Bean
+    DirectExchange TestDirectExchange() {
+      //  return new DirectExchange("TestDirectExchange",true,true);
+        return new DirectExchange("TestDirectExchange",true,false);
+    }
+ 
+    //绑定  将队列和交换机绑定, 并设置用于匹配键：TestDirectRouting
+    @Bean
+    Binding bindingDirect() {
+        return BindingBuilder.bind(TestDirectQueue()).to(TestDirectExchange()).with("TestDirectRouting");
+    }
+ 
+    @Bean
+    DirectExchange lonelyDirectExchange() {
+        return new DirectExchange("lonelyDirectExchange");
+    }
+}
+```
+
+### 接收消息(消息监听器)
+
+```java
+@Component
+@RabbitListener(queues = "TestDirectQueue")//监听的队列名称 TestDirectQueue
+public class DirectReceiver {
+    @RabbitHandler
+    public void process(Map testMessage) {
+        System.out.println("DirectReceiver消费者收到消息  : " + testMessage.toString());
+    }
+}
+```
+
+#### 
+
+### 消息确认机制
+
+#### 修改配置信息
+
+```properties
+spring.rabbitmq.publisher-confirm-type=correlated
+```
+
+#### 配置相关回调信息
+
+```java
+
+@Configuration
+public class RabbitConfig {
+ 
+    @Bean
+    public RabbitTemplate createRabbitTemplate(ConnectionFactory connectionFactory){
+        RabbitTemplate rabbitTemplate = new RabbitTemplate();
+        rabbitTemplate.setConnectionFactory(connectionFactory);
+        //设置开启Mandatory,才能触发回调函数,无论消息推送结果怎么样都强制调用回调函数
+        rabbitTemplate.setMandatory(true);
+ 
+        rabbitTemplate.setConfirmCallback(new RabbitTemplate.ConfirmCallback() {
+            @Override
+            public void confirm(CorrelationData correlationData, boolean ack, String cause) {
+                System.out.println("ConfirmCallback:     "+"相关数据："+correlationData);
+                System.out.println("ConfirmCallback:     "+"确认情况："+ack);
+                System.out.println("ConfirmCallback:     "+"原因："+cause);
+            }
+        });
+ 
+        rabbitTemplate.setReturnCallback(new RabbitTemplate.ReturnCallback() {
+            @Override
+            public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
+                System.out.println("ReturnCallback:     "+"消息："+message);
+                System.out.println("ReturnCallback:     "+"回应码："+replyCode);
+                System.out.println("ReturnCallback:     "+"回应信息："+replyText);
+                System.out.println("ReturnCallback:     "+"交换机："+exchange);
+                System.out.println("ReturnCallback:     "+"路由键："+routingKey);
+            }
+        });
+ 
+        return rabbitTemplate;
+    }
+ 
+}
+```
+
+
 
 # 数据检验
 

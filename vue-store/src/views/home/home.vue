@@ -3,20 +3,21 @@
   <topbar></topbar>
   <top-container></top-container>
   <main-container></main-container>
-
+  <footer-container></footer-container>
 </div>
 </template>
 
 <script>
 
-import mainContainer from "@/views/components/mainContainer";
 import topbar from "@/views/components/topbar";
 import topContainer from "@/views/components/topContainer";
+import footerContainer from "@/views/components/footerContainer";
+import mainContainer from "@/views/components/mainContainer";
 
 
 export default {
   components:{
-    topbar,topContainer,mainContainer
+    topbar,topContainer,footerContainer,mainContainer
   },
   created() {
     // 获取浏览器localStorage，判断用户是否已经登录
