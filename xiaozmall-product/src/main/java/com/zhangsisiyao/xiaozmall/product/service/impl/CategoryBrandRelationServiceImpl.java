@@ -1,20 +1,19 @@
 package com.zhangsisiyao.xiaozmall.product.service.impl;
 
-import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
-import com.zhangsisiyao.xiaozmall.product.service.BrandService;
-import com.zhangsisiyao.xiaozmall.product.dao.CategoryBrandRelationDao;
-import com.zhangsisiyao.xiaozmall.product.entity.CategoryBrandRelationEntity;
-import com.zhangsisiyao.xiaozmall.product.service.CategoryBrandRelationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.xiaozmall.product.dao.CategoryBrandRelationDao;
+import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
+import com.zhangsisiyao.xiaozmall.product.entity.CategoryBrandRelationEntity;
+import com.zhangsisiyao.xiaozmall.product.service.BrandService;
+import com.zhangsisiyao.xiaozmall.product.service.CategoryBrandRelationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 
 @Service("categoryBrandRelationService")

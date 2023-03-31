@@ -2,13 +2,10 @@ package com.zhangsisiyao.xiaozmall.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * 属性&属性分组关联

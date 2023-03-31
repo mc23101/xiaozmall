@@ -1,7 +1,7 @@
 package com.zhangsisiyao.xiaozmall.product.dao;
 
-import com.zhangsisiyao.xiaozmall.product.entity.SkuImagesEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhangsisiyao.xiaozmall.product.entity.SkuImagesEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

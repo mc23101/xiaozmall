@@ -1,21 +1,21 @@
 package com.zhangsisiyao.xiaozmall.product.service.impl;
 
-import com.zhangsisiyao.xiaozmall.product.dao.AttrDao;
-import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
-import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
-import com.zhangsisiyao.xiaozmall.product.service.AttrService;
-import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
-import com.zhangsisiyao.xiaozmall.product.vo.BaseAttrValueVo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.BaseAttrValueVo;
+import com.zhangsisiyao.xiaozmall.product.dao.AttrDao;
+import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
+import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
+import com.zhangsisiyao.xiaozmall.product.service.AttrService;
+import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 
 @Service("attrService")
@@ -31,28 +31,6 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
                 new QueryWrapper<>()
         );
 
-        return new PageUtils(page);
-    }
-
-    @Override
-    public PageUtils queryPageByColumn(Object column, Object val, Map<String, Object> params) {
-        IPage<AttrEntity> page = this.page(
-                new Query<AttrEntity>().getPage(params),
-                new QueryWrapper<AttrEntity>().eq(String.valueOf(column),val)
-        );
-        return new PageUtils(page);
-    }
-
-    @Override
-    public PageUtils queryPageByColumns(Map<Object, Object> column, Map<String, Object> params) {
-        QueryWrapper<AttrEntity> queryWrapper = new QueryWrapper<>();
-        for(Object key:column.keySet()){
-            queryWrapper=queryWrapper.eq(String.valueOf(key),column.get(key));
-        }
-        IPage<AttrEntity> page = this.page(
-                new Query<AttrEntity>().getPage(params),
-                queryWrapper
-        );
         return new PageUtils(page);
     }
 

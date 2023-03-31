@@ -1,26 +1,19 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.zhangsisiyao.common.utils.PageUtils;
+import com.zhangsisiyao.common.utils.R;
+import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
+import com.zhangsisiyao.xiaozmall.product.entity.CategoryBrandRelationEntity;
+import com.zhangsisiyao.xiaozmall.product.entity.CategoryEntity;
+import com.zhangsisiyao.xiaozmall.product.service.BrandService;
+import com.zhangsisiyao.xiaozmall.product.service.CategoryBrandRelationService;
+import com.zhangsisiyao.xiaozmall.product.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-//import org.apache.shiro.authz.annotation.RequiresPermissions;
-import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
-import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
-import com.zhangsisiyao.xiaozmall.product.entity.CategoryEntity;
-import com.zhangsisiyao.xiaozmall.product.service.BrandService;
-import com.zhangsisiyao.xiaozmall.product.service.CategoryService;
-import com.zhangsisiyao.xiaozmall.product.entity.CategoryBrandRelationEntity;
-import com.zhangsisiyao.xiaozmall.product.service.CategoryBrandRelationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.zhangsisiyao.common.utils.PageUtils;
-import com.zhangsisiyao.common.utils.R;
 
 
 

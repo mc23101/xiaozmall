@@ -1,19 +1,18 @@
 package com.zhangsisiyao.xiaozmall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhangsisiyao.common.utils.PageUtils;
+import com.zhangsisiyao.common.utils.Query;
 import com.zhangsisiyao.xiaozmall.product.dao.SkuInfoDao;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuInfoEntity;
-import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SkuInfoService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zhangsisiyao.common.utils.PageUtils;
-import com.zhangsisiyao.common.utils.Query;
 
 
 @Service("skuInfoService")

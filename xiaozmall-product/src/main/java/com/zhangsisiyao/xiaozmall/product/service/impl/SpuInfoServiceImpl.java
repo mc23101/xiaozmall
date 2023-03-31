@@ -1,9 +1,19 @@
 package com.zhangsisiyao.xiaozmall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zhangsisiyao.common.utils.PageUtils;
+import com.zhangsisiyao.common.utils.Query;
 import com.zhangsisiyao.xiaozmall.product.dao.SpuInfoDao;
 import com.zhangsisiyao.xiaozmall.product.entity.*;
 import com.zhangsisiyao.xiaozmall.product.service.*;
 import com.zhangsisiyao.xiaozmall.product.vo.*;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,11 +22,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zhangsisiyao.common.utils.PageUtils;
-import com.zhangsisiyao.common.utils.Query;
 
 
 @Service("spuInfoService")
@@ -25,6 +30,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     SpuInfoDescService spuInfoDescService;
+
+    @Autowired
+    RedissonClient redisson;
+
+    @Autowired
+    SpuInfoService spuInfoService;
 
     @Autowired
     SpuImagesService spuImagesService;
@@ -46,6 +57,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     AttrGroupService attrGroupService;
+
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -86,8 +100,6 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         for(AttrGroupEntity group:groups){
             size+=attrService.queryWithAttrGroup(String.valueOf(group.getAttrGroupId())).size();
         }
-        System.out.println(product.getBaseAttrs().size());
-        System.out.println(size);
         if(product.getBaseAttrs().size()<size){
             return false;
         }
@@ -169,11 +181,89 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     }
 
     @Override
-    public void updateSpuPublishStatus(Long spuid) {
-        SpuInfoEntity entity = this.query().eq("id", spuid).one();
-        entity.setPublishStatus(1-entity.getPublishStatus());
+    public ProductVo getProduct(Long spuId) {
+        ProductVo productVo=new ProductVo();
+
+        productVo.setId(spuId);
+
+        //获取spu信息
+        SpuInfoEntity spuInfoEntity=spuInfoService.getById(spuId);
+        BeanUtils.copyProperties(spuInfoEntity,productVo);
+
+        //获取SpuInfoDescEntity
+        List<String> descList=new ArrayList<>();
+        spuInfoDescService.query().eq("spu_id", spuId).list().forEach((entity)->descList.add(entity.getDecript()));
+        productVo.setDecript(descList);
+
+        //获取SpuImage
+        List<String> imageList=new ArrayList<>();
+        spuImagesService.query().eq("spu_id",spuId).list().forEach((entity)->imageList.add(entity.getImgUrl()));
+        productVo.setImages(imageList);
+
+        //TODO 获取积分信息
+
+        //获取spu属性
+        List<BaseAttrValueVo> baseAttrValueVos=new ArrayList<>();
+        productAttrValueService.queryBySpuId(String.valueOf(spuId)).forEach(
+                (entity)->{
+                    BaseAttrValueVo baseAttr=new BaseAttrValueVo();
+                    BeanUtils.copyProperties(entity,baseAttr);
+                    baseAttrValueVos.add(baseAttr);
+                });
+        productVo.setBaseAttrs(baseAttrValueVos);
+
+        //获取所有sku
+        List<SkuVo> skuVos=new ArrayList<>();
+        skuInfoService.query().eq("spu_id", spuId).list().forEach((entity)->{
+            SkuVo skuVo=new SkuVo();
+            BeanUtils.copyProperties(entity,skuVo);
+
+
+            //获取sku的images
+            List<ImageVo> imageVos=new ArrayList<>();
+            skuImagesService.query().eq("sku_id",entity.getSkuId()).list().forEach((image)->{
+                ImageVo imageVo=new ImageVo();
+                BeanUtils.copyProperties(image,imageVo);
+                imageVos.add(imageVo);
+            });
+            skuVo.setImages(imageVos);
+
+            //获取sku的属性值
+            List<SkuAttrValueVo> skuAttrValueVos=new ArrayList<>();
+            skuSaleAttrValueService.query().eq("sku_id",entity.getSkuId()).list().forEach((skuAttrValue)->{
+                SkuAttrValueVo skuAttrValueVo=new SkuAttrValueVo();
+                BeanUtils.copyProperties(skuAttrValue,skuAttrValueVo);
+                skuAttrValueVos.add(skuAttrValueVo);
+            });
+            skuVo.setAttr(skuAttrValueVos);
+            skuVos.add(skuVo);
+        });
+        productVo.setSkus(skuVos);
+        return productVo;
+    }
+
+    @Override
+    public void upSpu(Long spuId) {
+        RLock lock = redisson.getLock("upSpuLock");
+        lock.lock();
+        SpuInfoEntity entity = this.query().eq("id", spuId).one();
+        entity.setPublishStatus(1);
         entity.setUpdateTime(new Date());
+        ProductVo product = spuInfoService.getProduct(spuId);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            rabbitTemplate.convertAndSend("ElasticSearch","product.spu.up",mapper.writeValueAsString(product));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         this.updateById(entity);
+        lock.unlock();
+    }
+
+    @Override
+    public void downSpu(Long spuId) {
+        this.deleteSpu(new Long[]{spuId});
+        rabbitTemplate.convertAndSend("ElasticSearch","product.spu.down",spuId);
     }
 
     @Override
@@ -190,6 +280,8 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             spuImagesEntities.forEach((image) -> {
                 this.spuImagesService.removeById(image.getId());
             });
+
+            //TODO 删除积分信息
 
             //删除ProductAttrValueEntity
             List<ProductAttrValueEntity> productAttrValueEntities = this.productAttrValueService.query().eq("spu_id", spuId).list();

@@ -5,10 +5,14 @@ import lombok.Data;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Data
 public class ProductVo implements Serializable {
+
+    @Min(1)
+    private Long id;
 
     /**
      * 商品名称
@@ -34,6 +38,13 @@ public class ProductVo implements Serializable {
      */
     @NotNull
     private BigDecimal weight;
+
+    @NotNull
+    private Date createTime;
+
+    @NotNull
+    private Date updateTime;
+
     /**
      * 上架状态[0 - 下架，1 - 上架]
      */
@@ -44,6 +55,7 @@ public class ProductVo implements Serializable {
 
     List<String> decript;
 
+    //TODO 修改image信息
     List<String> images;
 
     BoundsVo bounds;

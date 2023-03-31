@@ -2,6 +2,7 @@ package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
+
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.vo.ProductVo;
 
@@ -22,8 +23,12 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
     PageUtils queryPageLimit(Map<String, Object> params);
 
     boolean saveProduct(ProductVo product);
+
+    ProductVo getProduct(Long spuId);
     
-    void updateSpuPublishStatus(Long spuid);
+    void upSpu(Long spuId);
+
+    void downSpu(Long spuId);
 
     void deleteSpu(Long[] ids);
 

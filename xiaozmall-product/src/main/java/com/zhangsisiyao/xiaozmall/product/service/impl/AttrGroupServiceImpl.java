@@ -1,23 +1,22 @@
 package com.zhangsisiyao.xiaozmall.product.service.impl;
 
-import com.zhangsisiyao.xiaozmall.product.entity.AttrAttrgroupRelationEntity;
-import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
-import com.zhangsisiyao.xiaozmall.product.service.AttrAttrgroupRelationService;
-import com.zhangsisiyao.xiaozmall.product.service.AttrService;
-import com.zhangsisiyao.xiaozmall.product.vo.AttrGroupWithAttrsVo;
-import com.zhangsisiyao.xiaozmall.product.dao.AttrGroupDao;
-import com.zhangsisiyao.xiaozmall.product.entity.AttrGroupEntity;
-import com.zhangsisiyao.xiaozmall.product.service.AttrGroupService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.xiaozmall.product.vo.AttrGroupWithAttrsVo;
+import com.zhangsisiyao.xiaozmall.product.dao.AttrGroupDao;
+import com.zhangsisiyao.xiaozmall.product.entity.AttrAttrgroupRelationEntity;
+import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
+import com.zhangsisiyao.xiaozmall.product.entity.AttrGroupEntity;
+import com.zhangsisiyao.xiaozmall.product.service.AttrAttrgroupRelationService;
+import com.zhangsisiyao.xiaozmall.product.service.AttrGroupService;
+import com.zhangsisiyao.xiaozmall.product.service.AttrService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 
 @Service("attrGroupService")

@@ -1,25 +1,16 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-//import org.apache.shiro.authz.annotation.RequiresPermissions;
-import com.zhangsisiyao.xiaozmall.product.vo.ProductVo;
-import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
-import com.zhangsisiyao.xiaozmall.product.service.SpuInfoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
+import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
+import com.zhangsisiyao.xiaozmall.product.service.SpuInfoService;
+import com.zhangsisiyao.xiaozmall.product.vo.ProductVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -37,7 +28,6 @@ public class SpuInfoController {
 
 
     @RequestMapping("/list/{catalog}/{brand}")
-    //@RequiresPermissions("product:spuinfo:list")
     public R listWithCatalogAndBrand( @PathVariable String catalog,@PathVariable String brand){
         List<SpuInfoEntity> list = spuInfoService.getWithCatalogAndBrand(catalog, brand);
         return R.ok().put("data", list);
@@ -48,27 +38,30 @@ public class SpuInfoController {
      * 列表
      */
     @RequestMapping("/list")
-    //@RequiresPermissions("product:spuinfo:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = spuInfoService.queryPageLimit(params);
         return R.ok().put("page", page);
     }
 
 
-    @RequestMapping("/up/{spuid}")
-    //@RequiresPermissions("product:spuinfo:list")
-    public R SpuUpdate(@PathVariable Long spuid){
-        this.spuInfoService.updateSpuPublishStatus(spuid);
+    @RequestMapping("/up/{spuId}")
+    public R SpuUp(@PathVariable Long spuId){
+        //TODO spu上架时，提交商品信息到ES
+        this.spuInfoService.upSpu(spuId);
         return R.ok("success");
     }
 
+    @RequestMapping("/down/{spuId}")
+    public R SpuDown(@PathVariable Long spuId){
+        this.spuInfoService.downSpu(spuId);
+        return R.ok("success");
+    }
 
 
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
-    //@RequiresPermissions("product:spuinfo:info")
     public R info(@PathVariable("id") Long id){
 		SpuInfoEntity spuInfo = spuInfoService.getById(id);
 
@@ -79,8 +72,8 @@ public class SpuInfoController {
      * 保存
      */
     @RequestMapping("/save")
-    //@RequiresPermissions("product:spuinfo:save")
-    public R save(@Valid @RequestBody ProductVo product){
+    public R save(@RequestBody ProductVo product){
+        System.out.println(product);
         boolean b = spuInfoService.saveProduct(product);
         if(b){
             return R.ok();

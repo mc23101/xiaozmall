@@ -3316,9 +3316,9 @@ Docker部署Nacos-Server：
 
 ## GateWay网关组件
 
-## 
 
 
+# MySql用法介绍
 
 # MybatisPlus用法介绍
 
@@ -3935,7 +3935,15 @@ SearchResponse<Object> response10 = client.search(s -> s
         , Object.class);
 ```
 
-## ES环境
+## SpringBoot集成ElasticSearch
+
+### 实体类注解
+
+```
+
+```
+
+
 
 # Redis用法介绍
 
@@ -3971,7 +3979,7 @@ docker exec -it redis redis-cli
 
 ## Redis的Java客户端
 
-## SpringData集成Redis
+## SpringBoot集成Redis
 
 ### 更换SpringData的Redis客户端
 
@@ -3996,6 +4004,68 @@ docker exec -it redis redis-cli
 ### 基本操作
 
 # Redisson用法介绍
+
+## 导入依赖
+
+```xml
+<dependency>
+	<groupId>org.redisson</groupId>
+	<artifactId>redisson</artifactId>
+	<version>3.8.2</version>
+</dependency>
+```
+
+## 配置客户端连接信息
+
+```java
+package com.zhangsisiyao.xiaozmall.product.config.redisson;
+
+import lombok.Data;
+import org.apache.commons.lang.StringUtils;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.StringCodec;
+import org.redisson.config.Config;
+import org.redisson.config.SingleServerConfig;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+
+@Configuration
+@ConfigurationProperties(prefix = "spring.redis")
+@Data
+public class RedissonConfig{
+
+    String host;
+
+    String port;
+
+    String password;
+
+    int timeout;
+
+    @Bean(destroyMethod = "shutdown")
+    RedissonClient redissonClient() {
+        Config config = new Config();
+        config.setCodec(new StringCodec());
+        System.out.println(port);
+        System.out.println(timeout);
+        SingleServerConfig serverConfig = config.useSingleServer()
+                .setAddress("redis://"+host+":"+port)
+                .setTimeout(timeout);
+
+        if(StringUtils.isNotEmpty(password)){
+            serverConfig.setPassword(password);
+        }
+
+        return Redisson.create(config);
+    }
+
+}
+```
+
+
 
 ## 分布式锁和同步器
 
@@ -4516,106 +4586,273 @@ spring.rabbitmq.host=zhangsiyao.top
 spring.rabbitmq.port=5672
 ```
 
-### 配置RabbitMQ交换机队列信息(通过@Configuration实现)
+### 修改序列化器
 
 ```java
 @Configuration
-public class DirectRabbitConfig {
- 
-    //队列 起名：TestDirectQueue
-    @Bean
-    public Queue TestDirectQueue() {
-        // durable:是否持久化,默认是false,持久化队列：会被存储在磁盘上，当消息代理重启时仍然存在，暂存队列：当前连接有效
-        // exclusive:默认也是false，只能被当前创建的连接使用，而且当连接关闭后队列即被删除。此参考优先级高于durable
-        // autoDelete:是否自动删除，当没有生产者或者消费者使用此队列，该队列会自动删除。
-        // return new Queue("TestDirectQueue",true,true,false);
- 
-        //一般设置一下队列的持久化就好,其余两个就是默认false
-        return new Queue("TestDirectQueue",true);
+public class RabbitMQConfig implements RabbitListenerConfigurer {
+
+    // 可以将json串反序列化为对象
+    @Override
+    public void configureRabbitListeners(RabbitListenerEndpointRegistrar rabbitListenerEndpointRegistrar) {
+        rabbitListenerEndpointRegistrar.setMessageHandlerMethodFactory(messageHandlerMethodFactory());
     }
- 
-    //Direct交换机 起名：TestDirectExchange
+
     @Bean
-    DirectExchange TestDirectExchange() {
-      //  return new DirectExchange("TestDirectExchange",true,true);
-        return new DirectExchange("TestDirectExchange",true,false);
+    MessageHandlerMethodFactory messageHandlerMethodFactory() {
+        DefaultMessageHandlerMethodFactory messageHandlerMethodFactory = new DefaultMessageHandlerMethodFactory();
+        messageHandlerMethodFactory.setMessageConverter(mappingJackson2MessageConverter());
+        return messageHandlerMethodFactory;
     }
- 
-    //绑定  将队列和交换机绑定, 并设置用于匹配键：TestDirectRouting
+
     @Bean
-    Binding bindingDirect() {
-        return BindingBuilder.bind(TestDirectQueue()).to(TestDirectExchange()).with("TestDirectRouting");
+    public MappingJackson2MessageConverter mappingJackson2MessageConverter() {
+        return new MappingJackson2MessageConverter();
     }
- 
+
+    // 提供自定义RabbitTemplate,将对象序列化为json串
     @Bean
-    DirectExchange lonelyDirectExchange() {
-        return new DirectExchange("lonelyDirectExchange");
+    public RabbitTemplate jacksonRabbitTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
+        return rabbitTemplate;
     }
 }
 ```
 
-### 接收消息(消息监听器)
+### 文件配置规范
+
+- 交换器、队列、绑定信息应配置在config层内
+- 消费者消息接收，应在listener层中实现
+- 生产者代码如果过长，应在service层中实现
+
+### 工作模式
+
+#### 工作队列模型
+
+```java
+//WorkConfig.java
+//声明队列、交换机、路由信息
+@Configuration
+public class WorkConfig {
+
+    // 配置一个工作模型队列
+    @Bean
+    public Queue queueWork1() {
+        return new Queue("queue_work");
+    }
+}
+```
+
+```java
+// 2个消费者
+@Component
+public class WorkReceiveListener {
+    @RabbitListener(queues = "queue_work")
+    public void receiveMessage(String msg, Channel channel, Message message) {
+        // 只包含发送的消息
+        System.out.println("1接收到消息：" + msg);
+        // channel 通道信息
+        // message 附加的参数信息
+    }
+
+    @RabbitListener(queues = "queue_work")
+    public void receiveMessage2(Object obj, Channel channel, Message message) {
+        // 包含所有的信息
+        System.out.println("2接收到消息：" + obj);
+    }
+}
+```
+
+#### 发布订阅模型
+
+```java
+// 发布订阅模式
+// 声明两个队列
+@Bean
+public Queue queueFanout1() {
+    return new Queue("queue_fanout1");
+}
+@Bean
+public Queue queueFanout2() {
+    return new Queue("queue_fanout2");
+}
+// 准备一个交换机
+@Bean
+public FanoutExchange exchangeFanout() {
+    return new FanoutExchange("exchange_fanout");
+}
+// 将交换机和队列进行绑定
+@Bean
+public Binding bindingExchange1() {
+    return BindingBuilder.bind(queueFanout1()).to(exchangeFanout());
+}
+@Bean
+public Binding bindingExchange2() {
+    return BindingBuilder.bind(queueFanout2()).to(exchangeFanout());
+}
+```
 
 ```java
 @Component
-@RabbitListener(queues = "TestDirectQueue")//监听的队列名称 TestDirectQueue
-public class DirectReceiver {
-    @RabbitHandler
-    public void process(Map testMessage) {
-        System.out.println("DirectReceiver消费者收到消息  : " + testMessage.toString());
+public class PublishReceiveListener {
+
+    @RabbitListener(queues = "queue_fanout1")
+    public void receiveMsg1(String msg) {
+        System.out.println("队列1接收到消息：" + msg);
+    }
+
+    @RabbitListener(queues = "queue_fanout2")
+    public void receiveMsg2(String msg) {
+        System.out.println("队列2接收到消息：" + msg);
     }
 }
 ```
 
-#### 
-
-### 消息确认机制
-
-#### 修改配置信息
-
-```properties
-spring.rabbitmq.publisher-confirm-type=correlated
-```
-
-#### 配置相关回调信息
+#### Topic模型
 
 ```java
-
-@Configuration
-public class RabbitConfig {
- 
-    @Bean
-    public RabbitTemplate createRabbitTemplate(ConnectionFactory connectionFactory){
-        RabbitTemplate rabbitTemplate = new RabbitTemplate();
-        rabbitTemplate.setConnectionFactory(connectionFactory);
-        //设置开启Mandatory,才能触发回调函数,无论消息推送结果怎么样都强制调用回调函数
-        rabbitTemplate.setMandatory(true);
- 
-        rabbitTemplate.setConfirmCallback(new RabbitTemplate.ConfirmCallback() {
-            @Override
-            public void confirm(CorrelationData correlationData, boolean ack, String cause) {
-                System.out.println("ConfirmCallback:     "+"相关数据："+correlationData);
-                System.out.println("ConfirmCallback:     "+"确认情况："+ack);
-                System.out.println("ConfirmCallback:     "+"原因："+cause);
-            }
-        });
- 
-        rabbitTemplate.setReturnCallback(new RabbitTemplate.ReturnCallback() {
-            @Override
-            public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
-                System.out.println("ReturnCallback:     "+"消息："+message);
-                System.out.println("ReturnCallback:     "+"回应码："+replyCode);
-                System.out.println("ReturnCallback:     "+"回应信息："+replyText);
-                System.out.println("ReturnCallback:     "+"交换机："+exchange);
-                System.out.println("ReturnCallback:     "+"路由键："+routingKey);
-            }
-        });
- 
-        return rabbitTemplate;
-    }
- 
+// topic 模型
+@Bean
+public Queue queueTopic1() {
+    return new Queue("queue_topic1");
+}
+@Bean
+public Queue queueTopic2() {
+    return new Queue("queue_topic2");
+}
+@Bean
+public TopicExchange exchangeTopic() {
+    return new TopicExchange("exchange_topic");
+}
+//将交换机、队列、路由绑定在一起
+@Bean
+public Binding bindingTopic1() {
+    return BindingBuilder.bind(queueTopic1()).to(exchangeTopic()).with("topic.#");
+}
+@Bean
+public Binding bindingTopic2() {
+    return BindingBuilder.bind(queueTopic2()).to(exchangeTopic()).with("topic.*");
 }
 ```
+
+```java
+@Component
+public class TopicReceiveListener {
+
+    @RabbitListener(queues = "queue_topic1")
+    public void receiveMsg1(String msg) {
+        System.out.println("消费者1接收到：" + msg);
+    }
+
+    @RabbitListener(queues = "queue_topic2")
+    public void receiveMsg2(String msg) {
+        System.out.println("消费者2接收到：" + msg);
+    }
+}
+```
+
+### confirm机制
+
+```properties
+# 在配置文件中开启手动确认模式
+# 消息开启手动确认
+spring.rabbitmq.listener.direct.acknowledge-mode=manual
+```
+
+生产者代码
+
+```java
+// 配置 confirm 机制
+// 注意
+// 使用confirm机制时，发送消息时最好把CorrelationData 加上，因为如果出错了，使用 CorrelationData 可以更快的定位到错误信息
+private final RabbitTemplate.ConfirmCallback confirmCallback = new RabbitTemplate.ConfirmCallback() {
+    /**
+         * @param correlationData 消息相关的数据，一般用于获取 唯一标识 id
+         * @param b true 消息确认成功，false 失败
+         * @param s 确认失败的原因
+         */
+    @Override
+    public void confirm(CorrelationData correlationData, boolean b, String s) {
+        if (b) {
+            System.out.println("confirm 消息确认成功..." + correlationData.getId());
+        } else {
+            System.out.println("confirm 消息确认失败..." + correlationData.getId() + " cause: " + s);
+        }
+    }
+};
+// 测试 confirm机制
+public void sendConfirm() {
+    rabbitTemplate.convertAndSend("queue_confirm", new User(1, "km", "km123"), new CorrelationData("" + System.currentTimeMillis()));
+    rabbitTemplate.setConfirmCallback(confirmCallback);
+}
+```
+
+### return 机制
+
+修改配置文件
+
+```properties
+# 开启return机制
+spring.rabbitmq.publisher-returns=true
+# 消息开启手动确认
+spring.rabbitmq.listener.direct.acknowledge-mode=manual
+```
+
+```java
+// 测试return机制
+@Bean
+public Queue queueReturn() {
+    return new Queue("queue_return");
+}
+@Bean
+public TopicExchange exchangeReturn() {
+    return new TopicExchange("exchange_return");
+}
+@Bean
+public Binding bindingReturn() {
+    return BindingBuilder.bind(queueReturn()).to(exchangeReturn()).with("return.*");
+}
+```
+
+```java
+// 配置 return 消息机制
+private final RabbitTemplate.ReturnCallback returnCallback = new RabbitTemplate.ReturnCallback() {
+    /**
+         *  return 的回调方法（找不到路由才会触发）
+         * @param message 消息的相关信息
+         * @param i 错误状态码
+         * @param s 错误状态码对应的文本信息
+         * @param s1 交换机的名字
+         * @param s2 路由的key
+         */
+    @Override
+    public void returnedMessage(Message message, int i, String s, String s1, String s2) {
+        System.out.println(message);
+        System.out.println(new String(message.getBody()));
+        System.out.println(i);
+        System.out.println(s);
+        System.out.println(s1);
+        System.out.println(s2);
+    }
+};
+// 测试return机制
+public void sendReturn() {
+    rabbitTemplate.setReturnCallback(returnCallback);
+    rabbitTemplate.convertAndSend("exchange_return", "return.km.km", "测试 return 机制");
+    // rabbitTemplate.convertAndSend("exchange_return", "return.km", "测试 return 机制");
+}
+```
+
+
+
+### TTL队列
+
+### 死信队列
+
+
+
+
 
 
 

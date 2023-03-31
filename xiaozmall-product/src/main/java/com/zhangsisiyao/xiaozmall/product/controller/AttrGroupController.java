@@ -1,29 +1,22 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zhangsisiyao.common.utils.PageUtils;
+import com.zhangsisiyao.common.utils.R;
+import com.zhangsisiyao.xiaozmall.product.entity.AttrAttrgroupRelationEntity;
+import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
+import com.zhangsisiyao.xiaozmall.product.entity.AttrGroupEntity;
+import com.zhangsisiyao.xiaozmall.product.service.AttrAttrgroupRelationService;
+import com.zhangsisiyao.xiaozmall.product.service.AttrGroupService;
+import com.zhangsisiyao.xiaozmall.product.service.AttrService;
+import com.zhangsisiyao.xiaozmall.product.vo.AttrGroupWithAttrsVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-//import org.apache.shiro.authz.annotation.RequiresPermissions;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.zhangsisiyao.xiaozmall.product.entity.AttrAttrgroupRelationEntity;
-import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
-import com.zhangsisiyao.xiaozmall.product.service.AttrAttrgroupRelationService;
-import com.zhangsisiyao.xiaozmall.product.service.AttrService;
-import com.zhangsisiyao.xiaozmall.product.vo.AttrGroupWithAttrsVo;
-import com.zhangsisiyao.xiaozmall.product.entity.AttrGroupEntity;
-import com.zhangsisiyao.xiaozmall.product.service.AttrGroupService;
-import org.checkerframework.checker.units.qual.A;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.zhangsisiyao.common.utils.PageUtils;
-import com.zhangsisiyao.common.utils.R;
 
 
 

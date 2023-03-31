@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
-import com.zhangsisiyao.xiaozmall.product.vo.BaseAttrValueVo;
+import com.zhangsisiyao.common.vo.*;
 
 import java.util.List;
 import java.util.Map;
@@ -20,10 +20,6 @@ public interface AttrService extends IService<AttrEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
-    public PageUtils queryPageByColumn(Object column, Object val, Map<String, Object> params);
-
-
-    public PageUtils queryPageByColumns(Map<Object,Object> column,Map<String, Object> params);
 
     public PageUtils queryBaseAttr(Long catId,Map<String, Object> params);
     public PageUtils querySaleAttr(Long catId,Map<String, Object> params);
