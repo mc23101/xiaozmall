@@ -30,36 +30,36 @@
       </el-table-column>
       <el-table-column type="expand">
         <template slot-scope="scope">
-          <el-row>
-            <el-col :span="24">
-              <label style="display:block;float:left">选择图集 或</label>
+<!--          <el-row>-->
+<!--            <el-col :span="24">-->
+<!--              <label style="display:block;float:left">选择图集 或</label>-->
 <!--              <multi-upload-->
 <!--                style="float:left;margin-left:10px;"-->
 <!--                :showFile="false"-->
 <!--                :listType="'text'"-->
 <!--                v-model="uploadImages"-->
 <!--              ></multi-upload>-->
-            </el-col>
-            <el-col :span="24">
-              <el-divider></el-divider>
-            </el-col>
-            <el-col :span="24">
-              <el-card style="width:170px;float:left;margin-left:15px;margin-top:15px;"
-                :body-style="{ padding: '0px' }"
-                v-for="(img,index) in baseInfo.images"
-                :key="index"
-              >
-                <img :src="img" style="width:160px;height:120px" />
-                <div style="padding: 14px;">
-                  <el-row>
-                    <el-col :span="12">
-                      <el-checkbox
-                        v-model="scope.row.images[index].imgUrl"
-                        :true-label="img"
-                        false-label="true"
-                      ></el-checkbox>
-                    </el-col>
-                    <el-col :span="12">
+<!--            </el-col>-->
+<!--            <el-col :span="24">-->
+<!--              <el-divider></el-divider>-->
+<!--            </el-col>-->
+<!--            <el-col :span="24">-->
+<!--              <el-card style="width:170px;float:left;margin-left:15px;margin-top:15px;"-->
+<!--                :body-style="{ padding: '0px' }"-->
+<!--                v-for="(img,index) in baseInfo.images"-->
+<!--                :key="index"-->
+<!--              >-->
+<!--                <img :src="img" style="width:160px;height:120px" />-->
+<!--                <div style="padding: 14px;">-->
+<!--                  <el-row>-->
+<!--                    <el-col :span="12">-->
+<!--                      <el-checkbox-->
+<!--                        v-model="scope.row.images[index].imgUrl"-->
+<!--                        :true-label="img"-->
+<!--                        false-label="true"-->
+<!--                      ></el-checkbox>-->
+<!--                    </el-col>-->
+<!--                    <el-col :span="12">-->
 <!--                      <el-tag v-if="scope.row.images[index].defaultImg === 1">-->
 <!--                        <input-->
 <!--                          type="radio"-->
@@ -75,12 +75,12 @@
 <!--                          @change="checkDefaultImg(scope.row,index,img)"-->
 <!--                        />设为默认-->
 <!--                      </el-tag>-->
-                    </el-col>
-                  </el-row>
-                </div>
-              </el-card>
-            </el-col>
-          </el-row>
+<!--                    </el-col>-->
+<!--                  </el-row>-->
+<!--                </div>-->
+<!--              </el-card>-->
+<!--            </el-col>-->
+<!--          </el-row>-->
           <!-- 折扣，满减，会员价 -->
           <el-form :model="scope.row">
             <el-row>
@@ -182,7 +182,6 @@ export default {
       if (val === 3) {
         this.generateSkus()
         PubSub.publish('skus', this.skus)
-        console.log(this.skus)
       }
     }
   },
@@ -203,7 +202,6 @@ export default {
   methods: {
     submitSkus () {
       this.generateSpu()
-      console.log(this.spu)
       this.$confirm('将要提交商品数据，需要一小段时间，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -271,7 +269,6 @@ export default {
       // [["黑色","6GB","移动"],["黑色","6GB","联通"],["黑色","8GB","移动"],["黑色","8GB","联通"],
       // ["白色","6GB","移动"],["白色","6GB","联通"],["白色","8GB","移动"],["白色","8GB","联通"],
       // ["蓝色","6GB","移动"],["蓝色","6GB","联通"],["蓝色","8GB","移动"],["蓝色","8GB","联通"]]
-      console.log('生成的组合', JSON.stringify(descartes))
       // 有多少descartes就有多少sku
       let skus = []
 
@@ -329,7 +326,6 @@ export default {
         }
       })
       this.skus = skus
-      console.log('结果!!!', this.skus, this.dataResp.tableAttrColumn)
     },
     // 笛卡尔积运算
     descartes (list) {

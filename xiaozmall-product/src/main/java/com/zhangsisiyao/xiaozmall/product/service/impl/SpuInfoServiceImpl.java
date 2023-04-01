@@ -135,7 +135,6 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             ProductAttrValueEntity productAttr = new ProductAttrValueEntity();
             productAttr.setAttrId(attr.getAttrId());
             productAttr.setAttrValue(attr.getAttrValue());
-            productAttr.setQuickShow(attr.getShowDesc());
             productAttr.setSpuId(spuInfo.getId());
             productAttrValueService.getBaseMapper().insert(productAttr);
         });
@@ -267,8 +266,11 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Override
     public void downSpu(Long spuId) {
-        this.deleteSpu(new Long[]{spuId});
+        SpuInfoEntity entity = this.query().eq("id", spuId).one();
+        entity.setPublishStatus(0);
+        entity.setUpdateTime(new Date());
         rabbitTemplate.convertAndSend("ElasticSearch","product.spu.down",spuId);
+        this.updateById(entity);
     }
 
     @Override

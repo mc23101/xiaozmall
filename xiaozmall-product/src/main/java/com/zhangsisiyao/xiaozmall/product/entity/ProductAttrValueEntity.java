@@ -45,11 +45,5 @@ public class ProductAttrValueEntity implements Serializable {
 	 */
 	@NotEmpty
 	private String attrValue;
-	/**
-	 * 快速展示【是否展示在介绍上；0-否 1-是】
-	 */
-	@Min(value = 0)
-	@Max(value = 1)
-	private Integer quickShow;
 
 }

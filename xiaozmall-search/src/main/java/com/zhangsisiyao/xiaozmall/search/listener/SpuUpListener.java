@@ -26,7 +26,14 @@ public class SpuUpListener {
     @RabbitHandler
     public void receiveUp(String in) throws JsonProcessingException {
         ObjectMapper mapper=new ObjectMapper();
-        elasticsearchRestTemplate.save(mapper.readValue(in,ProductVo.class));
+        ProductVo product = mapper.readValue(in, ProductVo.class);
+        boolean exists = elasticsearchRestTemplate.exists(String.valueOf(product.getId()), ProductVo.class);
+        if(exists){
+            //elasticsearchRestTemplate.update()
+        }else {
+            elasticsearchRestTemplate.save(product);
+        }
+
     }
 
 
@@ -39,7 +46,10 @@ public class SpuUpListener {
     })
     @RabbitHandler
     public void receiveDown(Long spuId){
-        elasticsearchRestTemplate.delete(String.valueOf(spuId),ProductVo.class);
+        boolean exists = elasticsearchRestTemplate.exists(String.valueOf(spuId), ProductVo.class);
+        if(exists){
+            elasticsearchRestTemplate.delete(String.valueOf(spuId),ProductVo.class);
+        }
     }
 
 }

@@ -14,10 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -38,9 +35,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     @Override
-    @Cacheable(cacheNames = {"category"},sync = true,key="'category'")
+    @Cacheable(cacheNames = {"category"},sync = true,key="'categoryTree'")
     public List<CategoryEntity> listWithTree() {
-        System.out.println("获取分类");
         List<CategoryEntity> allEntities = baseMapper.selectList(null);
         return allEntities.stream()
                 .filter((menu) -> menu.getCatLevel() == 1)
@@ -53,9 +49,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     @Override
-    @CacheEvict(cacheNames = {"category"},key = "'category'")
+    @CacheEvict(cacheNames = {"category"},key = "'categoryMap'")
     public Map<Long, CategoryEntity> listWithMap() {
-        return null;
+        Map<Long,CategoryEntity> map=new HashMap<>();
+        baseMapper.selectList(null).forEach((entity->{
+            map.put(entity.getCatId(),entity);
+        }));
+        return map;
     }
 
     public List<CategoryEntity> getChildren(CategoryEntity root, List<CategoryEntity> all) {

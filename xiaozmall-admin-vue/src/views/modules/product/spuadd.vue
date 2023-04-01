@@ -25,7 +25,7 @@
       <el-col :span="24" v-show="step===4">
         <el-card class="box-card" style="width:80%;margin:20px auto">
           <h1>保存成功</h1>
-          <el-button type="primary" @click="addAgian">继续添加</el-button>
+          <el-button type="primary" @click="addAgain()">继续添加</el-button>
         </el-card>
       </el-col>
     </el-row>
@@ -42,21 +42,6 @@ import skuInfo from './spuadd/skuInfo'
 export default {
   // eslint-disable-next-line standard/object-curly-even-spacing
   components: {SpuInfo, ProductAttr, saleAttr, skuInfo},
-  watch: {
-    // step (val) {
-    //   console.log('step:', val)
-    // },
-    // baseInfo (val) {
-    //   console.log('baseInfo', val)
-    // },
-    // spuAttrs (val) {
-    //   console.log('spuAttrs', val)
-    // }
-    saleAttrs (val) {
-      console.log('saleAttrs', val)
-    }
-  },
-
   data () {
     return {
       spuAttrsSub: '',
@@ -67,6 +52,12 @@ export default {
       baseInfo: [],
       spuAttrs: [],
       saleAttrs: []
+    }
+  },
+  methods: {
+    addAgain () {
+      location.reload()
+      this.$router.go(0)
     }
   },
   mounted () {

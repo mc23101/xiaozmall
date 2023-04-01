@@ -72,7 +72,6 @@ export default {
         params: this.$http.adornParams({})
       }).then(({ data }) => {
         // 先对表单的baseAttrs进行初始化
-        console.log(data.data)
         data.data.forEach(item => {
           let attrArray = []
           item.attrs.forEach((attr) => {

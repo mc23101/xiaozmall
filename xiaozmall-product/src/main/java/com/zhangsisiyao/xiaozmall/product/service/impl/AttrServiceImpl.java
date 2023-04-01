@@ -90,7 +90,6 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
                 ProductAttrValueEntity newValue=new ProductAttrValueEntity();
                 newValue.setAttrValue(attrVo.getAttrValues());
                 newValue.setSpuId(Long.valueOf(spuid));
-                newValue.setQuickShow(attrVo.getShowDesc());
                 newValue.setAttrId(attrVo.getAttrId());
                 productAttrValueService.save(newValue);
             }

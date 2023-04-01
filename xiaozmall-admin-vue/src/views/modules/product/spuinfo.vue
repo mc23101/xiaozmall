@@ -28,13 +28,13 @@
             v-if="scope.row.publishStatus === 0"
             type="text"
             size="small"
-            @click="productUp(scope.row.id)"
+            @click="setPublishStatus(scope.row.id,1)"
           >上架</el-button>
           <el-button
             v-if="scope.row.publishStatus === 1"
             type="text"
             size="small"
-            @click="productUp(scope.row.id)"
+            @click="setPublishStatus(scope.row.id,0)"
           >下架</el-button>
           <el-button type="text" size="small" @click="attrUpdateShow(scope.row)">规格</el-button>
           <el-button type="text" size="small" @click="attrUpdateShow(scope.row)">新增sku</el-button>
@@ -87,9 +87,9 @@ export default {
     getDataListLoading () {
       return this.dataListLoading
     },
-    productUp (id) {
+    setPublishStatus (id,val) {
       this.$http({
-        url: this.$http.adornUrl('/product/spuinfo/up/' + id),
+        url: this.$http.adornUrl(`/product/spuinfo/${val === 0 ? 'down':'up'}/${id}`),
         method: 'post'
       }).then(({ data }) => {
         if (data && data.code === 0) {

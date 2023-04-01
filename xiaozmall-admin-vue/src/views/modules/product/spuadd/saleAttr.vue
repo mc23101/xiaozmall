@@ -71,7 +71,6 @@ export default {
         })
       }).then(({ data }) => {
         this.dataResp.saleAttrs = data.page.list
-        console.log(this.dataResp)
         data.page.list.forEach(item => {
           this.saleAttrs.push({
             attrId: item.attrId,

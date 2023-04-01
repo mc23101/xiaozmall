@@ -37,19 +37,10 @@ public class SkuSaleAttrValueEntity implements Serializable {
 	@Min(value = 1)
 	private Long attrId;
 	/**
-	 * 销售属性名
-	 */
-	@NotEmpty
-	private String attrName;
-	/**
 	 * 销售属性值
 	 */
 	@NotEmpty
 	private String attrValue;
-	/**
-	 * 顺序
-	 */
-	@Min(value = 0)
-	private Integer attrSort;
+
 
 }
