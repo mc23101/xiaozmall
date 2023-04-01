@@ -18,9 +18,10 @@ public class SkuVo implements Serializable {
 
     List<ImageVo> images;
 
-    List<String> descar;
+    List<AttrValueVo> attr;
 
-    List<SkuAttrValueVo> attr;
+
+    //TODO 会员信息折扣
 
     BigDecimal fullCount;
 

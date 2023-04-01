@@ -106,31 +106,35 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         //TODO 优化储存
         //存储SpuInfo
         SpuInfoEntity spuInfo=new SpuInfoEntity();
+        BeanUtils.copyProperties(product,spuInfo);
         spuInfo.setCreateTime(new Date());
         spuInfo.setUpdateTime(new Date());
-        BeanUtils.copyProperties(product,spuInfo);
         this.baseMapper.insert(spuInfo);
 
         //存储SpuInfoDescEntity
-        List<String> decript=product.getDecript();
-        SpuInfoDescEntity desc = new SpuInfoDescEntity();
-        desc.setSpuId(spuInfo.getId());
-        desc.setDecript(String.join(",",decript));
-        spuInfoDescService.saveOrUpdate(desc);
+        product.getDescript().forEach((descript)->{
+            SpuInfoDescEntity desc=new SpuInfoDescEntity();
+            BeanUtils.copyProperties(descript,desc);
+            desc.setSpuId(spuInfo.getId());
+            spuInfoDescService.getBaseMapper().insert(desc);
+        });
+
 
         //储存SpuImageEntity
-        List<String> images=product.getImages();
-        SpuImagesEntity spuImage=new SpuImagesEntity();
-        spuImage.setSpuId(spuInfo.getId());
-        spuImage.setImgUrl(String.join(",",images));
-        spuImagesService.getBaseMapper().insert(spuImage);
-        
+        product.getImages().forEach((image)->{
+            SpuImagesEntity spuImage=new SpuImagesEntity();
+            BeanUtils.copyProperties(image,spuImage);
+            spuImage.setSpuId(spuInfo.getId());
+            spuImagesService.getBaseMapper().insert(spuImage);
+        });
+
+
         //存储SpuAttrValue
-        List<BaseAttrValueVo> baseAttrs = product.getBaseAttrs();
+        List<AttrValueVo> baseAttrs = product.getBaseAttrs();
         baseAttrs.forEach((attr)->{
             ProductAttrValueEntity productAttr = new ProductAttrValueEntity();
             productAttr.setAttrId(attr.getAttrId());
-            productAttr.setAttrValue(attr.getAttrValues());
+            productAttr.setAttrValue(attr.getAttrValue());
             productAttr.setQuickShow(attr.getShowDesc());
             productAttr.setSpuId(spuInfo.getId());
             productAttrValueService.getBaseMapper().insert(productAttr);
@@ -147,30 +151,23 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             skuInfo.setSpuId(spuInfo.getId());
             skuInfo.setCatalogId(spuInfo.getCatalogId());
             skuInfo.setBrandId(spuInfo.getBrandId());
-            skuInfo.setSkuDesc(String.join(",",skuVo.getDescar()));
+
+            skuInfoService.getBaseMapper().insert(skuInfo);
 
             //储存sku的图片
             List<ImageVo> skuImages = skuVo.getImages();
-            List<String> urls=new ArrayList<>();
-            SkuImagesEntity skuImagesEntity=new SkuImagesEntity();
             skuImages.forEach((skuImage)->{
-                if(skuImage.getDefaultImg()==1){
-                    skuInfo.setSkuDefaultImg(skuImage.getImgUrl());
-                    skuImagesEntity.setDefaultImg(skuImage.getImgUrl());
-                }
-                urls.add(skuImage.getImgUrl());
+                SkuImagesEntity skuImagesEntity=new SkuImagesEntity();
+                BeanUtils.copyProperties(skuImage,skuImagesEntity);
+                skuImagesEntity.setSkuId(skuInfo.getSkuId());
+                this.skuImagesService.getBaseMapper().insert(skuImagesEntity);
             });
-            skuInfoService.getBaseMapper().insert(skuInfo);
-            skuImagesEntity.setImgUrl(String.join(",",urls));
-            skuImagesEntity.setSkuId(skuInfo.getSkuId());
-            skuImagesService.getBaseMapper().insert(skuImagesEntity);
 
             //储存SkuAttrValue
-            List<SkuAttrValueVo> attrs = skuVo.getAttr();
+            List<AttrValueVo> attrs = skuVo.getAttr();
             attrs.forEach((attr)->{
                 SkuSaleAttrValueEntity attrValue = new SkuSaleAttrValueEntity();
                 attrValue.setAttrId(attr.getAttrId());
-                attrValue.setAttrName(attr.getAttrName());
                 attrValue.setAttrValue(attr.getAttrValue());
                 attrValue.setSkuId(skuInfo.getSkuId());
                 skuSaleAttrValueService.getBaseMapper().insert(attrValue);
@@ -191,26 +188,34 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         BeanUtils.copyProperties(spuInfoEntity,productVo);
 
         //获取SpuInfoDescEntity
-        List<String> descList=new ArrayList<>();
-        spuInfoDescService.query().eq("spu_id", spuId).list().forEach((entity)->descList.add(entity.getDecript()));
-        productVo.setDecript(descList);
+        List<ImageVo> descList=new ArrayList<>();
+        spuInfoDescService.query().eq("spu_id", spuId).list().forEach((entity)->{
+            ImageVo image=new ImageVo();
+            BeanUtils.copyProperties(entity,image);
+            descList.add(image);
+        });
+        productVo.setDescript(descList);
 
         //获取SpuImage
-        List<String> imageList=new ArrayList<>();
-        spuImagesService.query().eq("spu_id",spuId).list().forEach((entity)->imageList.add(entity.getImgUrl()));
+        List<ImageVo> imageList=new ArrayList<>();
+        spuImagesService.query().eq("spu_id",spuId).list().forEach((entity)->{
+            ImageVo image=new ImageVo();
+            BeanUtils.copyProperties(entity,image);
+            imageList.add(image);
+        });
         productVo.setImages(imageList);
 
         //TODO 获取积分信息
 
         //获取spu属性
-        List<BaseAttrValueVo> baseAttrValueVos=new ArrayList<>();
+        List<AttrValueVo> attrValueVos =new ArrayList<>();
         productAttrValueService.queryBySpuId(String.valueOf(spuId)).forEach(
                 (entity)->{
-                    BaseAttrValueVo baseAttr=new BaseAttrValueVo();
+                    AttrValueVo baseAttr=new AttrValueVo();
                     BeanUtils.copyProperties(entity,baseAttr);
-                    baseAttrValueVos.add(baseAttr);
+                    attrValueVos.add(baseAttr);
                 });
-        productVo.setBaseAttrs(baseAttrValueVos);
+        productVo.setBaseAttrs(attrValueVos);
 
         //获取所有sku
         List<SkuVo> skuVos=new ArrayList<>();
@@ -229,10 +234,10 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             skuVo.setImages(imageVos);
 
             //获取sku的属性值
-            List<SkuAttrValueVo> skuAttrValueVos=new ArrayList<>();
+            List<AttrValueVo> skuAttrValueVos =new ArrayList<>();
             skuSaleAttrValueService.query().eq("sku_id",entity.getSkuId()).list().forEach((skuAttrValue)->{
-                SkuAttrValueVo skuAttrValueVo=new SkuAttrValueVo();
-                BeanUtils.copyProperties(skuAttrValue,skuAttrValueVo);
+                AttrValueVo skuAttrValueVo =new AttrValueVo();
+                BeanUtils.copyProperties(skuAttrValue, skuAttrValueVo);
                 skuAttrValueVos.add(skuAttrValueVo);
             });
             skuVo.setAttr(skuAttrValueVos);

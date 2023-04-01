@@ -40,7 +40,7 @@ public class OSSController {
 
         Map<String, String> respMap = new LinkedHashMap<String, String>();
         try {
-            long expireTime = 30;
+            long expireTime = 300;
             long expireEndTime = System.currentTimeMillis() + expireTime * 1000;
             Date expiration = new Date(expireEndTime);
             PolicyConditions policyConds = new PolicyConditions();
@@ -58,7 +58,7 @@ public class OSSController {
             respMap.put("signature", postSignature);
             respMap.put("dir", dir);
             respMap.put("host", host);
-            respMap.put("expire", String.valueOf(expireEndTime / 1000));
+            respMap.put("expire", String.valueOf(expireEndTime/1000));
             // respMap.put("expire", formatISO8601Date(expiration));
 
         } catch (Exception e) {

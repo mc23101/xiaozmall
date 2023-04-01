@@ -41,11 +41,5 @@ public class SkuImagesEntity implements Serializable {
 	 */
 	@Min(value = 0)
 	private Integer imgSort;
-	/**
-	 * 默认图[0 - 不是默认图，1 - 是默认图]
-	 */
-	@Min(value = 0)
-	@Min(value = 1)
-	private String defaultImg;
 
 }

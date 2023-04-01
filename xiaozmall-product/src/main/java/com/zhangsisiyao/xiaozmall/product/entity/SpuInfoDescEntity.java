@@ -31,6 +31,8 @@ public class SpuInfoDescEntity implements Serializable {
 	 * 商品介绍
 	 */
 	@NotEmpty
-	private String decript;
+	private String imgUrl;
+
+	private Integer imgSort;
 
 }

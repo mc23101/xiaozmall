@@ -8,5 +8,5 @@ import java.io.Serializable;
 public class ImageVo implements Serializable {
     String imgUrl;
 
-    Integer defaultImg;
+    int imgSort;
 }

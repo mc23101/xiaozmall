@@ -42,11 +42,4 @@ public class SpuImagesEntity implements Serializable {
 	 */
 	@Min(value = 0)
 	private Integer imgSort;
-	/**
-	 * 是否默认图
-	 */
-	@Min(value = 0)
-	@Max(value = 1)
-	private Integer defaultImg;
-
 }

@@ -53,14 +53,14 @@ public class ProductVo implements Serializable {
     private Integer publishStatus;
 
 
-    List<String> decript;
+    List<ImageVo> descript;
 
     //TODO 修改image信息
-    List<String> images;
+    List<ImageVo> images;
 
     BoundsVo bounds;
 
-    List<BaseAttrValueVo> baseAttrs;
+    List<AttrValueVo> baseAttrs;
 
     @Size(min = 1)
     List<SkuVo> skus;

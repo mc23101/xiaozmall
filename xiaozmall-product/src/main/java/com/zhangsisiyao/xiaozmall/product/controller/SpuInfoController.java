@@ -73,7 +73,6 @@ public class SpuInfoController {
      */
     @RequestMapping("/save")
     public R save(@RequestBody ProductVo product){
-        System.out.println(product);
         boolean b = spuInfoService.saveProduct(product);
         if(b){
             return R.ok();
@@ -86,7 +85,6 @@ public class SpuInfoController {
      * 修改
      */
     @RequestMapping("/update")
-    //@RequiresPermissions("product:spuinfo:update")
     public R update(@Valid @RequestBody SpuInfoEntity spuInfo){
 		spuInfoService.updateById(spuInfo);
 
@@ -97,7 +95,6 @@ public class SpuInfoController {
      * 删除
      */
     @RequestMapping("/delete")
-    //@RequiresPermissions("product:spuinfo:delete")
     public R delete(@RequestBody Long[] ids){
 		spuInfoService.deleteSpu(ids);
         return R.ok();
