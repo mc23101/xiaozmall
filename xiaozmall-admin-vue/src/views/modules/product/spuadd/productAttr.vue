@@ -77,6 +77,7 @@ export default {
           item.attrs.forEach((attr) => {
             attrArray.push({
               attrId: attr.attrId,
+              attrName: attr.attrName,
               attrValue: ''
             })
           })

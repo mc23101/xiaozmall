@@ -135,6 +135,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             ProductAttrValueEntity productAttr = new ProductAttrValueEntity();
             productAttr.setAttrId(attr.getAttrId());
             productAttr.setAttrValue(attr.getAttrValue());
+            productAttr.setAttrName(attr.getAttrName());
             productAttr.setSpuId(spuInfo.getId());
             productAttrValueService.getBaseMapper().insert(productAttr);
         });
@@ -169,6 +170,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 attrValue.setAttrId(attr.getAttrId());
                 attrValue.setAttrValue(attr.getAttrValue());
                 attrValue.setSkuId(skuInfo.getSkuId());
+                attrValue.setAttrName(attr.getAttrName());
                 skuSaleAttrValueService.getBaseMapper().insert(attrValue);
             });
 

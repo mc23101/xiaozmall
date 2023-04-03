@@ -5,6 +5,7 @@ import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.common.vo.*;
+import com.zhangsisiyao.xiaozmall.product.vo.AttrValueVo;
 
 import java.util.List;
 import java.util.Map;
@@ -28,5 +29,5 @@ public interface AttrService extends IService<AttrEntity> {
 
     List<ProductAttrValueEntity> queryListForSpu(Long spuId);
 
-    void UpdateAttrsBySpuId(List<BaseAttrValueVo> attrs, String spuid);
+    void UpdateAttrsBySpuId(List<AttrValueVo> attrs, String spuid);
 }

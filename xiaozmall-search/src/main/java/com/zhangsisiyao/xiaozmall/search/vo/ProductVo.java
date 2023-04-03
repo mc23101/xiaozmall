@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@Document(indexName = "spu")
+@Document(indexName = "spu",createIndex = false)
 public class ProductVo implements Serializable {
 
     @Min(1)
@@ -24,12 +24,12 @@ public class ProductVo implements Serializable {
      * 商品名称
      */
     @NotEmpty
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Text)
     private String spuName;
     /**
      * 商品描述
      */
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Text)
     private String spuDescription;
     /**
      * 所属分类id
@@ -61,15 +61,19 @@ public class ProductVo implements Serializable {
     private Integer publishStatus;
 
 
+    @Field(type = FieldType.Nested)
     List<ImageVo> descript;
 
     //TODO 修改image信息
+    @Field(type = FieldType.Nested)
     List<ImageVo> images;
 
     BoundsVo bounds;
 
+    @Field(type = FieldType.Nested)
     List<AttrValueVo> baseAttrs;
 
     @Size(min = 1)
+    @Field(type = FieldType.Nested)
     List<SkuVo> skus;
 }

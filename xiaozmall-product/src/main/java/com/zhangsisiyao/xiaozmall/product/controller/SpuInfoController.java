@@ -73,6 +73,7 @@ public class SpuInfoController {
      */
     @RequestMapping("/save")
     public R save(@RequestBody ProductVo product){
+        System.out.println(product);
         boolean b = spuInfoService.saveProduct(product);
         if(b){
             return R.ok();

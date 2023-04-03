@@ -18,7 +18,7 @@ public class SpuUpListener {
 
     @RabbitListener(bindings = {
             @QueueBinding(
-                    value = @Queue("product.spu.up"),
+                    value = @Queue(value = "product.spu.up"),
                     exchange = @Exchange(type = ExchangeTypes.TOPIC,value = "ElasticSearch"),
                     key = "product.spu.up"
             )
@@ -27,19 +27,17 @@ public class SpuUpListener {
     public void receiveUp(String in) throws JsonProcessingException {
         ObjectMapper mapper=new ObjectMapper();
         ProductVo product = mapper.readValue(in, ProductVo.class);
-        boolean exists = elasticsearchRestTemplate.exists(String.valueOf(product.getId()), ProductVo.class);
-        if(exists){
-            //elasticsearchRestTemplate.update()
-        }else {
-            elasticsearchRestTemplate.save(product);
+        if(!elasticsearchRestTemplate.indexExists(ProductVo.class)){
+            elasticsearchRestTemplate.createIndex(ProductVo.class);
+            elasticsearchRestTemplate.putMapping(ProductVo.class);
         }
-
+        elasticsearchRestTemplate.save(product);
     }
 
 
     @RabbitListener(bindings = {
             @QueueBinding(
-                    value = @Queue("product.spu.down"),
+                    value = @Queue(value = "product.spu.down"),
                     exchange = @Exchange(type = ExchangeTypes.TOPIC,value = "ElasticSearch"),
                     key = "product.spu.down"
             )

@@ -6,6 +6,7 @@ import com.zhangsisiyao.common.vo.BaseAttrValueVo;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrService;
+import com.zhangsisiyao.xiaozmall.product.vo.AttrValueVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,7 +92,7 @@ public class AttrController {
 
     @RequestMapping("/update/{spuId}")
     //@RequiresPermissions("product:attr:update")
-    public R updateSpu(@RequestBody List<BaseAttrValueVo> attrs, @PathVariable String spuId){
+    public R updateSpu(@RequestBody List<AttrValueVo> attrs, @PathVariable String spuId){
         attrService.UpdateAttrsBySpuId(attrs,spuId);
         return R.ok();
     }

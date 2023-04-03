@@ -42,5 +42,7 @@ public class SkuSaleAttrValueEntity implements Serializable {
 	@NotEmpty
 	private String attrValue;
 
+	private String attrName;
+
 
 }

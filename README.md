@@ -3651,6 +3651,117 @@ GET /{name}/_search
 
 
 
+## RestHighLevelClient客户端操作
+
+### 导入依赖
+
+```xml
+
+```
+
+### 连接ElasticSearch
+
+```java
+// 创建ES客户端对象
+RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(new HttpHost("localhost", 9200, "http")));
+```
+
+### 索引创建、删除、查询
+
+- 索引创建
+
+  ```java
+  CreateIndexRequest request = new CreateIndexRequest("user"); 
+  CreateIndexResponse response = client.indices().create(request, RequestOptions.DEFAULT);
+  ```
+
+- 索引删除
+
+  ```java
+  DeleteIndexRequest request = new DeleteIndexRequest("user");
+  AcknowledgedResponse response = client.indices().delete(request, RequestOptions.DEFAULT);
+  ```
+
+- 索引查询
+
+  ```java
+  GetIndexRequest request = new GetIndexRequest("user");
+  GetIndexResponse response = client.indices().get(request, RequestOptions.DEFAULT);
+  ```
+
+### 文档创建、更新、删除、批量操作
+
+- 文档创建
+
+  ```java
+  User user = new User();
+  user.setName("张三");
+  user.setSex("男");
+  user.setAge(22);
+  // 定义请求对象
+  IndexRequest request = new IndexRequest("user");
+  // 设置文档id
+  request.id("1000");
+  // 将json格式字符串放在请求中
+  request.source(JSONObject.toJSONString(user), XContentType.JSON);
+  // 3、发送请求到ES
+  IndexResponse response = client.index(request, RequestOptions.DEFAULT);
+  ```
+
+- 文档更新
+
+  ```java
+  User user = new User();
+  user.setName("小美");
+  user.setAge(20);
+  UpdateRequest request = new UpdateRequest();
+  request.index("user").id("1000");
+  // 拓展：局部更新也可以这样写：request.doc(XContentType.JSON, "name", "李四", "age", 25);，其中"name"和"age"是User对象中的字段名称，而"小美"和20是对应的字段值
+  request.doc(JSONObject.toJSONString(user), XContentType.JSON);
+  // 3、发送请求到ES
+  UpdateResponse response = client.update(request, RequestOptions.DEFAULT);
+  ```
+
+- 文档删除
+
+  ```java
+  DeleteRequest request = new DeleteRequest("user");
+  request.id("1000");
+  // 3、发送请求到ES
+  DeleteResponse response = client.delete(request, RequestOptions.DEFAULT);
+  ```
+
+- 批量操作
+
+  ```java
+  List<User> userList = new ArrayList<>(10);
+  for (int i = 0; i < 10; i++) {
+  	User user = new User();
+  	user.setName(i % 2 == 0 ? "张三" + i : "小美" + i);
+  	user.setSex(i % 2 == 0 ? "男" : "女");
+  	user.setAge(22 + i);
+  	userList.add(user);
+  }
+  BulkRequest bulkRequest = new BulkRequest();
+  // 准备批量插入的数据
+  userList.forEach(user -> {
+  	// 设置请求对象
+  	IndexRequest request = new IndexRequest("user");
+      // 文档id
+  	request.id("10000" + user.getAge());
+  	// 将json格式字符串放在请求中
+  	// 下面这种写法也可以写成：request.source(XContentType.JSON, "name", "张三", "age", "男", "age", 22);，其中"name"、"age"、 "age"是	request.source(JSONObject.toJSONString(user), XContentType.JSON);
+  	// 将request添加到批量处理请求中
+  	bulkRequest.add(request);
+  });
+  // 3、发送请求到ES
+  BulkResponse response = client.bulk(bulkRequest, RequestOptions.DEFAULT);
+  ```
+
+### 文档查询  
+
+#### 
+
 ## elasticsearch-java客户端操作
 
 ### 导入依赖

@@ -40,6 +40,8 @@ public class ProductAttrValueEntity implements Serializable {
 	/**
 	 * 属性名
 	 */
+
+	private String attrName;
 	/**
 	 * 属性值
 	 */

@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 public class SkuVo implements Serializable {
 
-    @Field(type=FieldType.Keyword)
     String skuName;
 
     BigDecimal price;
@@ -22,6 +21,7 @@ public class SkuVo implements Serializable {
 
     List<ImageVo> images;
 
+    @Field(type = FieldType.Nested)
     List<AttrValueVo> attr;
 
 

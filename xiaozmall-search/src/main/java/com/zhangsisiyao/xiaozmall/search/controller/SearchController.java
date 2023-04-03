@@ -4,6 +4,7 @@ import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.xiaozmall.search.service.SearchService;
 import com.zhangsisiyao.xiaozmall.search.vo.ProductVo;
 import com.zhangsisiyao.xiaozmall.search.vo.SearchParam;
+import com.zhangsisiyao.xiaozmall.search.vo.SearchResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,13 +15,12 @@ import java.util.List;
 @RequestMapping("/ElasticSearch")
 public class SearchController {
 
-
     @Autowired
     SearchService searchService;
 
     @RequestMapping("/Search")
     public R search(SearchParam param){
-        List<ProductVo> search = searchService.search(param);
+        SearchResult search = searchService.search(param);
         return R.ok().put("data",search);
     }
 

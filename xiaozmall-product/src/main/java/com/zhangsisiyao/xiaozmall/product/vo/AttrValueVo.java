@@ -12,5 +12,7 @@ public class AttrValueVo implements Serializable {
 
     String attrValue;
 
+    String attrName;
+
     Integer showDesc;
 }

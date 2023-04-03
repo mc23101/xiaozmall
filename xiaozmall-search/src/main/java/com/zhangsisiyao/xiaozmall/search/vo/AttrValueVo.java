@@ -12,8 +12,11 @@ public class AttrValueVo implements Serializable {
 
     Long attrId;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Keyword)
     String attrValue;
+
+    @Field(type = FieldType.Keyword)
+    String attrName;
 
     Integer showDesc;
 }
