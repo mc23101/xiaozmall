@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     tagClick(l1,l2,l3){
-      this.$router.push({path:"/goods",query:{catalogId:l1.catId+","+l2.catId+","+l3.catId}})
+      this.$router.push({name:"Goods",params:{catalogId:l1.catId+","+l2.catId+","+l3.catId}})
     },
     imageClickHandle(item){
       if(item.openType===0){

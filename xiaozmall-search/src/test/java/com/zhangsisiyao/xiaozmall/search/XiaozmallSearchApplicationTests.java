@@ -1,13 +1,12 @@
 package com.zhangsisiyao.xiaozmall.search;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zhangsisiyao.xiaozmall.search.service.ProductService;
 import com.zhangsisiyao.xiaozmall.search.service.SearchService;
-import com.zhangsisiyao.xiaozmall.search.vo.AttrValueVo;
-import com.zhangsisiyao.xiaozmall.search.vo.ProductVo;
-import com.zhangsisiyao.xiaozmall.search.vo.SearchParam;
-import com.zhangsisiyao.xiaozmall.search.vo.SearchResult;
+import com.zhangsisiyao.xiaozmall.search.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
@@ -40,23 +39,8 @@ class XiaozmallSearchApplicationTests {
 
     public SearchParam getParam() throws JsonProcessingException {
         SearchParam searchParam=new SearchParam();
-//        searchParam.setKeyword("小");
-        searchParam.setCatalogId("225");
-        searchParam.setBrandId("1");
-        AttrValueVo attrValueVo1 = new AttrValueVo();
-        attrValueVo1.setAttrId(13L);
-        attrValueVo1.setAttrValue("158.3");
-        searchParam.getSpuAttrs().add(attrValueVo1);
-        AttrValueVo attrValueVo2 = new AttrValueVo();
-        attrValueVo2.setAttrId(11L);
-        attrValueVo2.setAttrValue("黑色");
-        searchParam.getSpuAttrs().add(attrValueVo2);
-
-        AttrValueVo attrValueVo3=new AttrValueVo();
-        attrValueVo3.setAttrId(10L);
-        attrValueVo3.setAttrValue("6GB");
-        searchParam.getSkuAttrs().add(attrValueVo3);
-
+        searchParam.setKeyword("13");
+        //searchParam.setCatalogId("266");
         return searchParam;
     }
 
@@ -64,6 +48,19 @@ class XiaozmallSearchApplicationTests {
     void contextLoads() throws IOException {
         SearchParam searchParam=getParam();
         SearchResult searchResult = searchService.search(searchParam);
+        ObjectMapper mapper=new ObjectMapper();
+        System.out.println(mapper.writeValueAsString(searchResult));
+    }
+
+
+    @Autowired
+    ProductService productService;
+    @Test
+    void test() throws IOException {
+        ObjectMapper mapper=new ObjectMapper();
+        Object attr = productService.getAttrInfo(String.valueOf(10)).get("attr");
+        AttrVo attrVo = mapper.readValue(mapper.writeValueAsString(attr), AttrVo.class);
+        System.out.println(attrVo);
     }
 
 }

@@ -12,28 +12,24 @@
       </div>
       <div class="so">
         <el-input placeholder="请输入搜索内容" v-model="SearchParam.keyword">
-          <el-button slot="append" icon="el-icon-search" @click="searchClick"></el-button>
+          <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
         </el-input>
       </div>
     </div>
     <!--搜索栏结束-->
     <!-- 面包屑 -->
-    <div class="breadcrumb">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>全部结果</el-breadcrumb-item>
-        <el-breadcrumb-item v-if="SearchParam.catalogId!==null">{{dataResp.catalogMap[SearchParam.catalogId].name}}</el-breadcrumb-item>
-        <el-breadcrumb-item v-if="SearchParam.keyword!==null">{{SearchParam.keyword}}</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
     <div>
-      <sort-bar></sort-bar>
+      <breadcrumb :data-resp="SearchResult" :search-param="SearchParam"></breadcrumb>
     </div>
+    <!--参数过滤器-->
+    <AttrFilter :search-result="SearchResult"></AttrFilter>
+    <!--排序器-->
+    <sort-bar></sort-bar>
+    <!--搜索结果-->
     <div>
-      <list :product='dataResp.product'></list>
+      <list :search-result="SearchResult"></list>
     </div>
-    <div>
-      <footer-container></footer-container>
-    </div>
+    <footer-container></footer-container>
   </div>
 </template>
 <script>
@@ -42,53 +38,108 @@ import topbar from "@/views/components/topbar";
 import sortBar from "@/views/goods/sortBar";
 import list from "@/views/goods/list";
 import footerContainer from "@/views/components/footerContainer";
+import breadcrumb from "@/views/goods/breadcrumb";
+import PubSub from "pubsub-js";
+import AttrFilter from "@/views/goods/AttrFilter";
 export default {
   components:{
-    topbar,sortBar,list,footerContainer
+    AttrFilter, topbar,sortBar,list,footerContainer,breadcrumb
   },
   data() {
     return {
-      dataResp:{
-        catalogMap:Map,
-        catalogTree:[],
-        product:[]
-      },
+      pageSub:'',
+      sortBarSub:'',
+      spuAttrSub:'',
+      skuAttrSub:'',
+      breadcrumbSub:'',
       SearchParam:{
-        keyword:null,
-        catalogId:null
+        keyword:'',
+        catalogId:null,
+        minPrice:0,
+        maxPrice:0,
+        spuAttrs:[],
+        skuAttrs:[],
+        pageSize:20,
+        pageIndex: 1
+      },
+      SearchResult:{
       }
     };
   },
+  watch:{
+    SearchParam(){
+      this.search()
+    }
+  },
   methods:{
-    searchClick() {
-
-    },
-    getCategoryMapAndTree(){
+    search(){
+      console.log(this.SearchParam.keyword)
       this.$axios
-          .post(this.$target+"/product/category/list/tree", {})
-          .then(res => {
-            this.dataResp.catalogTree = res.data.data;
-            console.log(this.dataResp.catalogTree)
+          .post(this.$target+"/search/search",this.SearchParam)
+          .then(res=>{
+            this.SearchResult=res.data.data
           })
-          .catch(err => {
-            return Promise.reject(err);
-          });
-      this.$axios
-          .post(this.$target+"/product/category/list/map", {})
-          .then(res => {
-            this.dataResp.catalogMap = res.data.data;
-            console.log(this.dataResp.catalogMap)
-          })
-          .catch(err => {
-            return Promise.reject(err);
-          });
     }
   },
   created() {
-    this.getCategoryMapAndTree()
-    let catalogId=this.$route.query.catalogId.split(",")
-    this.SearchParam.catalogId=catalogId[2]
-    this.SearchParam.keyword=this.$route.query.search
+    // eslint-disable-next-line no-unused-vars
+    this.sortBarSub=PubSub.subscribe('sortUpdate',(msg,val)=>{
+      this.SearchParam.minPrice=val.min*1.0.toFixed(2)
+      this.SearchParam.maxPrice=val.max*1.0.toFixed(2)
+      this.search()
+    })
+    this.spuAttrSub=PubSub.subscribe('pushSpuAttr',(msg,val)=>{
+      let flag=true
+      this.SearchParam.spuAttrs.forEach(attr=>{
+        if(attr.attrId===val.attrId){
+          flag=false
+        }
+      })
+      if(flag){
+        this.SearchParam.spuAttrs.push(val)
+      }
+      this.search()
+    })
+
+    this.skuAttrSub=PubSub.subscribe("pushSkuAttr",(msg,val)=>{
+      let flag=true
+      this.SearchParam.skuAttrs.forEach(attr=>{
+        if(attr.attrId===val.attrId){
+          flag=false
+        }
+      })
+      if(flag){
+        this.SearchParam.skuAttrs.push(val)
+      }
+      this.search()
+      this.search()
+    })
+
+    this.breadcrumbSub=PubSub.subscribe("changeParam",(msg,val)=>{
+      this.SearchParam=val
+      this.search()
+    })
+
+    this.pageSub=PubSub.subscribe("pageChange",(msg,val)=>{
+      this.SearchParam.pageSize=val.pageSize
+      this.SearchParam.pageIndex=val.pageIndex
+      this.search()
+    })
+
+    if(this.$route.params.catalogId){
+      let catalogId=this.$route.params.catalogId.split(",")
+      this.SearchParam.catalogId=catalogId[2]
+    }
+    if(this.$route.params.search){
+      this.SearchParam.keyword=this.$route.params.search
+    }
+    this.search()
+  },
+  destroyed() {
+    PubSub.unsubscribe(this.sortBarSub)
+    PubSub.unsubscribe(this.spuAttrSub)
+    PubSub.unsubscribe(this.skuAttrSub)
+    PubSub.unsubscribe(this.breadcrumbSub)
   }
 };
 </script>

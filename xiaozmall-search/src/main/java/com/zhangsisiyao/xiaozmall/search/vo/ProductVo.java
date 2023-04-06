@@ -53,6 +53,9 @@ public class ProductVo implements Serializable {
     @NotNull
     private Date updateTime;
 
+
+    BigDecimal price=new BigDecimal(0x3f);
+
     /**
      * 上架状态[0 - 下架，1 - 上架]
      */

@@ -13,8 +13,12 @@ import com.zhangsisiyao.xiaozmall.product.service.AttrService;
 import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
 import com.zhangsisiyao.xiaozmall.product.vo.AttrValueVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +30,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     ProductAttrValueService productAttrValueService;
 
     @Override
+    @Cacheable(value = {"attr"},key = "#root.methodName+#root.args")
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<AttrEntity> page = this.page(
                 new Query<AttrEntity>().getPage(params),
@@ -36,6 +41,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
+    @Cacheable(value = {"attr"},key = "#root.methodName+#root.args")
     public PageUtils queryBaseAttr(Long catId, Map<String, Object> params) {
         QueryWrapper<AttrEntity> queryWrapper = new QueryWrapper<AttrEntity>();
         if(catId!=0){
@@ -53,6 +59,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
+    @Cacheable(value = {"attr"},key = "#root.methodName+#root.args")
     public PageUtils querySaleAttr(Long catId, Map<String, Object> params) {
         QueryWrapper<AttrEntity> queryWrapper = new QueryWrapper<AttrEntity>();
         if(catId!=0){
@@ -70,31 +77,59 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
+    @Cacheable(value = {"attr"},key = "#root.methodName+#root.args")
     public List<AttrEntity> queryWithAttrGroup(String groupId) {
         return this.baseMapper.queryWithAttrGroup(groupId);
     }
 
     @Override
+    @Cacheable(value = {"attr"},key = "#root.methodName+#root.args")
     public List<ProductAttrValueEntity> queryListForSpu(Long spuId) {
         return productAttrValueService.query().eq("spu_id", spuId).list();
     }
 
     @Override
-    public void UpdateAttrsBySpuId(List<AttrValueVo> attrs, String spuid) {
+    @Cacheable(value = {"attr"},key = "#root.methodName+#root.args")
+    public AttrEntity getById(Serializable attr) {
+        return super.getById(attr);
+    }
+
+
+    @Override
+    @CacheEvict(value = {"attr"},allEntries = true)
+    public void UpdateAttrsBySpuId(List<AttrValueVo> attrs, String spuId) {
         System.out.println(attrs);
         attrs.forEach((attrVo)->{
-            ProductAttrValueEntity one = productAttrValueService.query().eq("spu_id", spuid).eq("attr_id", attrVo.getAttrId()).one();
+            ProductAttrValueEntity one = productAttrValueService.query().eq("spu_id", spuId).eq("attr_id", attrVo.getAttrId()).one();
             if(one!=null){
                 one.setAttrValue(attrVo.getAttrValue());
                 productAttrValueService.updateById(one);
             }else{
                 ProductAttrValueEntity newValue=new ProductAttrValueEntity();
                 newValue.setAttrValue(attrVo.getAttrValue());
-                newValue.setSpuId(Long.valueOf(spuid));
+                newValue.setSpuId(Long.valueOf(spuId));
                 newValue.setAttrId(attrVo.getAttrId());
                 productAttrValueService.save(newValue);
             }
         });
+    }
+
+    @Override
+    @CacheEvict(value = {"attr"},allEntries = true)
+    public void UpdateByAttrId(AttrEntity attr) {
+        this.updateById(attr);
+    }
+
+    @Override
+    @CacheEvict(value = {"attr"},allEntries = true)
+    public void DeleteAttrsById(Long[] ids) {
+        this.removeByIds(Arrays.asList(ids));
+    }
+
+    @Override
+    @CacheEvict(value = {"attr"},allEntries = true)
+    public void SaveAttr(AttrEntity attr) {
+        this.save(attr);
     }
 
 

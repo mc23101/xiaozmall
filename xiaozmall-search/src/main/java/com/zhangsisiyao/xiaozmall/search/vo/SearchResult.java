@@ -12,7 +12,11 @@ public class SearchResult implements Serializable {
 
     List<ProductVo> products;
 
-    List<Long> spuAttrs;
+    List<CatalogVo> catalogs;
 
-    List<Long> skuAttrs;
+    List<BrandVo> brands;
+
+    List<AttrVo> spuAttrs;
+
+    List<AttrVo> skuAttrs;
 }

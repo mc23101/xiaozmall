@@ -12,11 +12,11 @@
       <div class="prices">
         <ul>
           <li class="item">
-            <input placeholder="¥" v-model="dataForm.min">
+            <input placeholder="¥" v-model="sortData.min">
           </li>
           <li class="step">-</li>
           <li class="item">
-            <input placeholder="¥" v-model="dataForm.max">
+            <input placeholder="¥" v-model="sortData.max">
           </li>
         </ul>
         <div class="input-hover">
@@ -29,30 +29,31 @@
               <input placeholder="¥" v-model="dataForm.max">
             </li>
             <li class="item">
-              <button class="submit">确定</button>
+              <button class="submit" @click="setMinMax()">确定</button>
             </li>
           </ul>
         </div>
       </div>
     </div>
     <div class="filter-row">
-      <el-checkbox  v-model="dataForm.filter.BaoYou">包邮</el-checkbox>
-      <el-checkbox v-model="dataForm.filter.XinPin">新品</el-checkbox>
-      <el-checkbox v-model="dataForm.filter.YiWaiXian">赠送运费退货险</el-checkbox>
-      <el-checkbox v-model="dataForm.filter.GongYi">公益宝贝</el-checkbox>
-      <el-checkbox v-model="dataForm.filter.EShou">二手</el-checkbox>
-      <el-checkbox v-model="dataForm.filter.ZhengPin">正品保证</el-checkbox>
-      <el-checkbox v-model="dataForm.filter.QiTianTuiHuo">7+天内退货</el-checkbox>
-      <el-checkbox v-model="dataForm.filter.HaiWai">海外商品</el-checkbox>
+      <el-checkbox  v-model="sortData.BaoYou">包邮</el-checkbox>
+      <el-checkbox v-model="sortData.XinPin">新品</el-checkbox>
+      <el-checkbox v-model="sortData.YiWaiXian">赠送运费退货险</el-checkbox>
+      <el-checkbox v-model="sortData.GongYi">公益宝贝</el-checkbox>
+      <el-checkbox v-model="sortData.EShou">二手</el-checkbox>
+      <el-checkbox v-model="sortData.ZhengPin">正品保证</el-checkbox>
+      <el-checkbox v-model="sortData.QiTianTuiHuo">7+天内退货</el-checkbox>
+      <el-checkbox v-model="sortData.HaiWai">海外商品</el-checkbox>
     </div>
   </div>
 </template>
 
 <script>
+import PubSub from 'pubsub-js'
 export default {
   watch:{
-    state(val){
-      console.log(val)
+    'dataForm.state':function (val){
+      this.sortData.sortType=val
     }
   },
   data() {
@@ -61,24 +62,35 @@ export default {
         min: '',
         max: '',
         state:0,
-        filter:{
-          BaoYou: false,
-          XinPin: false,
-          YiWaiXian:false,
-          GongYi:false,
-          EShou:false,
-          ZhengPin:false,
-          QiTianTuiHuo:false,
-          HaiWai:false
-        }
+      },
+      sortData:{
+        min:'',
+        max:'',
+        sortType:'',
+        BaoYou: false,
+        XinPin: false,
+        YiWaiXian:false,
+        GongYi:false,
+        EShou:false,
+        ZhengPin:false,
+        QiTianTuiHuo:false,
+        HaiWai:false
       }
     };
+  },
+  methods:{
+    setMinMax(){
+      this.sortData.min=this.dataForm.min
+      this.sortData.max=this.dataForm.max
+      PubSub.publish('sortUpdate',this.sortData)
+    }
   }
 }
 </script>
 
 <style scoped>
 .sortBar{
+  position: relative;
   margin: 15px auto;
   height: 80px;
   width: 1225px;

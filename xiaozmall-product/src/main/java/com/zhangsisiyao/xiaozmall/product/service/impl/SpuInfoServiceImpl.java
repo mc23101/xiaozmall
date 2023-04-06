@@ -13,6 +13,7 @@ import com.zhangsisiyao.xiaozmall.product.service.*;
 import com.zhangsisiyao.xiaozmall.product.vo.*;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -250,20 +251,26 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Override
     public void upSpu(Long spuId) {
-        RLock lock = redisson.getLock("upSpuLock");
+        RLock lock = redisson.getLock("SpuLock."+spuId);
         lock.lock();
         SpuInfoEntity entity = this.query().eq("id", spuId).one();
         entity.setPublishStatus(1);
         entity.setUpdateTime(new Date());
         ProductVo product = spuInfoService.getProduct(spuId);
         ObjectMapper mapper = new ObjectMapper();
+        RabbitTemplate.ConfirmCallback confirmCallback= (correlationData, ack, cause) -> {
+            if(ack){
+                updateById(entity);
+            }
+        };
         try {
             rabbitTemplate.convertAndSend("ElasticSearch","product.spu.up",mapper.writeValueAsString(product));
+            rabbitTemplate.setConfirmCallback(confirmCallback);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
         }
-        this.updateById(entity);
-        lock.unlock();
     }
 
     @Override

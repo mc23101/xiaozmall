@@ -54,7 +54,7 @@ export default {
     },
     searchClick() {
       // 跳转到全部商品页面,并传递搜索条件
-      this.$router.push({ path: "/goods", query: { search: this.search } });
+      this.$router.push({ name: "Goods", params: { search: this.search } });
       this.search = "";
     }
   }

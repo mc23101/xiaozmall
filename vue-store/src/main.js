@@ -18,6 +18,8 @@ Vue.use(ElementUI);
 import Global from './Global';
 Vue.use(Global);
 
+Vue.use(PubSub)
+
 import Axios from 'axios';
 Vue.prototype.$axios = Axios;
 // 全局请求拦截器
@@ -103,6 +105,7 @@ Vue.component(MyList.name, MyList);
 import MyLogin from './components/MyLogin';
 Vue.component(MyLogin.name, MyLogin);
 import MyRegister from './components/MyRegister';
+import PubSub from "pubsub-js";
 Vue.component(MyRegister.name, MyRegister);
 
 Vue.config.productionTip = false;
