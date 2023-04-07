@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -14,6 +15,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     StringRedisTemplate redisTemplate;
 
     @Override
+    @Cacheable(cacheNames = {"Category"},sync = true,keyGenerator = "customKeyGenerator")
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<CategoryEntity> page = this.page(
                 new Query<CategoryEntity>().getPage(params),
@@ -35,7 +38,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     @Override
-    @Cacheable(cacheNames = {"category"},sync = true,key="'categoryTree'")
+    @Cacheable(cacheNames = {"Category"},sync = true,keyGenerator = "customKeyGenerator")
     public List<CategoryEntity> listWithTree() {
         List<CategoryEntity> allEntities = baseMapper.selectList(null);
         return allEntities.stream()
@@ -49,7 +52,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     @Override
-    @CacheEvict(cacheNames = {"category"},key = "'categoryMap'")
+    @Cacheable(cacheNames = {"Category"},keyGenerator = "customKeyGenerator",sync = true)
     public Map<Long, CategoryEntity> listWithMap() {
         Map<Long,CategoryEntity> map=new HashMap<>();
         baseMapper.selectList(null).forEach((entity->{
@@ -69,4 +72,69 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @CacheEvict(value = {"Category"},allEntries = true)
+    public boolean save(CategoryEntity entity) {
+        return super.save(entity);
+    }
+
+    @Override
+    @CacheEvict(value = {"Category"},allEntries = true)
+    public boolean saveBatch(Collection<CategoryEntity> entityList) {
+        return super.saveBatch(entityList);
+    }
+
+    @Override
+    @CacheEvict(value = {"Category"},allEntries = true)
+    public boolean saveOrUpdateBatch(Collection<CategoryEntity> entityList) {
+        return super.saveOrUpdateBatch(entityList);
+    }
+
+    @Override
+    @CacheEvict(value = {"Category"},allEntries = true)
+    public boolean removeById(Serializable id) {
+        return super.removeById(id);
+    }
+
+    @Override
+    @CacheEvict(value = {"Category"},allEntries = true)
+    public boolean removeByMap(Map<String, Object> columnMap) {
+        return super.removeByMap(columnMap);
+    }
+
+    @Override
+    @CacheEvict(value = {"Category"},allEntries = true)
+    public boolean remove(Wrapper<CategoryEntity> queryWrapper) {
+        return super.remove(queryWrapper);
+    }
+
+    @Override
+    @CacheEvict(value = {"Category"},allEntries = true)
+    public boolean removeByIds(Collection<? extends Serializable> idList) {
+        return super.removeByIds(idList);
+    }
+
+    @Override
+    @CacheEvict(value = {"Category"},allEntries = true)
+    public boolean updateById(CategoryEntity entity) {
+        return super.updateById(entity);
+    }
+
+    @Override
+    @CacheEvict(value = {"Category"},allEntries = true)
+    public boolean update(Wrapper<CategoryEntity> updateWrapper) {
+        return super.update(updateWrapper);
+    }
+
+    @Override
+    @CacheEvict(value = {"Category"},allEntries = true)
+    public boolean update(CategoryEntity entity, Wrapper<CategoryEntity> updateWrapper) {
+        return super.update(entity, updateWrapper);
+    }
+
+    @Override
+    @CacheEvict(value = {"Category"},allEntries = true)
+    public boolean updateBatchById(Collection<CategoryEntity> entityList) {
+        return super.updateBatchById(entityList);
+    }
 }

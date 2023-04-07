@@ -2,9 +2,13 @@ package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
+import com.zhangsisiyao.xiaozmall.product.entity.AttrAttrgroupRelationEntity;
+import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrGroupEntity;
 import com.zhangsisiyao.xiaozmall.product.vo.AttrGroupWithAttrsVo;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -21,9 +25,18 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
 
     PageUtils queryPageByColumn(Object column,Object val,Map<String, Object> params);
 
-    public PageUtils queryNoAttrRelation(String attrGroupId,Map<String, Object> params);
+    //List<AttrGroupEntity> queryByColumn(Map<String,Object> columns);
 
     public List<AttrGroupWithAttrsVo> queryWithAttr(String catalogId);
+
+    public List<AttrEntity> queryAttrRelation(String attrGroupId);
+
+    public void addAttrRelation(List<AttrAttrgroupRelationEntity> relationEntities);
+
+    public void deleteAttrRelation(List<AttrAttrgroupRelationEntity> relationEntities);
+    public PageUtils queryNoAttrRelation(String attrGroupId,Map<String, Object> params);
+
+
 
 
 }

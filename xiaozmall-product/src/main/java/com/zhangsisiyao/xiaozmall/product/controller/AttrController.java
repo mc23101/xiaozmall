@@ -72,7 +72,7 @@ public class AttrController {
      */
     @RequestMapping("/save")
     public R save(@RequestBody AttrEntity attr){
-		attrService.SaveAttr(attr);
+		attrService.save(attr);
         return R.ok();
     }
 
@@ -81,7 +81,7 @@ public class AttrController {
      */
     @RequestMapping("/update")
     public R update(@RequestBody AttrEntity attr){
-		attrService.UpdateByAttrId(attr);
+		attrService.updateById(attr);
         return R.ok();
     }
 
@@ -96,7 +96,7 @@ public class AttrController {
      */
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] attrIds){
-		attrService.DeleteAttrsById(attrIds);
+		attrService.removeByIds(Arrays.asList(attrIds));
         return R.ok();
     }
 

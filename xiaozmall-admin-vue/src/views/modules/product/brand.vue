@@ -183,7 +183,7 @@ export default {
           page: this.pageIndex,
           limit: this.pageSize,
           key: this.dataForm.key
-        })
+        },false)
       }).then(({ data }) => {
         if (data && data.code === 0) {
           this.dataList = data.page.list

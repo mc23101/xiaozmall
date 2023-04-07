@@ -33,31 +33,21 @@ public class AttrGroupController {
     @Autowired
     private AttrGroupService attrGroupService;
 
-    @Autowired
-    private AttrAttrgroupRelationService relationService;
-
-    @Autowired
-    private AttrService attrService;
-
     @RequestMapping("/attr/relation/get/{attrGroupId}")
     public R getAttrRelation(@PathVariable String attrGroupId){
-        List<AttrAttrgroupRelationEntity> attr_group_id = relationService.query().eq("attr_group_id", attrGroupId).list();
-        List<AttrEntity> attrEntities=new ArrayList<>();
-        for(AttrAttrgroupRelationEntity entity:attr_group_id){
-            attrEntities.addAll(attrService.query().eq("attr_id",entity.getAttrId()).list());
-        }
+        List<AttrEntity> attrEntities = attrGroupService.queryAttrRelation(attrGroupId);
         return R.ok().put("data",attrEntities);
     }
 
     @RequestMapping("/attr/relation/add")
     public R addAttrRelation(@RequestBody List<AttrAttrgroupRelationEntity> relationEntities){
-        relationEntities.forEach((entity)->relationService.save(entity));
+        attrGroupService.addAttrRelation(relationEntities);
         return R.ok();
     }
 
     @RequestMapping("/attr/relation/delete")
     public R deleteAttrRelation(@RequestBody List<AttrAttrgroupRelationEntity> relationEntities){
-        relationEntities.forEach((entity)->relationService.remove(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id",entity.getAttrId()).eq("attr_group_id",entity.getAttrGroupId())));
+        attrGroupService.deleteAttrRelation(relationEntities);
         return R.ok();
     }
 
@@ -135,7 +125,6 @@ public class AttrGroupController {
     //@RequiresPermissions("product:attrgroup:delete")
     public R delete(@RequestBody Long[] attrGroupIds){
 		attrGroupService.removeByIds(Arrays.asList(attrGroupIds));
-
         return R.ok();
     }
 

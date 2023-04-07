@@ -1,9 +1,12 @@
 package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -16,5 +19,7 @@ import java.util.Map;
 public interface BrandService extends IService<BrandEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+
 }
 

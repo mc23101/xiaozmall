@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrAttrgroupRelationEntity;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -16,7 +17,6 @@ import java.util.Map;
 public interface AttrAttrgroupRelationService extends IService<AttrAttrgroupRelationEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-
 
 }
 

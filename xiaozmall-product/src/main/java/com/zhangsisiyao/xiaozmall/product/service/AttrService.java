@@ -29,14 +29,5 @@ public interface AttrService extends IService<AttrEntity> {
 
     List<ProductAttrValueEntity> queryListForSpu(Long spuId);
 
-    @Override
-    AttrEntity getById(Serializable attr);
-
     void UpdateAttrsBySpuId(List<AttrValueVo> attrs, String spuId);
-
-    void UpdateByAttrId(AttrEntity attr);
-
-    void DeleteAttrsById(Long[] ids);
-
-    void SaveAttr(AttrEntity attr);
 }
