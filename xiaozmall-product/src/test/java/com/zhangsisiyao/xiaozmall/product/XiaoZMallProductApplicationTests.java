@@ -1,7 +1,11 @@
 package com.zhangsisiyao.xiaozmall.product;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zhangsisiyao.common.vo.ProductVo;
 import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
 import com.zhangsisiyao.xiaozmall.product.service.BrandService;
+import com.zhangsisiyao.xiaozmall.product.service.SpuInfoService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -17,11 +21,13 @@ public class XiaoZMallProductApplicationTests {
 
     @Autowired
     RabbitTemplate rabbitTemplate;
+    @Autowired
+    SpuInfoService spuInfoService;
     @Test
-    public void test() throws InterruptedException {
-       while (true){
-           Thread.sleep(1000);
-           rabbitTemplate.convertAndSend("ElasticSearch","product.spu.up","message");
-       }
+    public void test() throws InterruptedException, JsonProcessingException {
+        ProductVo product = spuInfoService.getProduct(17L);
+        ObjectMapper mapper=new ObjectMapper();
+        System.out.println(mapper.writeValueAsString(product));
+
     }
 }

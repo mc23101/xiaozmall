@@ -2,12 +2,11 @@ package com.zhangsisiyao.xiaozmall.search.listener;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zhangsisiyao.xiaozmall.search.vo.ProductVo;
+import com.zhangsisiyao.xiaozmall.search.vo.SearchProductVo;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,10 +25,10 @@ public class SpuUpListener {
     @RabbitHandler
     public void receiveUp(String in) throws JsonProcessingException {
         ObjectMapper mapper=new ObjectMapper();
-        ProductVo product = mapper.readValue(in, ProductVo.class);
-        if(!elasticsearchRestTemplate.indexExists(ProductVo.class)){
-            elasticsearchRestTemplate.createIndex(ProductVo.class);
-            elasticsearchRestTemplate.putMapping(ProductVo.class);
+        SearchProductVo product = mapper.readValue(in, SearchProductVo.class);
+        if(!elasticsearchRestTemplate.indexExists(SearchProductVo.class)){
+            elasticsearchRestTemplate.createIndex(SearchProductVo.class);
+            elasticsearchRestTemplate.putMapping(SearchProductVo.class);
         }
         elasticsearchRestTemplate.save(product);
     }
@@ -44,9 +43,9 @@ public class SpuUpListener {
     })
     @RabbitHandler
     public void receiveDown(Long spuId){
-        boolean exists = elasticsearchRestTemplate.exists(String.valueOf(spuId), ProductVo.class);
+        boolean exists = elasticsearchRestTemplate.exists(String.valueOf(spuId), SearchProductVo.class);
         if(exists){
-            elasticsearchRestTemplate.delete(String.valueOf(spuId),ProductVo.class);
+            elasticsearchRestTemplate.delete(String.valueOf(spuId), SearchProductVo.class);
         }
     }
 

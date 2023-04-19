@@ -174,7 +174,7 @@ export default {
   props: {
     step: 0,
     baseInfo: '',
-    spuAttrs: '',
+    spuAttrGroup: '',
     saleAttrs: ''
   },
   watch: {
@@ -194,13 +194,14 @@ export default {
       spu: {
         descript: [],
         images: [],
-        baseAttrs: [],
+        spuAttrGroup:[],
         skus: []
       }
     }
   },
   methods: {
     submitSkus () {
+      console.log(this.spu)
       this.generateSpu()
       this.$confirm('将要提交商品数据，需要一小段时间，是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -247,11 +248,7 @@ export default {
       this.baseInfo.images.forEach(item => {
         this.spu.images.push({imgUrl: item})
       })
-      this.spuAttrs.forEach(item => {
-        item.forEach(attr => {
-          this.spu.baseAttrs.push(attr)
-        })
-      })
+      this.spu.spuAttrGroup=this.spuAttrGroup
       this.spu.skus = this.skus
     },
     generateSkus () {

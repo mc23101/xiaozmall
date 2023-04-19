@@ -33,7 +33,7 @@ public class HomeRecommendationEntity implements Serializable {
 	/**
 	 * 点击转跳页面url
 	 */
-	private String openUrl;
+	private String href;
 	/**
 	 * 是否启用
 	 */

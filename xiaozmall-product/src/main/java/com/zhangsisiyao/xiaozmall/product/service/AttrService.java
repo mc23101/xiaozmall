@@ -4,10 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
-import com.zhangsisiyao.common.vo.*;
-import com.zhangsisiyao.xiaozmall.product.vo.AttrValueVo;
+import com.zhangsisiyao.common.vo.AttrValueVo;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 

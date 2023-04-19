@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
-import com.zhangsisiyao.xiaozmall.product.vo.ProductVo;
+import com.zhangsisiyao.common.vo.ProductVo;
 
 import java.util.List;
 import java.util.Map;

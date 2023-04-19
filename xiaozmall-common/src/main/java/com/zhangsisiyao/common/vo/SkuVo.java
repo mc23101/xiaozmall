@@ -8,6 +8,9 @@ import java.util.List;
 
 @Data
 public class SkuVo implements Serializable {
+
+    Long skuId;
+
     String skuName;
 
     BigDecimal price;
@@ -18,9 +21,10 @@ public class SkuVo implements Serializable {
 
     List<ImageVo> images;
 
-    List<String> descar;
+    List<AttrValueVo> attr;
 
-    List<SkuAttrValueVo> attr;
+
+    //TODO 会员信息折扣
 
     BigDecimal fullCount;
 

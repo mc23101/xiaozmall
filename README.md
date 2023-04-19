@@ -2834,6 +2834,218 @@ mybatis-plus:
 
 ```
 
+# 多线程
+
+## 线程创建的四种方式
+
+## 线程池的参数、运行流程、创建方法
+
+### 七大参数
+
+- `corePoolSize`：核心线程数，线程池创建好后就准备就绪的线程数量。
+
+- `maximunPoolSize`：最大线程数量，控制线程资源。
+
+- `keepAliveTime`：线程存活时间，当线程数量大于`corePoolSize`线程数量时，当存活时间结束时，会释放`当前线程数`-`corePoolSize`个线程。
+
+- `unit`：线程存活时间的时间单位。
+
+- `workQueue`：阻塞队列，如果任务过多，会将多余的任务放入阻塞队列中。`需要指定大小，否则可能出现内存溢出异常`
+
+- `treadFactory`：线程的创建工厂
+
+- `handler`：拒绝策略，当阻塞队列满了，执行的拒绝策略。
+
+### 运行流程
+
+1. 线程池创建，准备core线程数量，就绪等待接收任务。
+2. 空闲的core线程从阻塞队列中获取任务。core线程满了，则会将任务重新放到阻塞队列中。
+3. 阻塞队列满了，就会直接开启新线程执行任务，线程数量最大只能到达`maximunPoolSize`个。
+4. 线程池处理完所有任务后，会根据`keepAliveTime`来回收核心线程`corePoolSize`之外的线程。
+
+### 创建方法
+
+- 创建线程池
+
+  ```java
+  ThreadPoolExecutor(int corePoolSize,
+                                int maximumPoolSize,
+                                long keepAliveTime,
+                                TimeUnit unit,
+                                BlockingQueue<Runnable> workQueue)
+  
+  ThreadPoolExecutor(int corePoolSize,
+                                int maximumPoolSize,
+                                long keepAliveTime,
+                                TimeUnit unit,
+                                BlockingQueue<Runnable> workQueue,
+                                ThreadFactory threadFactory) 
+      
+  ThreadPoolExecutor(int corePoolSize,
+                                int maximumPoolSize,
+                                long keepAliveTime,
+                                TimeUnit unit,
+                                BlockingQueue<Runnable> workQueue,
+                                RejectedExecutionHandler handler)
+      
+  ThreadPoolExecutor(int corePoolSize,
+                                int maximumPoolSize,
+                                long keepAliveTime,
+                                TimeUnit unit,
+                                BlockingQueue<Runnable> workQueue,
+                                ThreadFactory threadFactory,
+                                RejectedExecutionHandler handler)
+  ```
+
+- 快捷创建线程池
+
+  ```java
+  //创建一个定长线程池，可控制线程最大并发数，超出的线程会在阻塞队列中等待。核心线程数=最大线程数
+  Executors.newFixedThreadPool(20);
+  
+  //创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。核心线程数=0
+  Executors.newCachedThreadPool();
+  
+  //创建一个定长线程池，支持定时及周期性任务执行。
+  Executors.newScheduledThreadPool(10);
+          
+  //创建一个单线程化的线程池，它只会用唯一的工作线程来执行任务，保证所有任务按照指定顺序(FIFO, LIFO, 优先级)执行。
+  Executors.newSingleThreadExecutor();
+  ```
+
+  
+
+
+
+## CompletableFuture
+
+### 启动异步任务
+
+```java
+//runAsync表示创建无返回值的异步任务
+static CompletableFuture<Void> runAsync(Runnable runnable)
+static CompletableFuture<Void> runAsync(Runnable runnable,Executor executor)
+    
+//supplyAsync表示创建带返回值的异步任务
+static <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier)
+static <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier,Executor executor)
+```
+
+### 异步回调
+
+#### **thenAccept / thenRun / thenApply**
+
+- 单个任务执行完成后执行的动作
+
+  ```java
+  //同步方法
+  <U> CompletableFuture<U> thenApply(Function<? super T,? extends U> fn)
+  CompletableFuture<Void> thenAccept(Consumer<? super T> action)
+  CompletableFuture<Void> thenRun(Runnable action)
+      
+  //异步方法
+  <U> CompletableFuture<U> thenApplyAsync(Function<? super T,? extends U> fn)
+  <U> CompletableFuture<U> thenApplyAsync(Function<? super T,? extends U> fn, Executor executor)
+  CompletableFuture<Void> thenAcceptAsync(Consumer<? super T> action)
+  CompletableFuture<Void> thenAcceptAsync(Consumer<? super T> action,Executor executor)
+  CompletableFuture<Void> thenRunAsync(Runnable action)
+  CompletableFuture<Void> thenRunAsync(Runnable action,Executor executor)
+  ```
+  
+- 三个方法的区别
+
+  1. `thenApply`方法，接收一个函数作为参数，并且返回一个新的`CompletableFuture`对象，该对象以该函数的返回值作为结果。
+
+  2. `thenAccept`方法，接收一个消费者函数，当异步任务完成后，执行该函数并且传入异步任务的结果作为参数。该方法不会返回任何结果，只是处理异步任务的结果。
+
+  3. `thenRun`方法，接收一个`Runnable`函数，当异步任务完成后，执行该函数。该方法不会传递任何参数，也不会返回任何结果。
+  
+- 代码样例
+
+  ```java
+  //thenApply
+  CompletableFuture<User> future = CompletableFuture.supplyAsync(() -> getUserById(id));
+  future.thenApply(user -> user.getName());
+  //thenAccept
+  CompletableFuture<User> future = CompletableFuture.supplyAsync(() -> getUserById(id));
+  future.thenAccept(user -> System.out.println("user name: " + user.getName()));
+  //thenRun
+  CompletableFuture<User> future = CompletableFuture.supplyAsync(() -> getUserById(id));
+  future.thenRun(() -> System.out.println("user task completed"));
+  ```
+
+#### **thenCombine / thenAcceptBoth / runAfterBoth**
+
+这三个方法都是将两个CompletableFuture组合起来，只有这两个都正常执行完了才会执行某个任务，区别在于：
+
+- `thenCombine`会将两个任务的执行结果作为方法入参传递到指定方法中，且该方法有返回值；
+
+- `thenAcceptBoth`同样将两个任务的执行结果作为方法入参，但是无返回值；
+
+- `runAfterBoth`没有入参，也没有返回值。注意两个任务中只要有一个执行异常，则将该异常信息作为指定任务的执行结果。
+
+#### **applyToEither / acceptEither / runAfterEither**
+
+这三个方法都是将两个CompletableFuture组合起来，只要其中一个执行完了就会执行某个任务，其区别在于：
+
+- `applyToEither`会将已经执行完成的任务的执行结果作为方法入参，并有返回值；
+- `acceptEither`同样将已经执行完成的任务的执行结果作为方法入参，但是没有返回值；
+- `runAfterEither`没有方法入参，也没有返回值。注意两个任务中只要有一个执行异常，则将该异常信息作为指定任务的执行结果。
+
+#### **thenCompose**
+
+将前一个任务的返回结果作为下一个任务的参数，它们之间存在着先后顺序。
+
+#### **allOf / anyOf**
+
+- `allOf`：所有异步任务完成后，返回结果
+- `anyOf`：任一异步任务完成后，返回结果
+
+#### **whenComplete**
+
+whenComplete是当某个任务执行完成后执行的回调方法，会将执行结果或者执行期间抛出的异常传递给回调方法，
+
+- 如果是正常执行则异常为null，回调方法对应的CompletableFuture的result和该任务一致，
+- 如果该任务正常执行，则get方法返回执行结果，
+- 如果是执行异常，则get方法抛出异常
+
+#### **handle**
+
+跟whenComplete基本一致，区别在于handle的回调方法有返回值，且handle方法返回的CompletableFuture的result是回调方法的执行结果或者回调方法执行期间抛出的异常，与原始CompletableFuture的result无关了。
+
+### 异常感知
+
+#### **exceptionally**
+
+exceptionally方法指定某个任务执行异常时执行的回调方法，会将抛出异常作为参数传递到回调方法中，如果该任务正常执行则会exceptionally方法返回的CompletionStage的result就是该任务正常执行的结果.
+
+
+
+
+
+```java
+//在同一个线程下执行回调
+CompletableFuture<T> whenComplete(BiConsumer<? super T, ? super Throwable> action)
+    
+//在新线程下异步回调
+CompletableFuture<T> whenCompleteAsync(BiConsumer<? super T, ? super Throwable> action)
+CompletableFuture<T> whenCompleteAsync(BiConsumer<? super T, ? super Throwable> action, Executor executor)
+```
+
+- 异常感知方法
+
+  ```java
+  CompletableFuture<T> exceptionally(Function<Throwable, ? extends T> fn)
+  CompletableFuture<T> exceptionallyAsync(Function<Throwable, ? extends T> fn)
+  CompletableFuture<T> exceptionallyAsync(Function<Throwable, ? extends T> fn, Executor executor)
+  CompletableFuture<T> exceptionallyCompose(Function<Throwable, ? extends CompletionStage<T>> fn)
+  CompletableFuture<T> exceptionallyComposeAsync(Function<Throwable, ? extends CompletionStage<T>> fn)
+  ```
+
+   
+
+
+
 # SpringCloudAlibaba介绍
 
 SpringCloudAlibaba介绍文档：[点击进入](https://spring-cloud-alibaba-group.github.io/github-pages/hoxton/zh-cn/index.html#_%E4%BB%8B%E7%BB%8D)
@@ -3359,6 +3571,7 @@ Docker部署Nacos-Server：
 ```shell
 docker pull elasticsearch:7.6.2
 
+# 设置配置文件信息
 mkdir -p /mydata/elasticsearch/config
 mkdir -p /mydata/elasticsearch/data
 echo "http.host: 0.0.0.0" >> /mydata/elasticsearch/config/elasticsearch.yml

@@ -32,6 +32,8 @@ public class ProductAttrValueEntity implements Serializable {
 	 */
 	@Min(value = 1)
 	private Long spuId;
+
+	private Long groupId;
 	/**
 	 * 属性id
 	 */

@@ -1,19 +1,15 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
+import com.zhangsisiyao.common.vo.AttrGroupVo;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrAttrgroupRelationEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrGroupEntity;
-import com.zhangsisiyao.xiaozmall.product.service.AttrAttrgroupRelationService;
 import com.zhangsisiyao.xiaozmall.product.service.AttrGroupService;
-import com.zhangsisiyao.xiaozmall.product.service.AttrService;
-import com.zhangsisiyao.xiaozmall.product.vo.AttrGroupWithAttrsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +49,7 @@ public class AttrGroupController {
 
     @RequestMapping("/withattr/{catalogId}")
     public R withattrCatalogId(@PathVariable String catalogId){
-        List<AttrGroupWithAttrsVo> list = attrGroupService.queryWithAttr(catalogId);
+        List<AttrGroupVo> list = attrGroupService.queryWithAttr(catalogId);
         return R.ok().put("data",list);
     }
 

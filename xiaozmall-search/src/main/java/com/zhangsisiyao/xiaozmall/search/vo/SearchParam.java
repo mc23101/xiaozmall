@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.search.vo;
 
+import com.zhangsisiyao.common.vo.AttrValueVo;
 import lombok.Data;
 
 import java.io.Serializable;

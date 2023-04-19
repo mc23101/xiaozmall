@@ -6,32 +6,33 @@
  * @LastEditTime: 2020-02-26 23:14:32
  */
 export default {
+  namespace:true,
   state: {
-    user: "", // 登录的用户
-    showLogin: false // 用于控制是否显示登录组件
+    username: "", // 登录的用户
+    jwt: "" // 用于控制是否显示登录组件
   },
   getters: {
-    getUser (state) {
-      return state.user
+    getUserName (state) {
+      return state.username
     },
-    getShowLogin (state) {
-      return state.showLogin
+    getJWT (state) {
+      return state.jwt
     }
   },
   mutations: {
-    setUser (state, data) {
-      state.user = data;
+    setUserName (state, data) {
+      state.username = data;
     },
-    setShowLogin (state, data) {
-      state.showLogin = data;
+    setJWT (state, data) {
+      state.jwt = data;
     }
   },
   actions: {
     setUser ({ commit }, data) {
-      commit('setUser', data);
+      commit('setUserName', data);
     },
     setShowLogin ({ commit }, data) {
-      commit('setShowLogin', data);
+      commit('setJWT', data);
     }
   }
 }

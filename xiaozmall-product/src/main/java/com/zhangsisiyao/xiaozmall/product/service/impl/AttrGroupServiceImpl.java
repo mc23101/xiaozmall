@@ -6,7 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
-import com.zhangsisiyao.xiaozmall.product.vo.AttrGroupWithAttrsVo;
+import com.zhangsisiyao.common.vo.AttrGroupVo;
+import com.zhangsisiyao.common.vo.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.dao.AttrGroupDao;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrAttrgroupRelationEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
@@ -14,6 +15,7 @@ import com.zhangsisiyao.xiaozmall.product.entity.AttrGroupEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrAttrgroupRelationService;
 import com.zhangsisiyao.xiaozmall.product.service.AttrGroupService;
 import com.zhangsisiyao.xiaozmall.product.service.AttrService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -62,19 +64,22 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
     @Override
     @Cacheable(value = {"attrGroup"},keyGenerator = "customKeyGenerator",sync = true)
-    public List<AttrGroupWithAttrsVo> queryWithAttr(String catalogId) {
+    public List<AttrGroupVo> queryWithAttr(String catalogId) {
         //TODO 修改时间复杂度，使用联表查询
         List<AttrGroupEntity> attrGroup = this.query().eq("catalog_id", catalogId).list();
-        List<AttrGroupWithAttrsVo> attrGroupWithAttrsVos=new ArrayList<>();
+        List<AttrGroupVo> attrGroupVos=new ArrayList<>();
         for(AttrGroupEntity attrGroupEntity:attrGroup){
-            AttrGroupWithAttrsVo cur=new AttrGroupWithAttrsVo(attrGroupEntity);
+            AttrGroupVo cur=new AttrGroupVo();
+            BeanUtils.copyProperties(attrGroupEntity,cur);
             List<AttrEntity> attrEntities = attrService.queryWithAttrGroup(String.valueOf(attrGroupEntity.getAttrGroupId()));
-            if(attrEntities!=null){
-                cur.getAttrs().addAll(attrEntities);
-            }
-            attrGroupWithAttrsVos.add(cur);
+            attrEntities.forEach(attr -> {
+                AttrVo attrVo=new AttrVo();
+                BeanUtils.copyProperties(attr,attrVo);
+                cur.getAttrs().add(attrVo);
+            });
+            attrGroupVos.add(cur);
         }
-        return attrGroupWithAttrsVos;
+        return attrGroupVos;
     }
     @Override
     @CacheEvict(value = {"attrGroup"},allEntries = true)

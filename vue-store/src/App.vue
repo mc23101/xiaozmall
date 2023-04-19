@@ -5,11 +5,12 @@
  * @LastEditors: hai-27
  * @LastEditTime: 2020-04-05 13:14:48
  -->
+<!DOCTYPE html>
 <template>
   <div id="app" name="app">
-    <keep-alive>
-      <router-view></router-view>
-    </keep-alive>
+      <keep-alive>
+          <router-view></router-view>
+      </keep-alive>
   </div>
 </template>
 <script>
@@ -20,28 +21,7 @@ export default {
 };
 </script>
 
-<style>
-* {
-  padding: 0;
-  margin: 0;
-  border: 0;
-  list-style: none;
-}
-#app .el-header {
-  padding: 0;
-}
-#app .el-main {
-  min-height: 300px;
-  padding: 20px 0;
-}
-#app .el-footer {
-  padding: 0;
-}
-a,
-a:hover {
-  text-decoration: none;
-}
+<style scoped>
+
 /* 全局CSS END */
-
-
 </style>

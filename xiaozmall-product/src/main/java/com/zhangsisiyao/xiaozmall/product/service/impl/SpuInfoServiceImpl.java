@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -7,22 +8,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.*;
 import com.zhangsisiyao.xiaozmall.product.dao.SpuInfoDao;
 import com.zhangsisiyao.xiaozmall.product.entity.*;
 import com.zhangsisiyao.xiaozmall.product.service.*;
-import com.zhangsisiyao.xiaozmall.product.vo.*;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.*;
 
 
 @Service("spuInfoService")
@@ -63,6 +63,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     RabbitTemplate rabbitTemplate;
 
     @Override
+    @Cacheable(value = {"SpuInfo"},keyGenerator = "customKeyGenerator",sync = true)
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<SpuInfoEntity> page = this.page(
                 new Query<SpuInfoEntity>().getPage(params),
@@ -72,6 +73,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     }
 
     @Override
+    @Cacheable(value = {"SpuInfo"},keyGenerator = "customKeyGenerator",sync = true)
     public PageUtils queryPageLimit(Map<String, Object> params) {
         QueryWrapper<SpuInfoEntity> queryWrapper = new QueryWrapper<>();
         if(params.containsKey("brandId")&&!params.get("brandId").equals("0")){
@@ -96,14 +98,19 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     @Override
     public boolean saveProduct(ProductVo product) {
         long catalogId=product.getCatalogId();
-        int size=0;
+        int size1=0;
         List<AttrGroupEntity> groups = this.attrGroupService.query().eq("catalog_id", catalogId).list();
         for(AttrGroupEntity group:groups){
-            size+=attrService.queryWithAttrGroup(String.valueOf(group.getAttrGroupId())).size();
+            size1+=attrService.queryWithAttrGroup(String.valueOf(group.getAttrGroupId())).size();
         }
-        if(product.getBaseAttrs().size()<size){
+        int size2=0;
+        for(AttrGroupWithAttrValueVo group:product.getSpuAttrGroup()){
+           size2+=group.getAttrs().size();
+        }
+        if(size1!=size2){
             return false;
         }
+
         //TODO 优化储存
         //存储SpuInfo
         SpuInfoEntity spuInfo=new SpuInfoEntity();
@@ -131,14 +138,17 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
 
         //存储SpuAttrValue
-        List<AttrValueVo> baseAttrs = product.getBaseAttrs();
-        baseAttrs.forEach((attr)->{
-            ProductAttrValueEntity productAttr = new ProductAttrValueEntity();
-            productAttr.setAttrId(attr.getAttrId());
-            productAttr.setAttrValue(attr.getAttrValue());
-            productAttr.setAttrName(attr.getAttrName());
-            productAttr.setSpuId(spuInfo.getId());
-            productAttrValueService.getBaseMapper().insert(productAttr);
+        List<AttrGroupWithAttrValueVo> baseAttrs = product.getSpuAttrGroup();
+        baseAttrs.forEach((attrGroup)->{
+            attrGroup.getAttrs().forEach((attr)->{
+                ProductAttrValueEntity productAttr = new ProductAttrValueEntity();
+                productAttr.setAttrId(attr.getAttrId());
+                productAttr.setAttrValue(attr.getAttrValue());
+                productAttr.setAttrName(attr.getAttrName());
+                productAttr.setSpuId(spuInfo.getId());
+                productAttr.setGroupId(attrGroup.getAttrGroupId());
+                productAttrValueService.getBaseMapper().insert(productAttr);
+            });
         });
 
 
@@ -210,21 +220,28 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         //TODO 获取积分信息
 
         //获取spu属性
-        List<AttrValueVo> attrValueVos =new ArrayList<>();
-        productAttrValueService.queryBySpuId(String.valueOf(spuId)).forEach(
-                (entity)->{
-                    AttrValueVo baseAttr=new AttrValueVo();
-                    BeanUtils.copyProperties(entity,baseAttr);
-                    attrValueVos.add(baseAttr);
-                });
-        productVo.setBaseAttrs(attrValueVos);
+        List<AttrGroupWithAttrValueVo> attrValueVos =new ArrayList<>();
+        List<AttrGroupEntity> groups = attrGroupService.query().eq("catalog_id", productVo.getCatalogId()).list();
+        groups.forEach((group)->{
+            AttrGroupWithAttrValueVo cur=new AttrGroupWithAttrValueVo();
+            BeanUtils.copyProperties(group,cur);
+            List<ProductAttrValueEntity> attrs = productAttrValueService.query().eq("group_id", group.getAttrGroupId()).list();
+            List<AttrValueVo> valueVos=new ArrayList<>();
+            attrs.forEach((attr)->{
+                AttrValueVo curAttr=new AttrValueVo();
+                BeanUtils.copyProperties(attr,curAttr);
+                valueVos.add(curAttr);
+            });
+            cur.setAttrs(valueVos);
+            attrValueVos.add(cur);
+        });
+        productVo.setSpuAttrGroup(attrValueVos);
 
         //获取所有sku
         List<SkuVo> skuVos=new ArrayList<>();
         skuInfoService.query().eq("spu_id", spuId).list().forEach((entity)->{
             SkuVo skuVo=new SkuVo();
             BeanUtils.copyProperties(entity,skuVo);
-
 
             //获取sku的images
             List<ImageVo> imageVos=new ArrayList<>();
@@ -327,8 +344,74 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     }
 
     @Override
+    @Cacheable(value = {"SpuInfo"},keyGenerator = "customKeyGenerator",sync = true)
     public List<SpuInfoEntity> getWithCatalogAndBrand(String catalog, String brand) {
         return this.query().eq("catalog_id",catalog).eq("brand_id",brand).list();
     }
 
+    @Override
+    @CacheEvict(value = {"SpuInfo"},allEntries = true)
+    public boolean save(SpuInfoEntity entity) {
+        return super.save(entity);
+    }
+
+    @Override
+    @CacheEvict(value = {"SpuInfo"},allEntries = true)
+    public boolean saveBatch(Collection<SpuInfoEntity> entityList) {
+        return super.saveBatch(entityList);
+    }
+
+    @Override
+    @CacheEvict(value = {"SpuInfo"},allEntries = true)
+    public boolean saveOrUpdateBatch(Collection<SpuInfoEntity> entityList) {
+        return super.saveOrUpdateBatch(entityList);
+    }
+
+    @Override
+    @CacheEvict(value = {"SpuInfo"},allEntries = true)
+    public boolean removeById(Serializable id) {
+        return super.removeById(id);
+    }
+
+    @Override
+    @CacheEvict(value = {"SpuInfo"},allEntries = true)
+    public boolean removeByMap(Map<String, Object> columnMap) {
+        return super.removeByMap(columnMap);
+    }
+
+    @Override
+    @CacheEvict(value = {"SpuInfo"},allEntries = true)
+    public boolean remove(Wrapper<SpuInfoEntity> queryWrapper) {
+        return super.remove(queryWrapper);
+    }
+
+    @Override
+    @CacheEvict(value = {"SpuInfo"},allEntries = true)
+    public boolean removeByIds(Collection<? extends Serializable> idList) {
+        return super.removeByIds(idList);
+    }
+
+    @Override
+    @CacheEvict(value = {"SpuInfo"},allEntries = true)
+    public boolean updateById(SpuInfoEntity entity) {
+        return super.updateById(entity);
+    }
+
+    @Override
+    @CacheEvict(value = {"SpuInfo"},allEntries = true)
+    public boolean update(Wrapper<SpuInfoEntity> updateWrapper) {
+        return super.update(updateWrapper);
+    }
+
+    @Override
+    @CacheEvict(value = {"SpuInfo"},allEntries = true)
+    public boolean update(SpuInfoEntity entity, Wrapper<SpuInfoEntity> updateWrapper) {
+        return super.update(entity, updateWrapper);
+    }
+
+    @Override
+    @CacheEvict(value = {"SpuInfo"},allEntries = true)
+    public boolean updateBatchById(Collection<SpuInfoEntity> entityList) {
+        return super.updateBatchById(entityList);
+    }
 }

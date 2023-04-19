@@ -5,9 +5,9 @@
         <!-- 遍历属性,每个tab-pane对应一个表单，每个属性是一个表单项  spu.baseAttrs[0] = [{attrId:xx,val:}]-->
         <el-form ref="form" >
           <el-form-item :label="attr.attrName" v-for="(attr,aidx) in group.attrs" :key="attr.attrId">
-            <el-input v-model="spuAttrs[gidx][aidx].attrId" type="hidden" v-show="false"></el-input>
+            <el-input v-model="spuAttrGroup[gidx].attrs[aidx].attrId" type="hidden" v-show="false"></el-input>
             <el-select
-              v-model="spuAttrs[gidx][aidx].attrValue"
+              v-model="spuAttrGroup[gidx].attrs[aidx].attrValue"
               filterable
               allow-create
               default-first-option
@@ -50,12 +50,14 @@ export default {
     },
     step (val) {
       if (val === 1) {
-        PubSub.publish('spuAttrs', this.spuAttrs)
+        PubSub.publish('spuAttrGroup', this.spuAttrGroup)
+        console.log(this.spuAttrGroup)
       }
     }
   },
   data () {
     return {
+      spuAttrGroup: [],
       spuAttrs: [],
       dataResp: {
         attrGroups: []
@@ -72,7 +74,16 @@ export default {
         params: this.$http.adornParams({})
       }).then(({ data }) => {
         // 先对表单的baseAttrs进行初始化
+        console.log(data)
         data.data.forEach(item => {
+          let attrGroup = {
+            attrGroupId: item.attrGroupId,
+            attrGroupName: item.attrGroupName,
+            catalogId: item.catalogId,
+            descript: item.descript,
+            icon: item.icon,
+            sort: item.sort
+          }
           let attrArray = []
           item.attrs.forEach((attr) => {
             attrArray.push({
@@ -81,7 +92,8 @@ export default {
               attrValue: ''
             })
           })
-          this.spuAttrs.push(attrArray)
+          attrGroup.attrs = attrArray
+          this.spuAttrGroup.push(attrGroup)
         })
         this.dataResp.attrGroups = data.data
       })

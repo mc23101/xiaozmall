@@ -13,61 +13,44 @@ Vue.use(Router)
 const routes = [
 
   {
+    path: '/search',
+    name: 'Search',
+    component: () => import('../views/search/search.vue')
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: () => import('../views/register/register.vue')
+  },
+  {
+    path: '/detail',
+    name: 'Detail',
+    component: () => import('../views/detail/detail.vue')
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/login/login.vue')
+  },
+  {
     path: '/',
-    name: 'Home',
-    component: () => import('../views/home/home.vue')
+    name: 'index',
+    component: () => import('../views/index/home.vue')
+  },
+  {
+    path: '*',
+    name: '*',
+    component: () => import('../views/index/home.vue')
+  },
+  {
+    path: '/shopCart',
+    name: 'shopCart',
+    component: () => import('../views/shopCart/shopCart.vue')
   },
   {
     path: '/error',
     name: 'Error',
     component: () => import('../components/Error.vue')
-  },
-  {
-    path: '/goods',
-    name: 'Goods',
-    component: () => import('../views/goods/Goods.vue')
-  },
-  {
-    path: '/about',
-    name: 'About',
-    component: () => import('../views/About.vue')
-  },
-  {
-    path: '/goods/details',
-    name: 'Details',
-    component: () => import('../views/Details.vue')
-  },
-  {
-    path: '/shoppingCart',
-    name: 'ShoppingCart',
-    component: () => import('../views/ShoppingCart.vue'),
-    meta: {
-      requireAuth: true // 需要验证登录状态
-    }
-  },
-  {
-    path: '/collect',
-    name: 'Collect',
-    component: () => import('../views/Collect.vue'),
-    meta: {
-      requireAuth: true // 需要验证登录状态
-    }
-  },
-  {
-    path: '/order',
-    name: 'Order',
-    component: () => import('../views/Order.vue'),
-    meta: {
-      requireAuth: true // 需要验证登录状态
-    }
-  },
-  {
-    path: '/confirmOrder',
-    name: 'ConfirmOrder',
-    component: () => import('../views/ConfirmOrder.vue'),
-    meta: {
-      requireAuth: true // 需要验证登录状态
-    }
   }
 ]
 

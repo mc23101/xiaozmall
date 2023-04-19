@@ -4,7 +4,7 @@ import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuInfoService;
-import com.zhangsisiyao.xiaozmall.product.vo.ProductVo;
+import com.zhangsisiyao.common.vo.ProductVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +31,12 @@ public class SpuInfoController {
     public R listWithCatalogAndBrand( @PathVariable String catalog,@PathVariable String brand){
         List<SpuInfoEntity> list = spuInfoService.getWithCatalogAndBrand(catalog, brand);
         return R.ok().put("data", list);
+    }
+
+    @RequestMapping("/getProduct/{spuId}")
+    public R infoProduct(@PathVariable Long spuId){
+        ProductVo product = spuInfoService.getProduct(spuId);
+        return R.ok().put("data",product);
     }
 
 

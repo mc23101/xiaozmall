@@ -3,7 +3,7 @@ package com.zhangsisiyao.xiaozmall.search.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zhangsisiyao.common.utils.R;
+import com.zhangsisiyao.common.vo.*;
 import com.zhangsisiyao.xiaozmall.search.service.ProductService;
 import com.zhangsisiyao.xiaozmall.search.service.SearchService;
 import com.zhangsisiyao.xiaozmall.search.vo.*;
@@ -19,7 +19,6 @@ import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.nested.ParsedNested;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedLongTerms;
@@ -45,9 +44,9 @@ public class SearchServiceImpl implements SearchService {
     @SneakyThrows
     @Override
     public SearchResult search(SearchParam searchParam) {
-        List<ProductVo> productVos = searchProduct(searchParam);
+        List<SearchProductVo> searchProductVos = searchProduct(searchParam);
         SearchResult result = searchAttrs(searchParam);
-        result.setProducts(productVos);
+        result.setProducts(searchProductVos);
         return result;
     }
 
@@ -93,7 +92,7 @@ public class SearchServiceImpl implements SearchService {
         return boolQueryBuilder;
     }
 
-    public List<ProductVo> searchProduct(SearchParam searchParam) throws IOException {
+    public List<SearchProductVo> searchProduct(SearchParam searchParam) throws IOException {
         SearchRequest request=new SearchRequest();
         request.indices("spu");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
@@ -102,11 +101,11 @@ public class SearchServiceImpl implements SearchService {
         sourceBuilder.query(boolQueryBuilder).from((searchParam.getPageIndex()-1)*searchParam.getPageSize()).size(searchParam.getPageSize());
         request.source(sourceBuilder);
         SearchResponse search = esClient.search(request, RequestOptions.DEFAULT);
-        List<ProductVo> products=new ArrayList<>();
+        List<SearchProductVo> products=new ArrayList<>();
         ObjectMapper mapper=new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         for(SearchHit hit:search.getHits().getHits()){
-            ProductVo product = mapper.readValue(hit.getSourceAsString(), ProductVo.class);
+            SearchProductVo product = mapper.readValue(hit.getSourceAsString(), SearchProductVo.class);
             product.getSkus().forEach((skuVo -> {
                 product.setPrice(product.getPrice().min(skuVo.getPrice()));
             }));

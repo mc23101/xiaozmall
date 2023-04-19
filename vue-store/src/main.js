@@ -14,6 +14,10 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/dist/css/swiper.css'
+Vue.use(VueAwesomeSwiper)
+
 // 全局函数及变量
 import Global from './Global';
 Vue.use(Global);
@@ -97,16 +101,9 @@ Vue.filter('dateFormat', (dataStr) => {
   return y + '-' + timeAdd0(m) + '-' + timeAdd0(d) + ' ' + timeAdd0(h) + ':' + timeAdd0(mm) + ':' + timeAdd0(s);
 });
 
-//全局组件
-import MyMenu from './components/MyMenu';
-Vue.component(MyMenu.name, MyMenu);
-import MyList from './components/MyList';
-Vue.component(MyList.name, MyList);
-import MyLogin from './components/MyLogin';
-Vue.component(MyLogin.name, MyLogin);
-import MyRegister from './components/MyRegister';
+
+
 import PubSub from "pubsub-js";
-Vue.component(MyRegister.name, MyRegister);
 
 Vue.config.productionTip = false;
 

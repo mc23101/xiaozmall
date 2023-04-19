@@ -20,7 +20,7 @@
         <sale-attr :base-info="baseInfo" :step="step"></sale-attr>
       </el-col>
       <el-col :span="24" v-show="step===3">
-          <sku-info :base-info="baseInfo" :spu-attrs="this.spuAttrs" :sale-attrs="this.saleAttrs" :step="step"></sku-info>
+          <sku-info :base-info="baseInfo" :spu-attr-group="this.spuAttrGroup" :sale-attrs="this.saleAttrs" :step="step"></sku-info>
       </el-col>
       <el-col :span="24" v-show="step===4">
         <el-card class="box-card" style="width:80%;margin:20px auto">
@@ -50,7 +50,7 @@ export default {
       stepSub: '',
       step: 0,
       baseInfo: [],
-      spuAttrs: [],
+      spuAttrGroup: [],
       saleAttrs: []
     }
   },
@@ -67,8 +67,8 @@ export default {
     this.stepSub = PubSub.subscribe('stepChange', (msg, val) => {
       this.step = val
     })
-    this.spuAttrsSub = PubSub.subscribe('spuAttrs', (msg, val) => {
-      this.spuAttrs = val
+    this.spuAttrsSub = PubSub.subscribe('spuAttrGroup', (msg, val) => {
+      this.spuAttrGroup = val
     })
     this.saleAttrSub = PubSub.subscribe('saleAttrs', (msg, val) => {
       this.saleAttrs = val

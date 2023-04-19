@@ -1,6 +1,9 @@
 package com.zhangsisiyao.xiaozmall.search.vo;
 
 
+import com.zhangsisiyao.common.vo.AttrVo;
+import com.zhangsisiyao.common.vo.BrandVo;
+import com.zhangsisiyao.common.vo.CatalogVo;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,7 +13,7 @@ import java.util.List;
 public class SearchResult implements Serializable {
     long count;
 
-    List<ProductVo> products;
+    List<SearchProductVo> products;
 
     List<CatalogVo> catalogs;
 
