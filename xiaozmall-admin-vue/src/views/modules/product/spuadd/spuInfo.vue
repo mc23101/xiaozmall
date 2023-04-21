@@ -36,7 +36,10 @@
           <template slot="prepend">成长值</template>
         </el-input-number>
       </el-form-item>
-      <el-form-item label="商品介绍" prop="decript">
+      <el-form-item label="默认图片" prop="defaultImg">
+        <single-upload v-model="baseInfo.defaultImg"></single-upload>
+      </el-form-item>
+      <el-form-item label="商品介绍" prop="descript">
         <multi-upload v-model="baseInfo.descript"></multi-upload>
       </el-form-item>
 
@@ -55,9 +58,10 @@ import CategoryCascader from '../../common/category-cascader'
 import BrandSelect from '../../common/brand-select'
 import MultiUpload from '../../../../components/upload/multiUpload'
 import PubSub from 'pubsub-js'
+import SingleUpload from "../../../../components/upload/singleUpload.vue";
 
 export default {
-  components: { CategoryCascader, BrandSelect, MultiUpload },
+  components: { CategoryCascader, BrandSelect, MultiUpload,SingleUpload },
   data () {
     return {
       catPathSub: '',
@@ -70,6 +74,7 @@ export default {
         catalogId: '',
         brandId: '',
         weight: '',
+        defaultImg:'',
         bounds: {
           buyBounds: '',
           growBounds: ''
@@ -92,6 +97,9 @@ export default {
         ],
         descript: [
           { required: true, message: '请上传商品详情图集', trigger: 'blur' }
+        ],
+        defaultImg: [
+          {required: true, message: '请上传商品默认图片', trigger: 'blur'}
         ],
         images: [
           { required: true, message: '请上传商品图片集', trigger: 'blur' }

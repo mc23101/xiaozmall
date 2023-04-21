@@ -30,57 +30,15 @@
       </el-table-column>
       <el-table-column type="expand">
         <template slot-scope="scope">
-<!--          <el-row>-->
-<!--            <el-col :span="24">-->
-<!--              <label style="display:block;float:left">选择图集 或</label>-->
-<!--              <multi-upload-->
-<!--                style="float:left;margin-left:10px;"-->
-<!--                :showFile="false"-->
-<!--                :listType="'text'"-->
-<!--                v-model="uploadImages"-->
-<!--              ></multi-upload>-->
-<!--            </el-col>-->
-<!--            <el-col :span="24">-->
-<!--              <el-divider></el-divider>-->
-<!--            </el-col>-->
-<!--            <el-col :span="24">-->
-<!--              <el-card style="width:170px;float:left;margin-left:15px;margin-top:15px;"-->
-<!--                :body-style="{ padding: '0px' }"-->
-<!--                v-for="(img,index) in baseInfo.images"-->
-<!--                :key="index"-->
-<!--              >-->
-<!--                <img :src="img" style="width:160px;height:120px" />-->
-<!--                <div style="padding: 14px;">-->
-<!--                  <el-row>-->
-<!--                    <el-col :span="12">-->
-<!--                      <el-checkbox-->
-<!--                        v-model="scope.row.images[index].imgUrl"-->
-<!--                        :true-label="img"-->
-<!--                        false-label="true"-->
-<!--                      ></el-checkbox>-->
-<!--                    </el-col>-->
-<!--                    <el-col :span="12">-->
-<!--                      <el-tag v-if="scope.row.images[index].defaultImg === 1">-->
-<!--                        <input-->
-<!--                          type="radio"-->
-<!--                          checked-->
-<!--                          :name="scope.row.skuName"-->
-<!--                          @change="checkDefaultImg(scope.row,index,img)"-->
-<!--                        />设为默认-->
-<!--                      </el-tag>-->
-<!--                      <el-tag v-else>-->
-<!--                        <input-->
-<!--                          type="radio"-->
-<!--                          :name="scope.row.skuName"-->
-<!--                          @change="checkDefaultImg(scope.row,index,img)"-->
-<!--                        />设为默认-->
-<!--                      </el-tag>-->
-<!--                    </el-col>-->
-<!--                  </el-row>-->
-<!--                </div>-->
-<!--              </el-card>-->
-<!--            </el-col>-->
-<!--          </el-row>-->
+          <el-row>
+            <el-col :span="24">
+              <label style="display:block;float:left">编辑图集</label>
+            </el-col>
+            <el-col>
+              <multi-upload v-model="scope.row.images"
+              ></multi-upload>
+            </el-col>
+          </el-row>
           <!-- 折扣，满减，会员价 -->
           <el-form :model="scope.row">
             <el-row>
@@ -169,8 +127,10 @@
 
 <script>
 import PubSub from 'pubsub-js'
+import MultiUpload from '../../../../components/upload/multiUpload.vue'
 
 export default {
+  components: {MultiUpload},
   props: {
     step: 0,
     baseInfo: '',
@@ -194,14 +154,13 @@ export default {
       spu: {
         descript: [],
         images: [],
-        spuAttrGroup:[],
+        spuAttrGroup: [],
         skus: []
       }
     }
   },
   methods: {
     submitSkus () {
-      console.log(this.spu)
       this.generateSpu()
       this.$confirm('将要提交商品数据，需要一小段时间，是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -239,6 +198,7 @@ export default {
       this.spu.spuName = this.baseInfo.spuName
       this.spu.spuDescription = this.baseInfo.spuDescription
       this.spu.catalogId = this.baseInfo.catalogId
+      this.spu.defaultImg = this.baseInfo.defaultImg
       this.spu.brandId = this.baseInfo.brandId
       this.spu.weight = this.baseInfo.weight
       this.spu.publishStatus = 0
@@ -248,8 +208,20 @@ export default {
       this.baseInfo.images.forEach(item => {
         this.spu.images.push({imgUrl: item})
       })
-      this.spu.spuAttrGroup=this.spuAttrGroup
-      this.spu.skus = this.skus
+      this.spu.spuAttrGroup = this.spuAttrGroup
+      let curSkus = []
+      this.skus.forEach(sku => {
+        let curSku = sku
+        let images = []
+        let sort = 0
+        sku.images.forEach(img => {
+          images.push({imgUrl: img, imgSort: sort})
+          sort++
+        })
+        curSku.images = images
+        curSkus.push(curSku)
+      })
+      this.spu.skus = curSkus
     },
     generateSkus () {
       // 根据笛卡尔积运算进行生成sku
@@ -282,9 +254,8 @@ export default {
         })
         // 先初始化几个images，后面的上传还要加
         let imgs = []
-        this.baseInfo.images.forEach((img, idx) => {
-          // eslint-disable-next-line standard/object-curly-even-spacing
-          imgs.push({ imgUrl: ''})
+        this.baseInfo.images.forEach(img => {
+          imgs.push(img)
         })
 
         // // 会员价，也必须在循环里面生成，否则会导致数据绑定问题
@@ -349,9 +320,9 @@ export default {
 
       // 动态生成笛卡尔积
       while (true) {
-        for (var index in list) {
-          tempCount = point[index]['count']
-          temp.push(list[index][tempCount])
+        for (var listKey in list) {
+          tempCount = point[listKey]['count']
+          temp.push(list[listKey][tempCount])
         }
 
         // 压入结果数组
@@ -360,17 +331,17 @@ export default {
 
         // 检查指针最大值问题
         while (true) {
-          if (point[index]['count'] + 1 >= list[index].length) {
-            point[index]['count'] = 0
-            pIndex = point[index]['parent']
+          if (point[listKey]['count'] + 1 >= list[listKey].length) {
+            point[listKey]['count'] = 0
+            pIndex = point[listKey]['parent']
             if (pIndex == null) {
               return result
             }
 
             // 赋值parent进行再次检查
-            index = pIndex
+            listKey = pIndex
           } else {
-            point[index]['count']++
+            point[listKey]['count']++
             break
           }
         }
@@ -387,6 +358,9 @@ export default {
       }
       return res
     }
+  },
+  created () {
+    this.generateSkus()
   }
 }
 </script>

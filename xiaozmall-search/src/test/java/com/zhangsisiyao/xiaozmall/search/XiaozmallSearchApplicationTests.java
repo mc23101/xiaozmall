@@ -53,14 +53,4 @@ class XiaozmallSearchApplicationTests {
     }
 
 
-    @Autowired
-    ProductService productService;
-    @Test
-    void test() throws IOException {
-        ObjectMapper mapper=new ObjectMapper();
-        Object attr = productService.getAttrInfo(String.valueOf(10)).get("attr");
-        AttrVo attrVo = mapper.readValue(mapper.writeValueAsString(attr), AttrVo.class);
-        System.out.println(attrVo);
-    }
-
 }

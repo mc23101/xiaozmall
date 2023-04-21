@@ -67,10 +67,11 @@ public class SearchServiceImpl implements SearchService {
         {
             searchParam.getSpuAttrs().forEach((attrValueVo -> {
                 BoolQueryBuilder spuAttrBoolQueryBuilder=QueryBuilders.boolQuery();
-                spuAttrBoolQueryBuilder.must(QueryBuilders.matchQuery("baseAttrs.attrId",attrValueVo.getAttrId()));
-                spuAttrBoolQueryBuilder.must(QueryBuilders.matchQuery("baseAttrs.attrValue",attrValueVo.getAttrValue()));
-                NestedQueryBuilder nestedQueryBuilder = new NestedQueryBuilder("baseAttrs",spuAttrBoolQueryBuilder, ScoreMode.None);
-                boolQueryBuilder.must(nestedQueryBuilder);
+                spuAttrBoolQueryBuilder.must(QueryBuilders.matchQuery("spuAttrGroup.attrs.attrId",attrValueVo.getAttrId()));
+                spuAttrBoolQueryBuilder.must(QueryBuilders.matchQuery("spuAttrGroup.attrs.attrValue",attrValueVo.getAttrValue()));
+                NestedQueryBuilder nestedQueryBuilder = new NestedQueryBuilder("spuAttrGroup.attrs",spuAttrBoolQueryBuilder, ScoreMode.None);
+                NestedQueryBuilder spuAttrGroupNestedQueryBuilder = new NestedQueryBuilder("spuAttrGroup",nestedQueryBuilder, ScoreMode.None);
+                boolQueryBuilder.must(spuAttrGroupNestedQueryBuilder);
             }));
         }
         //查询skuAttrs

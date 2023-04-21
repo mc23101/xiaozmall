@@ -275,14 +275,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         entity.setUpdateTime(new Date());
         ProductVo product = spuInfoService.getProduct(spuId);
         ObjectMapper mapper = new ObjectMapper();
-        RabbitTemplate.ConfirmCallback confirmCallback= (correlationData, ack, cause) -> {
-            if(ack){
-                updateById(entity);
-            }
-        };
         try {
             rabbitTemplate.convertAndSend("ElasticSearch","product.spu.up",mapper.writeValueAsString(product));
-            rabbitTemplate.setConfirmCallback(confirmCallback);
+            updateById(entity);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         } finally {
@@ -296,7 +291,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         entity.setPublishStatus(0);
         entity.setUpdateTime(new Date());
         rabbitTemplate.convertAndSend("ElasticSearch","product.spu.down",spuId);
-        this.updateById(entity);
+        updateById(entity);
     }
 
     @Override

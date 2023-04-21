@@ -20,6 +20,8 @@ public class SearchParam implements Serializable {
 
     float maxPrice=0;
 
+    int sortState;
+
     int pageIndex=1;
 
     int pageSize=20;
@@ -27,5 +29,4 @@ public class SearchParam implements Serializable {
     List<AttrValueVo> spuAttrs=new ArrayList<>();
 
     List<AttrValueVo> skuAttrs=new ArrayList<>();
-
 }

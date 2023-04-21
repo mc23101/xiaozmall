@@ -49,6 +49,8 @@ public class SpuInfoEntity implements Serializable {
 	 */
 	@Min(value = 1)
 	private Long brandId;
+
+	private String defaultImg;
 	/**
 	 * 
 	 */

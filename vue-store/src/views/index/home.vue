@@ -37,10 +37,10 @@
         <div class="header_sous">
             <!--搜索框-->
             <div class="header_form">
-                <input id="searchText" type="text" placeholder="" />
+                <input id="searchText" type="text" placeholder="" v-model="searchKeyword" />
                 <span style="background: url(~@/assets/img/index/img_12.png) 0 -1px;"></span>
                 <!--<button><i class="glyphicon"></i></button>-->
-                <a href="#" ><img src="~@/assets/img/index/img_09.png" onclick="search()"  alt=""/></a>
+                <a href="#" ><img src="~@/assets/img/index/img_09.png" @click="search()"  alt=""/></a>
             </div>
             <!--购物车-->
             <div class="header_ico" @mouseenter="openShopCart(true)" @mouseleave="openShopCart(false)">
@@ -384,7 +384,6 @@
 import $ from 'jquery'
 import {swiper,swiperSlide} from "vue-awesome-swiper";
 import 'swiper/dist/css/swiper.css'
-import dom from "swiper/src/utils/dom";
 export default {
     components: {
         swiper,
@@ -392,6 +391,7 @@ export default {
     },
     data(){
         return{
+            searchKeyword:"",
             swiperOption: {
                 loop: true,
                 autoplay: {
@@ -520,8 +520,8 @@ export default {
         }
     },
     methods:{
-        dom() {
-            return dom
+        search(){
+          this.$router.push({name:"Search",params:{keyword:this.searchKeyword}})
         },
         /*地区选择框*/
         openAreaSelector(flag){

@@ -88,8 +88,9 @@ export default {
       return this.dataListLoading
     },
     setPublishStatus (id,val) {
+      console.log(val === 0 ? 'down' : 'up')
       this.$http({
-        url: this.$http.adornUrl(`/product/spuinfo/${val === 0 ? 'down':'up'}/${id}`),
+        url: this.$http.adornUrl(`/product/spuinfo/${val === 0 ? 'down' : 'up'}/${id}`),
         method: 'post'
       }).then(({ data }) => {
         if (data && data.code === 0) {

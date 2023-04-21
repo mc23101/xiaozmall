@@ -207,6 +207,7 @@ html {
     height: 35px;
     line-height: 35px;
     font-size: 16px;
+    cursor: pointer;
     text-align: center;
     float: right;
     text-decoration: none; }
@@ -617,18 +618,63 @@ html {
 .JD_ipone .JD_ipone_bar .JD_ipone_one a {
     text-decoration: none;
     background: #fff; }
-.JD_ipone .JD_ipone_bar .b:hover .qqq {
+.JD_ipone .JD_ipone_bar .attr{
+    position: relative;
+}
+.JD_ipone .JD_ipone_bar .attr a{
+    position: relative;
+    float: left;
+    height: 22px;
+    line-height: 22px;
+    border: 1px solid #DDD;
+    font-size: 12px;
+    vertical-align: top;
+    margin: 0 5px 5px 0;
+    padding: 0 26px 0 4px;
+    cursor: pointer;
+    background: #f3f3f3;
+}
+
+.JD_ipone .JD_ipone_bar .attr a:hover{
+    border: 1px solid red;
+}
+
+.JD_ipone .JD_ipone_bar .attr a:hover i{
+    background-color: #e4393c;
+    background-position: 7px -158px;
+}
+
+.JD_ipone .JD_ipone_bar .attr a b{
+    font-weight: 400;
+    color: #333;
+}
+
+.JD_ipone .JD_ipone_bar .attr a em{
+    color: #e4393c;
+}
+
+.JD_ipone .JD_ipone_bar .attr a i{
+    display: block;
+    position: absolute;
+    width: 25px;
+    height: 22px;
+    right: -6px;
+    top: 0;
+    background: url(//storage.jd.com/retail-mall/search_list/pc/product/search/0.0.4/css/i/search.ele.png) no-repeat 7px -140px;
+}
+
+.JD_ipone .JD_ipone_bar .level1:hover .qqq {
     border: 1px solid #e23a3a;
     border-bottom: 1px solid #fff; }
-.JD_ipone .JD_ipone_bar .c:hover .qqq {
+.JD_ipone .JD_ipone_bar .level2:hover .qqq {
     border: 1px solid #e23a3a;
     border-bottom: 1px solid #fff; }
 .JD_ipone .JD_ipone_bar .a {
     font-size: 20px;
     font-weight: 900; }
-.JD_ipone .JD_ipone_bar .c, .JD_ipone .JD_ipone_bar .b {
+.JD_ipone .JD_ipone_bar .level2, .JD_ipone .JD_ipone_bar .level1,.JD_ipone .JD_ipone_bar .level3 {
     position: relative; }
-.JD_ipone .JD_ipone_bar .c a, .JD_ipone .JD_ipone_bar .b a {
+.JD_ipone .JD_ipone_bar .level3 a,.JD_ipone .JD_ipone_bar .level2 a, .JD_ipone .JD_ipone_bar .level1 a {
     display: inline-block;
     height: 22px;
     padding: 0 4px 0 8px;
@@ -637,7 +683,7 @@ html {
     vertical-align: top;
     font-size: 14px;
     position: relative; }
-.JD_ipone .JD_ipone_bar .c div, .JD_ipone .JD_ipone_bar .b div {
+.JD_ipone .JD_ipone_bar .level3 div,.JD_ipone .JD_ipone_bar .level2 div, .JD_ipone .JD_ipone_bar .level1 div {
     position: absolute;
     top: 23px;
     left: 0;
@@ -646,12 +692,12 @@ html {
     border: 1px solid #e23a3a;
     background: #fff;
     display: none; }
-.JD_ipone .JD_ipone_bar .c div a, .JD_ipone .JD_ipone_bar .b div a {
+.JD_ipone .JD_ipone_bar .level3 div a,.JD_ipone .JD_ipone_bar .level2 div a, .JD_ipone .JD_ipone_bar .level1 div a {
     border: 0;
     display: block;
     float: left;
     margin-right: 5px; }
-.JD_ipone .JD_ipone_bar .c div a:hover, .JD_ipone .JD_ipone_bar .b div a:hover {
+.JD_ipone .JD_ipone_bar .level3 div a:hover,.JD_ipone .JD_ipone_bar .level2 div a:hover, .JD_ipone .JD_ipone_bar .level1 div a:hover {
     color: #e23a3a; }
 .JD_ipone .JD_ipone_bar i {
     float: left;
@@ -848,6 +894,9 @@ html {
     color: #666;
     margin-left: 5px;
     margin-top: 5px; }
+.JD_banner .JD_nav .JD_selector .JD_nav_logo .JD_pre ul .sl_value_li a:hover{
+    border: 1px solid red;
+}
 .JD_banner .JD_nav .JD_selector .JD_nav_logo .JD_pre ul .sl_value_li input {
     width: 30px;
     float: left;

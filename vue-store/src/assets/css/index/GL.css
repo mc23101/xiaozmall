@@ -1623,21 +1623,21 @@ header .header_main .header_banner1_div p {
   text-align: justify;
   display: block;
   font-weight: 700; }
-.section_second .section_ling .swiper_section_ling_right_list .b {
+.section_second .section_ling .swiper_section_ling_right_list .level1 {
   font-size: 12px;
   display: block;
   color: #999; }
-.section_second .section_ling .swiper_section_ling_right_list .b a {
+.section_second .section_ling .swiper_section_ling_right_list .level1 a {
   display: inline-block;
   color: #4f629f;
   text-decoration: none; }
-.section_second .section_ling .swiper_section_ling_right_list .c {
+.section_second .section_ling .swiper_section_ling_right_list .level2 {
   font-size: 12px;
   display: block;
   position: absolute;
   bottom: -15px;
   right: 40px; }
-.section_second .section_ling .swiper_section_ling_right_list .c i {
+.section_second .section_ling .swiper_section_ling_right_list .level2 i {
   display: inline-block;
   width: 20px;
   height: 20px;

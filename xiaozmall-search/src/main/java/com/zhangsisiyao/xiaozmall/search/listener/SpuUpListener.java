@@ -2,6 +2,7 @@ package com.zhangsisiyao.xiaozmall.search.listener;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zhangsisiyao.xiaozmall.search.entity.ProductEntity;
 import com.zhangsisiyao.xiaozmall.search.vo.SearchProductVo;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
@@ -26,9 +27,9 @@ public class SpuUpListener {
     public void receiveUp(String in) throws JsonProcessingException {
         ObjectMapper mapper=new ObjectMapper();
         SearchProductVo product = mapper.readValue(in, SearchProductVo.class);
-        if(!elasticsearchRestTemplate.indexExists(SearchProductVo.class)){
-            elasticsearchRestTemplate.createIndex(SearchProductVo.class);
-            elasticsearchRestTemplate.putMapping(SearchProductVo.class);
+        if(!elasticsearchRestTemplate.indexExists(ProductEntity.class)){
+            elasticsearchRestTemplate.createIndex(ProductEntity.class);
+            elasticsearchRestTemplate.indexOps(ProductEntity.class);
         }
         elasticsearchRestTemplate.save(product);
     }
