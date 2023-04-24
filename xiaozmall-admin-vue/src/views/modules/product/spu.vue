@@ -78,7 +78,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/product/spuinfo/delete'),
+          url: this.$http.adornUrl('/product/product/spuinfo/delete'),
           method: 'post',
           data: this.$http.adornData(ids, false)
         }).then(({ data }) => {

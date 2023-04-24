@@ -4,6 +4,7 @@ import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuImagesEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuImagesService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("product/spuimages")
+@Api(tags = "Spu图片信息操作")
 public class SpuImagesController {
     @Autowired
     private SpuImagesService spuImagesService;
@@ -28,57 +30,57 @@ public class SpuImagesController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @PostMapping("/list")
     //@RequiresPermissions("product:spuimages:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R<PageUtils> list(@RequestParam Map<String, Object> params){
         PageUtils page = spuImagesService.queryPage(params);
 
-        return R.ok().put("page", page);
+        return new  R<PageUtils>().ok().put( page);
     }
 
 
     /**
      * 信息
      */
-    @RequestMapping("/info/{id}")
+    @PostMapping("/info/{id}")
     //@RequiresPermissions("product:spuimages:info")
-    public R info(@PathVariable("id") Long id){
+    public R<SpuImagesEntity> info(@PathVariable("id") Long id){
 		SpuImagesEntity spuImages = spuImagesService.getById(id);
 
-        return R.ok().put("spuImages", spuImages);
+        return new  R<SpuImagesEntity>().ok().put( spuImages);
     }
 
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @PostMapping("/save")
     //@RequiresPermissions("product:spuimages:save")
     public R save(@RequestBody SpuImagesEntity spuImages){
 		spuImagesService.save(spuImages);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @PostMapping("/update")
     //@RequiresPermissions("product:spuimages:update")
     public R update(@RequestBody SpuImagesEntity spuImages){
 		spuImagesService.updateById(spuImages);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @PostMapping("/delete")
     //@RequiresPermissions("product:spuimages:delete")
     public R delete(@RequestBody Long[] ids){
 		spuImagesService.removeByIds(Arrays.asList(ids));
 
-        return R.ok();
+        return new R<>().ok();
     }
 
 }

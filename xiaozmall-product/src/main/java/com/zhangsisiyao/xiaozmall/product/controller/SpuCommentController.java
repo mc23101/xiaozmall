@@ -4,6 +4,7 @@ import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuCommentEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuCommentService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("product/spucomment")
+@Api(tags = "商品评论操作")
 public class SpuCommentController {
     @Autowired
     private SpuCommentService spuCommentService;
@@ -28,57 +30,56 @@ public class SpuCommentController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
-    //@RequiresPermissions("product:spucomment:list")
-    public R list(@RequestParam Map<String, Object> params){
+    @PostMapping("/list")
+    public R<PageUtils> list(@RequestParam Map<String, Object> params){
         PageUtils page = spuCommentService.queryPage(params);
 
-        return R.ok().put("page", page);
+        return new R<PageUtils>().ok().put( page);
     }
 
 
     /**
      * 信息
      */
-    @RequestMapping("/info/{id}")
+    @PostMapping("/info/{id}")
     //@RequiresPermissions("product:spucomment:info")
-    public R info(@PathVariable("id") Long id){
+    public R<SpuCommentEntity> info(@PathVariable("id") Long id){
 		SpuCommentEntity spuComment = spuCommentService.getById(id);
 
-        return R.ok().put("spuComment", spuComment);
+        return new R<SpuCommentEntity>().ok().put( spuComment);
     }
 
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @PostMapping("/save")
     //@RequiresPermissions("product:spucomment:save")
     public R save(@RequestBody SpuCommentEntity spuComment){
 		spuCommentService.save(spuComment);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @PostMapping("/update")
     //@RequiresPermissions("product:spucomment:update")
     public R update(@RequestBody SpuCommentEntity spuComment){
 		spuCommentService.updateById(spuComment);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @PostMapping("/delete")
     //@RequiresPermissions("product:spucomment:delete")
     public R delete(@RequestBody Long[] ids){
 		spuCommentService.removeByIds(Arrays.asList(ids));
 
-        return R.ok();
+        return new R<>().ok();
     }
 
 }

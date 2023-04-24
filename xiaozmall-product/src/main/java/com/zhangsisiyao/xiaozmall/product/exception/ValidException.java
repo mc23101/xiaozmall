@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ValidException {
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     public R handleValidException(){
-        return R.error();
+        return new R<>().error();
     }
 }

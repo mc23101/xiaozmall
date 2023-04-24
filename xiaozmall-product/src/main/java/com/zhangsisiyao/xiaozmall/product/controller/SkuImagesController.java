@@ -4,6 +4,7 @@ import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuImagesEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SkuImagesService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("product/skuimages")
+@Api(tags = "Sku图片信息操作")
 public class SkuImagesController {
     @Autowired
     private SkuImagesService skuImagesService;
@@ -28,57 +30,57 @@ public class SkuImagesController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @PostMapping("/list")
     //@RequiresPermissions("product:skuimages:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R<PageUtils> list(@RequestParam Map<String, Object> params){
         PageUtils page = skuImagesService.queryPage(params);
 
-        return R.ok().put("page", page);
+        return new R<PageUtils>().ok().put( page);
     }
 
 
     /**
      * 信息
      */
-    @RequestMapping("/info/{id}")
+    @PostMapping("/info/{id}")
     //@RequiresPermissions("product:skuimages:info")
-    public R info(@PathVariable("id") Long id){
+    public R<SkuImagesEntity> info(@PathVariable("id") Long id){
 		SkuImagesEntity skuImages = skuImagesService.getById(id);
 
-        return R.ok().put("skuImages", skuImages);
+        return new R<SkuImagesEntity>().ok().put( skuImages);
     }
 
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @PostMapping("/save")
     //@RequiresPermissions("product:skuimages:save")
     public R save(@RequestBody SkuImagesEntity skuImages){
 		skuImagesService.save(skuImages);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @PostMapping("/update")
     //@RequiresPermissions("product:skuimages:update")
     public R update(@RequestBody SkuImagesEntity skuImages){
 		skuImagesService.updateById(skuImages);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @PostMapping("/delete")
     //@RequiresPermissions("product:skuimages:delete")
     public R delete(@RequestBody Long[] ids){
 		skuImagesService.removeByIds(Arrays.asList(ids));
 
-        return R.ok();
+        return new R<>().ok();
     }
 
 }

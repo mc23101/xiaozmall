@@ -2,8 +2,14 @@ package com.zhangsisiyao.xiaozmall.product.controller;
 
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
+import com.zhangsisiyao.common.vo.CatalogVo;
 import com.zhangsisiyao.xiaozmall.product.entity.CategoryEntity;
 import com.zhangsisiyao.xiaozmall.product.service.CategoryService;
+import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,77 +28,82 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("product/category")
+@Api(tags = "商品分类操作")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
 
-    @RequestMapping("/list/tree")
-    public R  listWithTree(){
-        List<CategoryEntity> entities = categoryService.listWithTree();
-        return R.ok().put("data",entities);
+    @GetMapping("/list/tree")
+    @ApiOperation("获取树形商品分类列表")
+    public R<List<CatalogVo>> listWithTree(){
+        List<CatalogVo> entities = categoryService.listWithTree();
+        return new  R<List<CatalogVo>>().ok().put(entities);
     }
 
-    @RequestMapping("/list/map")
-    public R  listWithMap(){
-        Map<Long, CategoryEntity> entityMap = categoryService.listWithMap();
-        return R.ok().put("data",entityMap);
+    @GetMapping("/list/map")
+    @ApiOperation("获取商品分类列表")
+    public R<Map<Long, CatalogVo>> listWithMap(){
+        Map<Long,CatalogVo> entityMap = categoryService.listWithMap();
+        return new R<Map<Long, CatalogVo>>().ok().put(entityMap);
     }
 
     /**
      * 列表
      */
-    @RequestMapping("/list")
-    //@RequiresPermissions("product:category:list")
-    public R list(@RequestParam Map<String, Object> params){
+    @PostMapping("/list")
+    @ApiOperation(value = "分页查询商品分类信息")
+    public R<PageUtils> list(@RequestParam @ApiParam(value = "分页查询参数") PageParamVo params){
         PageUtils page = categoryService.queryPage(params);
 
-        return R.ok().put("page", page);
+        return new  R<PageUtils>().ok().put( page);
     }
 
 
     /**
      * 信息
      */
-    @RequestMapping("/info/{catId}")
-    //@RequiresPermissions("product:category:info")
-    public R info(@PathVariable("catId") Long catId){
+    @PostMapping("/info/{catId}")
+    @ApiOperation(value = "查询商品分类信息")
+    public R<CategoryEntity> info(@PathVariable("catId") @ApiParam(value = "商品分类Id") Long catId){
 		CategoryEntity category = categoryService.getById(catId);
-
-        return R.ok().put("category", category);
+        return new  R<CategoryEntity>().ok().put( category);
     }
 
     /**
      * 保存
      */
-    @RequestMapping("/save")
-    //@RequiresPermissions("product:category:save")
-    public R save(@RequestBody CategoryEntity category){
+    @PostMapping("/save")
+    @ApiOperation(value = "新增商品分类")
+    public R<Object> save(@RequestBody @ApiParam(value = "商品分类信息") CatalogVo categoryVo){
+        CategoryEntity category=new CategoryEntity();
+        BeanUtils.copyProperties(categoryVo,category);
 		categoryService.save(category);
-
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
      * 修改
      */
-    @RequestMapping("/update")
-    //@RequiresPermissions("product:category:update")
-    public R update(@RequestBody CategoryEntity category){
-		categoryService.updateById(category);
+    @PostMapping("/update")
+    @ApiOperation(value = "更新商品分类")
+    public R<Object> update(@RequestBody @ApiParam(value = "商品分类信息") CatalogVo categoryVo){
+        CategoryEntity entity=new CategoryEntity();
+        BeanUtils.copyProperties(categoryVo,entity);
+		categoryService.updateById(entity);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
      * 删除
      */
-    @RequestMapping("/delete")
-    //@RequiresPermissions("product:category:delete")
-    public R delete(@RequestBody Long[] catIds){
+    @PostMapping("/delete")
+    @ApiOperation("删除商品分类")
+    public R<Object> delete(@RequestBody @ApiParam(value = "商品分类id数组") Long[] catIds){
 		categoryService.removeByIds(Arrays.asList(catIds));
 
-        return R.ok();
+        return new R<>().ok();
     }
 
 }

@@ -5,6 +5,7 @@ import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuInfoService;
 import com.zhangsisiyao.common.vo.ProductVo;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,89 +23,90 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("product/spuinfo")
+@Api(tags = "Spu信息操作")
 public class SpuInfoController {
     @Autowired
     private SpuInfoService spuInfoService;
 
 
-    @RequestMapping("/list/{catalog}/{brand}")
-    public R listWithCatalogAndBrand( @PathVariable String catalog,@PathVariable String brand){
+    @PostMapping("/list/{catalog}/{brand}")
+    public R<List<SpuInfoEntity>> listWithCatalogAndBrand( @PathVariable String catalog,@PathVariable String brand){
         List<SpuInfoEntity> list = spuInfoService.getWithCatalogAndBrand(catalog, brand);
-        return R.ok().put("data", list);
+        return new R<List<SpuInfoEntity>>().ok().put( list);
     }
 
-    @RequestMapping("/getProduct/{spuId}")
-    public R infoProduct(@PathVariable Long spuId){
+    @PostMapping("/getProduct/{spuId}")
+    public R<ProductVo> infoProduct(@PathVariable Long spuId){
         ProductVo product = spuInfoService.getProduct(spuId);
-        return R.ok().put("data",product);
+        return new R<ProductVo>().ok().put(product);
     }
 
 
     /**
      * 列表
      */
-    @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
+    @PostMapping("/list")
+    public R<PageUtils> list(@RequestParam Map<String, Object> params){
         PageUtils page = spuInfoService.queryPageLimit(params);
-        return R.ok().put("page", page);
+        return new  R<PageUtils>().ok().put( page);
     }
 
 
-    @RequestMapping("/up/{spuId}")
+    @PostMapping("/up/{spuId}")
     public R SpuUp(@PathVariable Long spuId){
         //TODO spu上架时，提交商品信息到ES
         this.spuInfoService.upSpu(spuId);
-        return R.ok("success");
+        return new R<>().ok();
     }
 
-    @RequestMapping("/down/{spuId}")
+    @PostMapping("/down/{spuId}")
     public R SpuDown(@PathVariable Long spuId){
         this.spuInfoService.downSpu(spuId);
-        return R.ok("success");
+        return new R<>().ok();
     }
 
 
     /**
      * 信息
      */
-    @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
+    @PostMapping("/info/{id}")
+    public R<SpuInfoEntity> info(@PathVariable("id") Long id){
 		SpuInfoEntity spuInfo = spuInfoService.getById(id);
 
-        return R.ok().put("spuInfo", spuInfo);
+        return new  R<SpuInfoEntity>().ok().put( spuInfo);
     }
 
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @PostMapping("/save")
     public R save(@RequestBody ProductVo product){
         System.out.println(product);
         boolean b = spuInfoService.saveProduct(product);
         if(b){
-            return R.ok();
+            return new R<>().ok();
         }else {
-            return R.error();
+            return new R<>().error();
         }
     }
 
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @PostMapping("/update")
     public R update(@Valid @RequestBody SpuInfoEntity spuInfo){
 		spuInfoService.updateById(spuInfo);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @PostMapping("/delete")
     public R delete(@RequestBody Long[] ids){
 		spuInfoService.deleteSpu(ids);
-        return R.ok();
+        return new R<>().ok();
     }
 
 }

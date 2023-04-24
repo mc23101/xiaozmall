@@ -80,7 +80,5 @@ public class CategoryEntity implements Serializable {
 	@Value(value = "")
 	private String path;
 
-	@JsonInclude(JsonInclude.Include.NON_EMPTY)
-	@TableField(exist = false)
-	List<CategoryEntity> children;
+
 }

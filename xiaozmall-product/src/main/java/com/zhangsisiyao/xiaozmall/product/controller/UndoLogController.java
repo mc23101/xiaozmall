@@ -28,57 +28,57 @@ public class UndoLogController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @PostMapping("/list")
     //@RequiresPermissions("product:undolog:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R<PageUtils> list(@RequestParam Map<String, Object> params){
         PageUtils page = undoLogService.queryPage(params);
 
-        return R.ok().put("page", page);
+        return new  R<PageUtils>().ok().put( page);
     }
 
 
     /**
      * 信息
      */
-    @RequestMapping("/info/{id}")
+    @PostMapping("/info/{id}")
     //@RequiresPermissions("product:undolog:info")
-    public R info(@PathVariable("id") Long id){
+    public R<UndoLogEntity> info(@PathVariable("id") Long id){
 		UndoLogEntity undoLog = undoLogService.getById(id);
 
-        return R.ok().put("undoLog", undoLog);
+        return new  R<UndoLogEntity>().ok().put(undoLog);
     }
 
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @PostMapping("/save")
     //@RequiresPermissions("product:undolog:save")
     public R save(@RequestBody UndoLogEntity undoLog){
 		undoLogService.save(undoLog);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @PostMapping("/update")
     //@RequiresPermissions("product:undolog:update")
     public R update(@RequestBody UndoLogEntity undoLog){
 		undoLogService.updateById(undoLog);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @PostMapping("/delete")
     //@RequiresPermissions("product:undolog:delete")
     public R delete(@RequestBody Long[] ids){
 		undoLogService.removeByIds(Arrays.asList(ids));
 
-        return R.ok();
+        return new R<>().ok();
     }
 
 }

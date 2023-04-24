@@ -110,7 +110,7 @@ export default {
   methods: {
     getMenus () {
       this.$http({
-        url: this.$http.adornUrl('/product/category/list/tree'),
+        url: this.$http.adornUrl('/product/product/category/list/tree'),
         method: 'get'
       }).then(({data}) => {
         console.log(data.data)
@@ -145,7 +145,7 @@ export default {
     },
     removeCategory () {
       this.$http({
-        url: this.$http.adornUrl('/product/category/delete'),
+        url: this.$http.adornUrl('/product/product/category/delete'),
         method: 'post',
         data: this.$http.adornData([this.category.catId], false)
       }).then(({data}) => {
@@ -175,7 +175,7 @@ export default {
     addCategory () {
       this.appendDialogVisible = false
       this.$http({
-        url: this.$http.adornUrl('/product/category/save'),
+        url: this.$http.adornUrl('/product/product/category/save'),
         method: 'post',
         data: this.$http.adornData(this.category, false)
       }).then(({data}) => {
@@ -193,7 +193,7 @@ export default {
     editCategory () {
       this.editDialogVisible = false
       this.$http({
-        url: this.$http.adornUrl('/product/category/update'),
+        url: this.$http.adornUrl('/product/product/category/update'),
         method: 'post',
         data: this.$http.adornData(this.category, false)
       }).then(({data}) => {
@@ -216,7 +216,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/product/category/delete'),
+          url: this.$http.adornUrl('/product/product/category/delete'),
           method: 'post',
           data: this.$http.adornData(Nodes, false)
         }).then(({data}) => {

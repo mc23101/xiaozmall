@@ -6,11 +6,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.BrandVo;
 import com.zhangsisiyao.xiaozmall.product.dao.CategoryBrandRelationDao;
 import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.CategoryBrandRelationEntity;
 import com.zhangsisiyao.xiaozmall.product.service.BrandService;
 import com.zhangsisiyao.xiaozmall.product.service.CategoryBrandRelationService;
+import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,9 +30,9 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
 
     @Override
     @Cacheable(value = {"CategoryBrandRelation"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils queryPage(PageParamVo params) {
         IPage<CategoryBrandRelationEntity> page = this.page(
-                new Query<CategoryBrandRelationEntity>().getPage(params),
+                new Query<CategoryBrandRelationEntity>().getPage(params.getPageIndex(),params.getPageSize()),
                 new QueryWrapper<CategoryBrandRelationEntity>()
         );
 
@@ -38,7 +41,7 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
 
     @Override
     @Cacheable(value = {"CategoryBrandRelation"},keyGenerator = "customKeyGenerator",sync = true)
-    public List<BrandEntity> queryBrand(String catId) {
+    public List<BrandVo> queryBrand(String catId) {
         List<BrandEntity> list=new ArrayList<>();
         if(catId.equals("0")){
             list=brandService.query().list();
@@ -50,7 +53,13 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
                 list=brandService.query().in("brand_id",set).list();
             }
         }
-        return list;
+        List<BrandVo> result=new ArrayList<>();
+        list.forEach((entity)->{
+            BrandVo cur=new BrandVo();
+            BeanUtils.copyProperties(entity,cur);
+            result.add(cur);
+        });
+        return result;
     }
 
     @Override

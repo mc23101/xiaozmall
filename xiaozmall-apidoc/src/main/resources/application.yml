@@ -1,0 +1,15 @@
+knife4j:
+  enableAggregation: true
+  nacos:
+    enable: true
+    serviceUrl: http://192.168.56.10:8848/nacos/
+    routeAuth:
+      enable: false
+      username: test
+      password: 12313
+    routes:
+      - name: 商品业务
+        serviceName: product
+        location: /v2/api-docs?group=default
+        swaggerVersion: 2.0
+        servicePath: /product

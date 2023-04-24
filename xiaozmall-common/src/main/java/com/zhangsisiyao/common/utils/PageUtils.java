@@ -9,6 +9,8 @@
 package com.zhangsisiyao.common.utils;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -20,27 +22,23 @@ import java.util.List;
  * @author Mark sunlightcs@gmail.com
  */
 @Data
+@ApiModel(value = "分页信息")
 public class PageUtils implements Serializable {
 	private static final long serialVersionUID = 1L;
-	/**
-	 * 总记录数
-	 */
+
+	@ApiModelProperty(value = "总记录数")
 	private int totalCount;
-	/**
-	 * 每页记录数
-	 */
+
+	@ApiModelProperty(value = "每页记录数")
 	private int pageSize;
-	/**
-	 * 总页数
-	 */
+
+	@ApiModelProperty(value = "总页数")
 	private int totalPage;
-	/**
-	 * 当前页数
-	 */
+
+	@ApiModelProperty(value = "当前页数")
 	private int currPage;
-	/**
-	 * 列表数据
-	 */
+
+	@ApiModelProperty(value = "数据列表")
 	private List<?> list;
 	
 	/**

@@ -144,7 +144,7 @@ export default {
     addcatalogSelect () {
       this.popcatalogSelectVisible = false
       this.$http({
-        url: this.$http.adornUrl('/product/categorybrandrelation/save'),
+        url: this.$http.adornUrl('/product/product/categorybrandrelation/save'),
         method: 'post',
         data: this.$http.adornData({brandId: this.brandId, catalogId: this.catalogPath[this.catalogPath.length - 1]}, false)
       }).then(({ data }) => {
@@ -153,7 +153,7 @@ export default {
     },
     deleteCateRelationHandle (id, brandId) {
       this.$http({
-        url: this.$http.adornUrl('/product/categorybrandrelation/delete'),
+        url: this.$http.adornUrl('/product/product/categorybrandrelation/delete'),
         method: 'post',
         data: this.$http.adornData([id], false)
       }).then(({ data }) => {
@@ -167,7 +167,7 @@ export default {
     },
     getCateRelation () {
       this.$http({
-        url: this.$http.adornUrl(`/product/categorybrandrelation/catalog/list/${this.brandId}`),
+        url: this.$http.adornUrl(`/product/product/categorybrandrelation/catalog/list/${this.brandId}`),
         method: 'get'
       }).then(({ data }) => {
         this.cateRelationTableData = data.data
@@ -177,7 +177,7 @@ export default {
     getDataList () {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl('/product/brand/list'),
+        url: this.$http.adornUrl('/product/product/brand/list'),
         method: 'get',
         params: this.$http.adornParams({
           page: this.pageIndex,
@@ -199,7 +199,7 @@ export default {
       let { brandId, showStatus } = data
       // 发送请求修改状态
       this.$http({
-        url: this.$http.adornUrl('/product/brand/update/status'),
+        url: this.$http.adornUrl('/product/product/brand/update/status'),
         method: 'post',
         data: this.$http.adornData({ brandId, showStatus }, false)
       }).then(({ data }) => {
@@ -248,7 +248,7 @@ export default {
         }
       ).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/product/brand/delete'),
+          url: this.$http.adornUrl('/product/product/brand/delete'),
           method: 'post',
           data: this.$http.adornData(ids, false)
         }).then(({ data }) => {

@@ -2,9 +2,16 @@ package com.zhangsisiyao.xiaozmall.product.controller;
 
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
+import com.zhangsisiyao.common.vo.AttrValueVo;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
+import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -22,6 +29,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("product/productattrvalue")
+@Api(tags = "Spu属性值操作")
 public class ProductAttrValueController {
     @Autowired
     private ProductAttrValueService productAttrValueService;
@@ -29,63 +37,66 @@ public class ProductAttrValueController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
-    //@RequiresPermissions("product:productattrvalue:list")
-    public R list(@RequestParam Map<String, Object> params){
+    @PostMapping("/list")
+    @ApiOperation(value = "分页查询spu属性值信息")
+    public R<PageUtils> list(@RequestParam @ApiParam("分页查询参数") PageParamVo params){
         PageUtils page = productAttrValueService.queryPage(params);
 
-        return R.ok().put("page", page);
+        return new R<PageUtils>().ok().put( page);
     }
 
-    @RequestMapping("/value/{spuId}")
-    public R productattrvalueWithSpu(@PathVariable String spuId){
-        List<ProductAttrValueEntity> list = productAttrValueService.queryBySpuId(spuId);
-        return R.ok().put("data",list);
+    @PostMapping("/list/{spuId}")
+    @ApiOperation("通过SpuId查询关联的属性值")
+    public R<List<AttrValueVo>> productattrvalueWithSpu(@PathVariable @ApiParam(value = "商品spuId") String spuId){
+        List<AttrValueVo> list = productAttrValueService.queryBySpuId(spuId);
+        return new R<List<AttrValueVo>>().ok().put(list);
     }
 
 
     /**
      * 信息
      */
-    @RequestMapping("/info/{id}")
-    //@RequiresPermissions("product:productattrvalue:info")
-    public R info(@PathVariable("id") Long id){
+    @PostMapping("/info/{id}")
+    @ApiOperation(value = "查询spu属性值信息")
+    public R<AttrValueVo> info(@PathVariable("id") @ApiParam(value = "spu属性值Id") Long id){
 		ProductAttrValueEntity productAttrValue = productAttrValueService.getById(id);
-
-        return R.ok().put("productAttrValue", productAttrValue);
+        AttrValueVo attrValueVo=new AttrValueVo();
+        BeanUtils.copyProperties(productAttrValue,attrValueVo);
+        return new  R<AttrValueVo>().ok().put(attrValueVo);
     }
 
     /**
      * 保存
      */
-    @RequestMapping("/save")
-    //@RequiresPermissions("product:productattrvalue:save")
-    public R save(@RequestBody ProductAttrValueEntity productAttrValue){
+    @PostMapping("/save")
+    @ApiOperation(value = "新增Spu属性值")
+    public R save(@RequestBody @ApiParam(value = "Spu属性值信息") AttrValueVo attrValueVo){
+        ProductAttrValueEntity productAttrValue=new ProductAttrValueEntity();
+        BeanUtils.copyProperties(attrValueVo,productAttrValue);
 		productAttrValueService.save(productAttrValue);
-
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
      * 修改
      */
-    @RequestMapping("/update")
-    //@RequiresPermissions("product:productattrvalue:update")
-    public R update(@RequestBody ProductAttrValueEntity productAttrValue){
+    @PostMapping("/update")
+    @ApiOperation(value = "更新Spu属性值")
+    public R update(@RequestBody @ApiParam(value = "Spu属性值信息") AttrValueVo attrValueVo){
+        ProductAttrValueEntity productAttrValue=new ProductAttrValueEntity();
+        BeanUtils.copyProperties(attrValueVo,productAttrValue);
 		productAttrValueService.updateById(productAttrValue);
-
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
      * 删除
      */
-    @RequestMapping("/delete")
-    //@RequiresPermissions("product:productattrvalue:delete")
-    public R delete(@RequestBody Long[] ids){
+    @PostMapping("/delete")
+    @ApiOperation(value = "删除Spu属性值")
+    public R delete(@RequestBody @ApiParam(value = "spu属性值Id数组") Long[] ids){
 		productAttrValueService.removeByIds(Arrays.asList(ids));
-
-        return R.ok();
+        return new R<>().ok();
     }
 
 }

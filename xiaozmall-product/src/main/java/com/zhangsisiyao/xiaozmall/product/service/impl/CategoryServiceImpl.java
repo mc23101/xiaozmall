@@ -6,9 +6,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.CatalogVo;
 import com.zhangsisiyao.xiaozmall.product.dao.CategoryDao;
 import com.zhangsisiyao.xiaozmall.product.entity.CategoryEntity;
 import com.zhangsisiyao.xiaozmall.product.service.CategoryService;
+import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,9 +31,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     @Cacheable(cacheNames = {"Category"},sync = true,keyGenerator = "customKeyGenerator")
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils queryPage(PageParamVo params) {
         IPage<CategoryEntity> page = this.page(
-                new Query<CategoryEntity>().getPage(params),
+                new Query<CategoryEntity>().getPage(params.getPageIndex(),params.getPageSize()),
                 new QueryWrapper<CategoryEntity>()
         );
 
@@ -39,36 +42,41 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     @Cacheable(cacheNames = {"Category"},sync = true,keyGenerator = "customKeyGenerator")
-    public List<CategoryEntity> listWithTree() {
-        List<CategoryEntity> allEntities = baseMapper.selectList(null);
-        return allEntities.stream()
+    public List<CatalogVo> listWithTree() {
+        List<CatalogVo> all = new ArrayList<>();
+        baseMapper.selectList(null).forEach((entity)->{
+            CatalogVo cur=new CatalogVo();
+            BeanUtils.copyProperties(entity,cur);
+            all.add(cur);
+        });
+        return all.stream()
                 .filter((menu) -> menu.getCatLevel() == 1)
                 .peek((menu) -> {
-                    menu.setPath(menu.getName());
-                    menu.setChildren(getChildren(menu, allEntities));
+                    menu.setChildren(getChildren(menu, all));
                 })
-                .sorted(Comparator.comparingInt(CategoryEntity::getSort))
+                .sorted(Comparator.comparingInt(CatalogVo::getSort))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Cacheable(cacheNames = {"Category"},keyGenerator = "customKeyGenerator",sync = true)
-    public Map<Long, CategoryEntity> listWithMap() {
-        Map<Long,CategoryEntity> map=new HashMap<>();
+    public Map<Long, CatalogVo> listWithMap() {
+        Map<Long,CatalogVo> map=new HashMap<>();
         baseMapper.selectList(null).forEach((entity->{
-            map.put(entity.getCatId(),entity);
+            CatalogVo cur=new CatalogVo();
+            BeanUtils.copyProperties(entity,cur);
+            map.put(entity.getCatId(),cur);
         }));
         return map;
     }
 
-    public List<CategoryEntity> getChildren(CategoryEntity root, List<CategoryEntity> all) {
+    public List<CatalogVo> getChildren(CatalogVo root, List<CatalogVo> all) {
         return all.stream()
                 .filter((menu) -> Objects.equals(menu.getParentCid(), root.getCatId()))
                 .peek((menu) -> {
-                    menu.setPath(root.getPath()+"/"+menu.getName());
                     menu.setChildren(getChildren(menu, all));
                 })
-                .sorted(Comparator.comparingInt(CategoryEntity::getSort))
+                .sorted(Comparator.comparingInt(CatalogVo::getSort))
                 .collect(Collectors.toList());
     }
 

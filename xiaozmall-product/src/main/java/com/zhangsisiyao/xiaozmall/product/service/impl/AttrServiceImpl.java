@@ -12,15 +12,16 @@ import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrService;
 import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
 import com.zhangsisiyao.common.vo.AttrValueVo;
+import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service("attrService")
@@ -31,9 +32,9 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Override
     @Cacheable(value = {"attr"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils queryPage(PageParamVo params) {
         IPage<AttrEntity> page = this.page(
-                new Query<AttrEntity>().getPage(params),
+                new Query<AttrEntity>().getPage(params.getPageIndex(),params.getPageIndex()),
                 new QueryWrapper<>()
         );
 
@@ -42,17 +43,17 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Override
     @Cacheable(value = {"attr"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryBaseAttr(Long catId, Map<String, Object> params) {
+    public PageUtils queryBaseAttr(Long catId, PageParamVo params) {
         QueryWrapper<AttrEntity> queryWrapper = new QueryWrapper<AttrEntity>();
         if(catId!=0){
             queryWrapper=queryWrapper.eq("catalog_id",catId);
         }
-        if(params.containsKey("key")){
-            queryWrapper=queryWrapper.like("attr_name",params.get("key"));
+        if(StringUtils.isNotEmpty(params.getKey())){
+            queryWrapper=queryWrapper.like("attr_name",params.getKey());
         }
         queryWrapper=queryWrapper.eq("attr_type",1).or().eq("attr_type",2);
         IPage<AttrEntity> page = this.page(
-                new Query<AttrEntity>().getPage(params),
+                new Query<AttrEntity>().getPage(params.getPageIndex(),params.getPageSize()),
                 queryWrapper
         );
         return new PageUtils(page);
@@ -60,17 +61,17 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Override
     @Cacheable(value = {"attr"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils querySaleAttr(Long catId, Map<String, Object> params) {
+    public PageUtils querySaleAttr(Long catId, PageParamVo params) {
         QueryWrapper<AttrEntity> queryWrapper = new QueryWrapper<AttrEntity>();
         if(catId!=0){
             queryWrapper=queryWrapper.eq("catalog_id",catId);
         }
-        if(params.containsKey("key")){
-            queryWrapper=queryWrapper.like("attr_name",params.get("key"));
+        if(StringUtils.isNotEmpty(params.getKey())){
+            queryWrapper=queryWrapper.like("attr_name",params.getKey());
         }
         queryWrapper=queryWrapper.eq("attr_type",0).or().eq("attr_type",2);
         IPage<AttrEntity> page = this.page(
-                new Query<AttrEntity>().getPage(params),
+                new Query<AttrEntity>().getPage(params.getPageIndex(),params.getPageSize()),
                 queryWrapper
         );
         return new PageUtils(page);
@@ -84,8 +85,14 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Override
     @Cacheable(value = {"attr"},keyGenerator = "customKeyGenerator",sync = true)
-    public List<ProductAttrValueEntity> queryListForSpu(Long spuId) {
-        return productAttrValueService.query().eq("spu_id", spuId).list();
+    public List<AttrValueVo> queryListForSpu(Long spuId) {
+        List<AttrValueVo> result=new ArrayList<>();
+        productAttrValueService.query().eq("spu_id", spuId).list().forEach(attr->{
+            AttrValueVo cur=new AttrValueVo();
+            BeanUtils.copyProperties(attr,cur);
+            result.add(cur);
+        });
+        return result;
     }
 
     @Override
@@ -164,7 +171,6 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     @Override
     @CacheEvict(value = {"attr"},allEntries = true)
     public void UpdateAttrsBySpuId(List<AttrValueVo> attrs, String spuId) {
-        System.out.println(attrs);
         attrs.forEach((attrVo)->{
             ProductAttrValueEntity one = productAttrValueService.query().eq("spu_id", spuId).eq("attr_id", attrVo.getAttrId()).one();
             if(one!=null){

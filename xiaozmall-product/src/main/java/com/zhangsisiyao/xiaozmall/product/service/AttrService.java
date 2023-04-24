@@ -5,6 +5,7 @@ import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.common.vo.AttrValueVo;
+import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
 
 import java.util.List;
 import java.util.Map;
@@ -18,14 +19,14 @@ import java.util.Map;
  */
 public interface AttrService extends IService<AttrEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils queryPage(PageParamVo params);
 
-    public PageUtils queryBaseAttr(Long catId,Map<String, Object> params);
-    public PageUtils querySaleAttr(Long catId,Map<String, Object> params);
+    public PageUtils queryBaseAttr(Long catId, PageParamVo params);
+    public PageUtils querySaleAttr(Long catId, PageParamVo params);
 
     List<AttrEntity> queryWithAttrGroup(String groupId);
 
-    List<ProductAttrValueEntity> queryListForSpu(Long spuId);
+    List<AttrValueVo> queryListForSpu(Long spuId);
 
     void UpdateAttrsBySpuId(List<AttrValueVo> attrs, String spuId);
 }

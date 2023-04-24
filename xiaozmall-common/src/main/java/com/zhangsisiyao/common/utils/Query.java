@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhangsisiyao.common.xss.SQLFilter;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,20 +24,28 @@ import java.util.Map;
  */
 public class Query<T> {
 
-    public IPage<T> getPage(Map<String, Object> params) {
-        return this.getPage(params, null, false);
+    public IPage<T> getPage(long pageIndex,long pageSize) {
+        return this.getPage(pageIndex,pageSize, null, false);
     }
 
-    public IPage<T> getPage(Map<String, Object> params, String defaultOrderField, boolean isAsc) {
+    @Deprecated
+    public IPage<T> getPage(Map<String,Object> params) {
+        return null;
+    }
+
+    public IPage<T> getPage(long pageIndex,long pageSize, String defaultOrderField, boolean isAsc) {
         //分页参数
         long curPage = 1;
         long limit = 10;
 
-        if(params.get(Constant.PAGE) != null){
-            curPage = Long.parseLong((String)params.get(Constant.PAGE));
+        Map<String,Object> params=new HashMap<>();
+
+        if(pageIndex>0){
+            curPage=pageIndex;
         }
-        if(params.get(Constant.LIMIT) != null){
-            limit = Long.parseLong((String)params.get(Constant.LIMIT));
+
+        if(pageSize>0){
+            limit=pageSize;
         }
 
         //分页对象

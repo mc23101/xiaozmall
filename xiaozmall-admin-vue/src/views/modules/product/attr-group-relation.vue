@@ -126,7 +126,7 @@ export default {
         postData.push({ attrId: item.attrId, attrGroupId: this.attrGroupId })
       })
       this.$http({
-        url: this.$http.adornUrl('/product/attrgroup/attr/relation/delete'),
+        url: this.$http.adornUrl('/product/product/attrgroup/attr/relation/delete'),
         method: 'post',
         data: this.$http.adornData(postData, false)
       }).then(({ data }) => {
@@ -143,7 +143,7 @@ export default {
       let data = []
       data.push({ attrId, attrGroupId: this.attrGroupId })
       this.$http({
-        url: this.$http.adornUrl('/product/attrgroup/attr/relation/delete'),
+        url: this.$http.adornUrl('/product/product/attrgroup/attr/relation/delete'),
         method: 'post',
         data: this.$http.adornData(data, false)
       }).then(({ data }) => {
@@ -166,7 +166,7 @@ export default {
         })
         console.log(postData)
         this.$http({
-          url: this.$http.adornUrl('/product/attrgroup/attr/relation/add'),
+          url: this.$http.adornUrl('/product/product/attrgroup/attr/relation/add'),
           method: 'post',
           data: this.$http.adornData(postData, false)
         }).then(({ data }) => {
@@ -184,7 +184,7 @@ export default {
       this.visible = true
       this.$http({
         url: this.$http.adornUrl(
-          `/product/attrgroup/attr/relation/get/${this.attrGroupId}`
+          `/product/product/attrgroup/attr/relation/get/${this.attrGroupId}`
         ),
         method: 'get',
         params: this.$http.adornParams({})
@@ -201,7 +201,7 @@ export default {
       this.dataListLoading = true
       this.$http({
         url: this.$http.adornUrl(
-          `/product/attrgroup/noattr/relation/${this.attrGroupId}`
+          `/product/product/attrgroup/noattr/relation/${this.attrGroupId}`
         ),
         method: 'get',
         params: this.$http.adornParams({

@@ -1,36 +1,35 @@
 package com.zhangsisiyao.common.vo;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@ApiModel(description = "属性分组信息")
 public class AttrGroupVo {
-    /**
-     * 分组id
-     */
+
+    @ApiModelProperty(value = "分组id",example = "1")
     private Long attrGroupId;
-    /**
-     * 组名
-     */
+
+    @ApiModelProperty(value = "分组名称",example = "主体")
     private String attrGroupName;
-    /**
-     * 排序
-     */
+
+    @ApiModelProperty(value = "分组排序",example = "0")
     private Integer sort;
-    /**
-     * 描述
-     */
+
+    @ApiModelProperty(value = "分组描述",example = "无")
     private String descript;
-    /**
-     * 组图标
-     */
+
+    @ApiModelProperty(value = "分组图标",example = "")
     private String icon;
-    /**
-     * 所属分类id
-     */
+
+    @ApiModelProperty(value = "所属分类id",example = "225")
     private Long catalogId;
 
+    @ApiModelProperty(value = "关联的属性信息")
     private List<AttrVo> attrs=new ArrayList<>();
 }

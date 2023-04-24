@@ -178,7 +178,7 @@ export default {
       if (path && path.length === 3) {
         this.$http({
           url: this.$http.adornUrl(
-            `/product/attrgroup/list/${path[path.length - 1]}`
+            `/product/product/attrgroup/list/${path[path.length - 1]}`
           ),
           method: 'get',
           params: this.$http.adornParams({ page: 1, limit: 10000000 })
@@ -208,7 +208,7 @@ export default {
         if (this.dataForm.attrId) {
           this.$http({
             url: this.$http.adornUrl(
-              `/product/attr/info/${this.dataForm.attrId}`
+              `/product/product/attr/info/${this.dataForm.attrId}`
             ),
             method: 'get',
             params: this.$http.adornParams()
@@ -240,7 +240,7 @@ export default {
         if (valid) {
           this.$http({
             url: this.$http.adornUrl(
-              `/product/attr/${!this.dataForm.attrId ? 'save' : 'update'}`
+              `/product/product/attr/${!this.dataForm.attrId ? 'save' : 'update'}`
             ),
             method: 'post',
             data: this.$http.adornData({

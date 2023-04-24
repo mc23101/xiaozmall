@@ -90,7 +90,7 @@ export default {
     setPublishStatus (id,val) {
       console.log(val === 0 ? 'down' : 'up')
       this.$http({
-        url: this.$http.adornUrl(`/product/spuinfo/${val === 0 ? 'down' : 'up'}/${id}`),
+        url: this.$http.adornUrl(`/product/product/spuinfo/${val === 0 ? 'down' : 'up'}/${id}`),
         method: 'post'
       }).then(({ data }) => {
         if (data && data.code === 0) {
@@ -122,7 +122,7 @@ export default {
         limit: this.pageSize
       })
       this.$http({
-        url: this.$http.adornUrl('/product/spuinfo/list'),
+        url: this.$http.adornUrl('/product/product/spuinfo/list'),
         method: 'get',
         params: this.$http.adornParams(param)
       }).then(({ data }) => {

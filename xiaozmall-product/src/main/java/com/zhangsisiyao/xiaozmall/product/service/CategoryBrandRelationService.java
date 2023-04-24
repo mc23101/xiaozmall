@@ -2,8 +2,10 @@ package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
+import com.zhangsisiyao.common.vo.BrandVo;
 import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.CategoryBrandRelationEntity;
+import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
 
 import java.util.List;
 import java.util.Map;
@@ -17,9 +19,9 @@ import java.util.Map;
  */
 public interface CategoryBrandRelationService extends IService<CategoryBrandRelationEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils queryPage(PageParamVo params);
 
-    List<BrandEntity> queryBrand(String catId);
+    List<BrandVo> queryBrand(String catId);
 
 }
 

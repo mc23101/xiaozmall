@@ -6,14 +6,18 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.AttrValueVo;
 import com.zhangsisiyao.xiaozmall.product.dao.ProductAttrValueDao;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
+import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +28,9 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
 
     @Override
     @Cacheable(value = {"ProductAttrValue"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils queryPage(PageParamVo params) {
         IPage<ProductAttrValueEntity> page = this.page(
-                new Query<ProductAttrValueEntity>().getPage(params),
+                new Query<ProductAttrValueEntity>().getPage(params.getPageIndex(),params.getPageSize()),
                 new QueryWrapper<ProductAttrValueEntity>()
         );
 
@@ -35,8 +39,14 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
 
     @Override
     @Cacheable(value = {"ProductAttrValue"},keyGenerator = "customKeyGenerator",sync = true)
-    public List<ProductAttrValueEntity> queryBySpuId(String spuId) {
-        return this.query().eq("spu_id",spuId).list();
+    public List<AttrValueVo> queryBySpuId(String spuId) {
+        List<AttrValueVo> list=new ArrayList<>();
+        this.query().eq("spu_id",spuId).list().forEach((attrValue)->{
+            AttrValueVo cur=new AttrValueVo();
+            BeanUtils.copyProperties(attrValue,cur);
+            list.add(cur);
+        });
+        return list;
     }
 
 

@@ -21,6 +21,7 @@
 		<module>xiaozmall-thirdpart</module>
 		<module>xiaozmall-system</module>
         <module>xiaozmall-search</module>
+		<module>xiaozmall-apidoc</module>
     </modules>
 
 </project>

@@ -2,7 +2,9 @@ package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
+import com.zhangsisiyao.common.vo.AttrValueVo;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
+import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
 
 import java.util.List;
 import java.util.Map;
@@ -16,8 +18,8 @@ import java.util.Map;
  */
 public interface ProductAttrValueService extends IService<ProductAttrValueEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils queryPage(PageParamVo params);
 
-    List<ProductAttrValueEntity> queryBySpuId(String spuId);
+    List<AttrValueVo> queryBySpuId(String spuId);
 }
 

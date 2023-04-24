@@ -38,123 +38,123 @@
 <script>
 import CategoryCascader from '../common/category-cascader'
 export default {
-  data() {
+  data () {
     return {
-      props:{
-        value:"catId",
-        label:"name",
-        children:"children"
+      props: {
+        value: 'catId',
+        label: 'name',
+        children: 'children'
       },
       visible: false,
       categories: [],
       catalogPath: [],
       dataForm: {
-        attrGroupId: "",
-        attrGroupName: "",
-        sort: "",
-        descript: "",
-        icon: "",
-        catalogId: ""
+        attrGroupId: '',
+        attrGroupName: '',
+        sort: '',
+        descript: '',
+        icon: '',
+        catalogId: ''
       },
       dataRule: {
         attrGroupName: [
-          { required: true, message: "组名不能为空", trigger: "blur" }
+          { required: true, message: '组名不能为空', trigger: 'blur' }
         ],
-        sort: [{ required: true, message: "排序不能为空", trigger: "blur" }],
+        sort: [{ required: true, message: '排序不能为空', trigger: 'blur' }],
         descript: [
-          { required: true, message: "描述不能为空", trigger: "blur" }
+          { required: true, message: '描述不能为空', trigger: 'blur' }
         ],
-        icon: [{ required: true, message: "组图标不能为空", trigger: "blur" }],
+        icon: [{ required: true, message: '组图标不能为空', trigger: 'blur' }],
         catalogId: [
-          { required: true, message: "所属分类id不能为空", trigger: "blur" }
+          { required: true, message: '所属分类id不能为空', trigger: 'blur' }
         ]
       }
-    };
+    }
   },
-  components:{CategoryCascader},
-  watch:{
-    catalogPath(path) {
-      this.dataForm.catalogId=path[path.length-1]
+  components: {CategoryCascader},
+  watch: {
+    catalogPath (path) {
+      this.dataForm.catalogId = path[path.length - 1]
     }
   },
   methods: {
-    dialogClose(){
-      this.catalogPath = [];
+    dialogClose () {
+      this.catalogPath = []
     },
-    getcategories(){
+    getcategories () {
       this.$http({
-        url: this.$http.adornUrl("/product/category/list/tree"),
-        method: "get"
+        url: this.$http.adornUrl('/product/product/category/list/tree'),
+        method: 'get'
       }).then(({ data }) => {
-        this.categories = data.data;
-      });
+        this.categories = data.data
+      })
     },
-    init(id) {
-      this.dataForm.attrGroupId = id || 0;
-      this.visible = true;
+    init (id) {
+      this.dataForm.attrGroupId = id || 0
+      this.visible = true
       this.$nextTick(() => {
-        this.$refs["dataForm"].resetFields();
+        this.$refs['dataForm'].resetFields()
         if (this.dataForm.attrGroupId) {
           this.$http({
             url: this.$http.adornUrl(
-              `/product/attrgroup/info/${this.dataForm.attrGroupId}`
+              `/product/product/attrgroup/info/${this.dataForm.attrGroupId}`
             ),
-            method: "get",
+            method: 'get',
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.attrGroupName = data.attrGroup.attrGroupName;
-              this.dataForm.sort = data.attrGroup.sort;
-              this.dataForm.descript = data.attrGroup.descript;
-              this.dataForm.icon = data.attrGroup.icon;
-              this.dataForm.catalogId = data.attrGroup.catalogId;
-              //查出catalogId的完整路径
-              this.catalogPath =  data.attrGroup.catalogPath;
+              this.dataForm.attrGroupName = data.attrGroup.attrGroupName
+              this.dataForm.sort = data.attrGroup.sort
+              this.dataForm.descript = data.attrGroup.descript
+              this.dataForm.icon = data.attrGroup.icon
+              this.dataForm.catalogId = data.attrGroup.catalogId
+              // 查出catalogId的完整路径
+              this.catalogPath = data.attrGroup.catalogPath
             }
-          });
+          })
         }
-      });
+      })
     },
     // 表单提交
-    dataFormSubmit() {
-      this.$refs["dataForm"].validate(valid => {
+    dataFormSubmit () {
+      this.$refs['dataForm'].validate(valid => {
         if (valid) {
           this.$http({
             url: this.$http.adornUrl(
-              `/product/attrgroup/${
-                !this.dataForm.attrGroupId ? "save" : "update"
+              `/product/product/attrgroup/${
+                !this.dataForm.attrGroupId ? 'save' : 'update'
               }`
             ),
-            method: "post",
+            method: 'post',
             data: this.$http.adornData({
               attrGroupId: this.dataForm.attrGroupId || undefined,
               attrGroupName: this.dataForm.attrGroupName,
               sort: this.dataForm.sort,
               descript: this.dataForm.descript,
               icon: this.dataForm.icon,
-              catalogId: this.catalogPath[this.catalogPath.length-1]
+              catalogId: this.catalogPath[this.catalogPath.length - 1]
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
               this.$message({
-                message: "操作成功",
-                type: "success",
+                message: '操作成功',
+                type: 'success',
                 duration: 1500,
                 onClose: () => {
-                  this.visible = false;
-                  this.$emit("refreshDataList");
+                  this.visible = false
+                  this.$emit('refreshDataList')
                 }
-              });
+              })
             } else {
-              this.$message.error(data.msg);
+              this.$message.error(data.msg)
             }
-          });
+          })
         }
-      });
+      })
     }
   },
-  created(){
-    this.getcategories();
+  created () {
+    this.getcategories()
   }
-};
+}
 </script>

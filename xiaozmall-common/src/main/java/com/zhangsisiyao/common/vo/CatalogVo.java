@@ -1,54 +1,47 @@
 package com.zhangsisiyao.common.vo;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
+@ApiModel(description = "商品分类信息")
 public class CatalogVo implements Serializable {
 
+    @ApiModelProperty(value = "商品分类Id")
     private Long catId;
 
+    @ApiModelProperty(value = "商品分类名称")
     private String name;
-    /**
-     * 父分类id
-     */
-    @Min(value = 0)
-    private Long parentCid;
-    /**
-     * 层级
-     */
-    @Min(value = 0)
-    private Integer catLevel;
-    /**
-     * 是否显示[0-不显示，1显示]
-     */
 
-    @Min(value = 0)
-    @Min(value = 1)
+    @ApiModelProperty(value = "父分类id")
+    private Long parentCid;
+
+
+    @ApiModelProperty(value = "分类层级")
+    private Integer catLevel;
+
+    @ApiModelProperty(value = "是否显示[0-不显示，1显示]")
     private Integer showStatus;
-    /**
-     * 排序
-     */
-    @Min(value = 0)
+
+    @ApiModelProperty(value = "排序")
     private Integer sort;
-    /**
-     * 图标地址
-     */
-    @NotEmpty
+
+    @ApiModelProperty(value = "图标地址")
     private String icon;
-    /**
-     * 计量单位
-     */
-    @NotEmpty
+
+    @ApiModelProperty(value = "计量单位")
     private String productUnit;
-    /**
-     * 商品数量
-     */
-    @Min(value = 0)
+
+    @ApiModelProperty(value = "商品数量")
     private Integer productCount;
 
-    private String path;
+    @ApiModelProperty(value = "子分类")
+    List<CatalogVo> children;
 }
