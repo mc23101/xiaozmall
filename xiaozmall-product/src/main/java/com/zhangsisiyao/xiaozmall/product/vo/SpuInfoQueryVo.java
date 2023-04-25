@@ -6,26 +6,22 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@ApiModel(description = "sku信息搜索参数")
-public class SkuInfoQueryVo extends PageParamVo {
+@ApiModel(description = "spu信息搜索参数")
+public class SpuInfoQueryVo extends PageParamVo implements Serializable {
 
     @ApiModelProperty(value = "品牌id")
-    private Long brandId=null;
+    Long brandId=null;
 
     @ApiModelProperty(value = "分类id")
-    private Long catalogId=null;
+    Long catalogId=null;
 
     @ApiModelProperty(value = "搜索关键字")
-    private String key=null;
+    String key=null;
 
-    @ApiModelProperty(value = "最低价格")
-    private BigDecimal min=null;
-
-    @ApiModelProperty(value = "最高价格")
-    private BigDecimal max=null;
-
+    @ApiModelProperty(value = "上架状态[0 - 下架，1 - 上架]")
+    Integer status=null;
 }

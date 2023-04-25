@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.common.vo.product.CatalogVo;
@@ -29,6 +30,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("product/category")
 @Api(tags = "商品分类操作")
+@ApiSupport(order = 11)
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;

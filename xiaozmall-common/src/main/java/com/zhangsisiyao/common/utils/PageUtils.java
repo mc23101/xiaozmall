@@ -22,23 +22,23 @@ import java.util.List;
  * @author Mark sunlightcs@gmail.com
  */
 @Data
-@ApiModel(value = "分页信息")
+@ApiModel(description = "分页信息")
 public class PageUtils implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "总记录数")
 	private int totalCount;
 
-	@ApiModelProperty(value = "每页记录数")
+	@ApiModelProperty(value = "每页记录数",position = 1)
 	private int pageSize;
 
-	@ApiModelProperty(value = "总页数")
+	@ApiModelProperty(value = "总页数",position = 2)
 	private int totalPage;
 
-	@ApiModelProperty(value = "当前页数")
+	@ApiModelProperty(value = "当前页数",position = 3)
 	private int currPage;
 
-	@ApiModelProperty(value = "数据列表")
+	@ApiModelProperty(value = "数据列表",position = 4)
 	private List<?> list;
 	
 	/**

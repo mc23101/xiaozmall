@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.common.vo.product.AttrGroupVo.*;
@@ -29,6 +30,7 @@ import java.util.List;
 @RestController
 @RequestMapping("product/attrgroup")
 @Api(tags = "属性分类操作")
+@ApiSupport(order = 9)
 public class AttrGroupController {
     @Autowired
     private AttrGroupService attrGroupService;

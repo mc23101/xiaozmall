@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.xiaozmall.product.entity.UndoLogEntity;
@@ -21,6 +22,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("product/undolog")
+@ApiSupport(order = 14)
 public class UndoLogController {
     @Autowired
     private UndoLogService undoLogService;

@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoDescEntity;
@@ -24,6 +25,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("product/spuinfodesc")
 @Api(tags = "Spu商品描述操作")
+@ApiSupport(order = 3,author = "zhangsisiyao")
 public class SpuInfoDescController {
     @Autowired
     private SpuInfoDescService spuInfoDescService;

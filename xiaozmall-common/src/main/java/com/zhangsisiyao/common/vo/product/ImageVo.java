@@ -15,15 +15,15 @@ public class ImageVo implements Serializable {
     @ApiModelProperty(value = "图片id，修改图片信息时需指定id")
     private Long id;
 
-    @ApiModelProperty(value = "如果为spu图片，则不为0")
+    @ApiModelProperty(value = "如果为spu图片，则不为0",position = 1)
     private Long skuId;
 
-    @ApiModelProperty(value = "如果为sku图片，则不为0")
+    @ApiModelProperty(value = "如果为sku图片，则不为0",position = 2)
     private Long spuId;
 
-    @ApiModelProperty(value = "图片地址")
+    @ApiModelProperty(value = "图片地址",position = 3)
     String imgUrl;
 
-    @ApiModelProperty(value = "图片排序")
+    @ApiModelProperty(value = "图片排序",position = 4)
     int imgSort;
 }

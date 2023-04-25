@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.common.vo.product.BrandVo;
@@ -33,6 +34,7 @@ import java.util.List;
 @RestController
 @RequestMapping("product/categorybrandrelation")
 @Api(tags = "商品分类与品牌关联操作")
+@ApiSupport(order = 13)
 public class CategoryBrandRelationController {
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;

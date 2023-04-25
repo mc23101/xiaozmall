@@ -20,27 +20,27 @@ public class BrandVo implements Serializable {
     private Long brandId;
 
     @NotEmpty
-    @ApiModelProperty(value = "品牌名称")
+    @ApiModelProperty(value = "品牌名称",position = 1)
     private String name;
 
     @NotEmpty
-    @ApiModelProperty(value = "品牌logo地址")
+    @ApiModelProperty(value = "品牌logo地址",position = 2)
     private String logo;
 
     @NotEmpty
-    @ApiModelProperty(value = "品牌介绍")
+    @ApiModelProperty(value = "品牌介绍",position = 3)
     private String descript;
 
     @Max(value = 1)
     @Min(value = 0)
-    @ApiModelProperty(value = "显示状态[0-不显示；1-显示]")
+    @ApiModelProperty(value = "显示状态[0-不显示；1-显示]",position = 4)
     private Integer showStatus;
 
     @NotEmpty
-    @ApiModelProperty(value = "检索首字母")
+    @ApiModelProperty(value = "检索首字母",position = 5)
     private String firstLetter;
 
     @Min(value = 0)
-    @ApiModelProperty(value = "排序")
+    @ApiModelProperty(value = "排序",position = 6)
     private Integer sort;
 }

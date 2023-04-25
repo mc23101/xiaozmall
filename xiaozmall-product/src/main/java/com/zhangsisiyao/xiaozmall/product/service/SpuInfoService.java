@@ -3,8 +3,10 @@ package com.zhangsisiyao.xiaozmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 
+import com.zhangsisiyao.common.vo.product.SpuInfoVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.common.vo.product.ProductVo;
+import com.zhangsisiyao.xiaozmall.product.vo.SpuInfoQueryVo;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +22,7 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
-    PageUtils queryPageLimit(Map<String, Object> params);
+    PageUtils queryPageLimit(SpuInfoQueryVo params);
 
     boolean saveProduct(ProductVo product);
 
@@ -32,6 +34,6 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
 
     void deleteSpu(Long[] ids);
 
-    List<SpuInfoEntity> getWithCatalogAndBrand(String catalog,String brand);
+    List<SpuInfoVo> getWithCatalogAndBrand(String catalog, String brand);
 }
 

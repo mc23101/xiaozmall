@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.common.vo.product.AttrVo;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("product/skusaleattrvalue")
 @Api(tags = "Sku属性值操作")
+@ApiSupport(order = 6)
 public class SkuSaleAttrValueController {
     @Autowired
     private SkuSaleAttrValueService skuSaleAttrValueService;

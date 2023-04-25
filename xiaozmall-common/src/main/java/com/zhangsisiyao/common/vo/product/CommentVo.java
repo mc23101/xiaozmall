@@ -1,72 +1,59 @@
 package com.zhangsisiyao.common.vo.product;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class CommentVo {
+@ApiModel(description = "商品评论")
+public class CommentVo implements Serializable {
 
+    @ApiModelProperty(value = "评论id")
     private Long id;
-    /**
-     * sku_id
-     */
+
+    @ApiModelProperty(value = "商品skuId",position = 1)
     private Long skuId;
-    /**
-     * spu_id
-     */
+
+    @ApiModelProperty(value = "商品spuId",position = 2)
     private Long spuId;
-    /**
-     * 商品名字
-     */
+
+    @ApiModelProperty(value = "商品名字",position = 3)
     private String spuName;
-    /**
-     * 会员昵称
-     */
+
+    @ApiModelProperty(value = "会员昵称",position = 4)
     private String memberNickName;
-    /**
-     * 星级
-     */
+
+    @ApiModelProperty(value = "会员星级",position = 5)
     private Integer star;
-    /**
-     * 会员ip
-     */
+
+    @ApiModelProperty(value = "会员ip",position = 6)
     private String memberIp;
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-    /**
-     * 显示状态[0-不显示，1-显示]
-     */
+
+    @ApiModelProperty(value = "显示状态[0-不显示，1-显示]",position = 7)
     private Integer showStatus;
-    /**
-     * 购买时属性组合
-     */
+
+    @ApiModelProperty(value = "购买时属性组合",position = 8)
     private String spuAttributes;
-    /**
-     * 点赞数
-     */
+
+    @ApiModelProperty(value = "点赞数",position = 9)
     private Integer likesCount;
-    /**
-     * 回复数
-     */
+
+    @ApiModelProperty(value = "回复数",position = 10)
     private Integer replyCount;
-    /**
-     * 评论图片/视频[json数据；[{type:文件类型,url:资源路径}]]
-     */
+
+    @ApiModelProperty(value = "评论图片/视频[json数据；[{type:文件类型,url:资源路径}]]",position = 11)
     private String resources;
-    /**
-     * 内容
-     */
+
+    @ApiModelProperty(value = "评论内容",position = 12)
     private String content;
-    /**
-     * 用户头像
-     */
+
+    @ApiModelProperty(value = "用户头像",position = 13)
     private String memberIcon;
-    /**
-     * 评论类型[0 - 对商品的直接评论，1 - 对评论的回复]
-     */
+
+    @ApiModelProperty(value = "评论类型[0 - 对商品的直接评论，1 - 对评论的回复]",position = 14)
     private Integer commentType;
 }

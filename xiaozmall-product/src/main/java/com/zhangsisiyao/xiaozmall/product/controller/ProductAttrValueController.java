@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.common.vo.product.AttrVo;
@@ -27,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("product/productattrvalue")
 @Api(tags = "Spu属性值操作")
+@ApiSupport(order = 1)
 public class ProductAttrValueController {
     @Autowired
     private ProductAttrValueService productAttrValueService;

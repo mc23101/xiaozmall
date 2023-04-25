@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.common.vo.product.BrandVo;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("product/brand")
 @Api(tags = "品牌操作")
+@ApiSupport(order = 12)
 public class BrandController {
     @Autowired
     private BrandService brandService;

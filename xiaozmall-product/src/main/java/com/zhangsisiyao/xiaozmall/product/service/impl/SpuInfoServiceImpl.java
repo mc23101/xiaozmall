@@ -14,6 +14,8 @@ import com.zhangsisiyao.common.vo.product.AttrGroupVo.*;
 import com.zhangsisiyao.xiaozmall.product.dao.SpuInfoDao;
 import com.zhangsisiyao.xiaozmall.product.entity.*;
 import com.zhangsisiyao.xiaozmall.product.service.*;
+import com.zhangsisiyao.xiaozmall.product.vo.SpuInfoQueryVo;
+import org.apache.commons.lang.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -76,22 +78,22 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Override
     @Cacheable(value = {"SpuInfo"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPageLimit(Map<String, Object> params) {
+    public PageUtils queryPageLimit(SpuInfoQueryVo params) {
         QueryWrapper<SpuInfoEntity> queryWrapper = new QueryWrapper<>();
-        if(params.containsKey("brandId")&&!params.get("brandId").equals("0")){
-            queryWrapper=queryWrapper.eq("brand_id",params.get("brandId"));
+        if(params.getBrandId()!=null){
+            queryWrapper=queryWrapper.eq("brand_id",params.getBrandId());
         }
-        if(params.containsKey("catalogId")&&!params.get("catalogId").equals("0")){
-            queryWrapper=queryWrapper.eq("catalog_id",params.get("catalogId"));
+        if(params.getCatalogId()!=null){
+            queryWrapper=queryWrapper.eq("catalog_id",params.getCatalogId());
         }
-        if(params.containsKey("key")&&!params.get("key").equals("")){
-            queryWrapper=queryWrapper.like("spu_name", params.get("key"));
+        if(params.getKey()!=null&& StringUtils.isNotEmpty(params.getKey())){
+            queryWrapper=queryWrapper.like("spu_name", params.getKey());
         }
-        if(params.containsKey("status")&&!params.get("status").equals("")){
-            queryWrapper=queryWrapper.eq("publish_status", params.get("status"));
+        if(params.getStatus()!=null){
+            queryWrapper=queryWrapper.eq("publish_status", params.getStatus());
         }
         IPage<SpuInfoEntity> page = this.page(
-                new Query<SpuInfoEntity>().getPage(params),
+                new Query<SpuInfoEntity>().getPage(params.getPageIndex(),params.getPageSize()),
                 queryWrapper
         );
         return new PageUtils(page);
@@ -342,8 +344,14 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Override
     @Cacheable(value = {"SpuInfo"},keyGenerator = "customKeyGenerator",sync = true)
-    public List<SpuInfoEntity> getWithCatalogAndBrand(String catalog, String brand) {
-        return this.query().eq("catalog_id",catalog).eq("brand_id",brand).list();
+    public List<SpuInfoVo> getWithCatalogAndBrand(String catalog, String brand) {
+        List<SpuInfoVo> result=new ArrayList<>();
+        this.query().eq("catalog_id",catalog).eq("brand_id",brand).list().forEach((spuInfoEntity -> {
+            SpuInfoVo cur=new SpuInfoVo();
+            BeanUtils.copyProperties(spuInfoEntity,cur);
+            result.add(cur);
+        }));
+        return result;
     }
 
     @Override

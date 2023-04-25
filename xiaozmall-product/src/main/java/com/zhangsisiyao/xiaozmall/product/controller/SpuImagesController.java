@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.common.vo.product.ImageVo;
@@ -28,6 +29,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("product/spuimages")
 @Api(tags = "Spu图片信息操作")
+@ApiSupport(order = 2)
 public class SpuImagesController {
     @Autowired
     private SpuImagesService spuImagesService;
