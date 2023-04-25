@@ -2,16 +2,13 @@ package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
-import com.zhangsisiyao.common.vo.AttrAttrgroupRelationVo;
-import com.zhangsisiyao.common.vo.AttrGroupVo;
-import com.zhangsisiyao.common.vo.AttrVo;
-import com.zhangsisiyao.xiaozmall.product.entity.AttrAttrgroupRelationEntity;
-import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
+import com.zhangsisiyao.common.vo.product.AttrGroupVo.*;
+import com.zhangsisiyao.common.vo.product.AttrGroupVo;
+import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrGroupEntity;
-import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 

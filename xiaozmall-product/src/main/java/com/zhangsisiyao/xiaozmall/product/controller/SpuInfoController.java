@@ -4,7 +4,7 @@ import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuInfoService;
-import com.zhangsisiyao.common.vo.ProductVo;
+import com.zhangsisiyao.common.vo.product.ProductVo;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("product/spuinfo")
-@Api(tags = "Spu信息操作")
+@Api(tags = "Spu操作")
 public class SpuInfoController {
     @Autowired
     private SpuInfoService spuInfoService;

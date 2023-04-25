@@ -1,9 +1,9 @@
 package com.zhangsisiyao.xiaozmall.search.vo;
 
 
-import com.zhangsisiyao.common.vo.AttrVo;
-import com.zhangsisiyao.common.vo.BrandVo;
-import com.zhangsisiyao.common.vo.CatalogVo;
+import com.zhangsisiyao.common.vo.product.AttrVo;
+import com.zhangsisiyao.common.vo.product.BrandVo;
+import com.zhangsisiyao.common.vo.product.CatalogVo;
 import lombok.Data;
 
 import java.io.Serializable;

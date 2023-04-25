@@ -1,9 +1,8 @@
 package com.zhangsisiyao.xiaozmall.search.vo;
 
-import com.zhangsisiyao.common.vo.ProductVo;
+import com.zhangsisiyao.common.vo.product.ProductVo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

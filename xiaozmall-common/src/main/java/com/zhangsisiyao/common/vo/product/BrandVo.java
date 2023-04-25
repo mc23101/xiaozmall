@@ -1,4 +1,4 @@
-package com.zhangsisiyao.common.vo;
+package com.zhangsisiyao.common.vo.product;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

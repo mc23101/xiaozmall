@@ -2,15 +2,18 @@ package com.zhangsisiyao.xiaozmall.product.controller;
 
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
+import com.zhangsisiyao.common.vo.product.AttrVo;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuSaleAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SkuSaleAttrValueService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.Map;
-
 
 
 /**
@@ -31,10 +34,9 @@ public class SkuSaleAttrValueController {
      * 列表
      */
     @PostMapping("/list")
-    //@RequiresPermissions("product:skusaleattrvalue:list")
-    public R<PageUtils> list(@RequestParam Map<String, Object> params){
+    @ApiOperation(value = "分页查询sku属性值")
+    public R<PageUtils> list(@RequestParam @ApiParam(value = "分页查询参数") PageParamVo params){
         PageUtils page = skuSaleAttrValueService.queryPage(params);
-
         return new R<PageUtils>().ok().put( page);
     }
 
@@ -43,19 +45,22 @@ public class SkuSaleAttrValueController {
      * 信息
      */
     @PostMapping("/info/{id}")
-    //@RequiresPermissions("product:skusaleattrvalue:info")
-    public R<SkuSaleAttrValueEntity> info(@PathVariable("id") Long id){
+    @ApiOperation(value = "查询sku属性值")
+    public R<AttrVo.AttrValueVo> info(@PathVariable("id") @ApiParam("sku属性值Id") Long id){
 		SkuSaleAttrValueEntity skuSaleAttrValue = skuSaleAttrValueService.getById(id);
-
-        return new  R<SkuSaleAttrValueEntity>().ok().put(skuSaleAttrValue);
+        AttrVo.AttrValueVo attrValueVo=new AttrVo.AttrValueVo();
+        BeanUtils.copyProperties(skuSaleAttrValue,attrValueVo);
+        return new  R<AttrVo.AttrValueVo>().ok().put(attrValueVo);
     }
 
     /**
      * 保存
      */
     @PostMapping("/save")
-    //@RequiresPermissions("product:skusaleattrvalue:save")
-    public R save(@RequestBody SkuSaleAttrValueEntity skuSaleAttrValue){
+    @ApiOperation(value = "新增sku属性值")
+    public R save(@RequestBody @ApiParam(value = "sku属性值信息") AttrVo.AttrValueVo attrValueVo){
+        SkuSaleAttrValueEntity skuSaleAttrValue=new SkuSaleAttrValueEntity();
+        BeanUtils.copyProperties(attrValueVo,skuSaleAttrValue);
 		skuSaleAttrValueService.save(skuSaleAttrValue);
 
         return new R<>().ok();
@@ -65,10 +70,11 @@ public class SkuSaleAttrValueController {
      * 修改
      */
     @PostMapping("/update")
-    //@RequiresPermissions("product:skusaleattrvalue:update")
-    public R update(@RequestBody SkuSaleAttrValueEntity skuSaleAttrValue){
+    @ApiOperation("修改sku属性值")
+    public R update(@RequestBody @ApiParam(value = "sku属性值信息") AttrVo.AttrValueVo attrValueVo){
+        SkuSaleAttrValueEntity skuSaleAttrValue=new SkuSaleAttrValueEntity();
+        BeanUtils.copyProperties(attrValueVo,skuSaleAttrValue);
 		skuSaleAttrValueService.updateById(skuSaleAttrValue);
-
         return new R<>().ok();
     }
 
@@ -76,10 +82,9 @@ public class SkuSaleAttrValueController {
      * 删除
      */
     @PostMapping("/delete")
-    //@RequiresPermissions("product:skusaleattrvalue:delete")
-    public R delete(@RequestBody Long[] ids){
+    @ApiOperation(value = "删除sku属性值")
+    public R delete(@RequestBody @ApiParam("sku属性值id数组") Long[] ids){
 		skuSaleAttrValueService.removeByIds(Arrays.asList(ids));
-
         return new R<>().ok();
     }
 

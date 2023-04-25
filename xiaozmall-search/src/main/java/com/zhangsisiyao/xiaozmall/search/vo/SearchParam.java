@@ -1,6 +1,6 @@
 package com.zhangsisiyao.xiaozmall.search.vo;
 
-import com.zhangsisiyao.common.vo.AttrValueVo;
+import com.zhangsisiyao.common.vo.product.AttrVo;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -26,7 +26,7 @@ public class SearchParam implements Serializable {
 
     int pageSize=20;
 
-    List<AttrValueVo> spuAttrs=new ArrayList<>();
+    List<AttrVo.AttrValueVo> spuAttrs=new ArrayList<>();
 
-    List<AttrValueVo> skuAttrs=new ArrayList<>();
+    List<AttrVo.AttrValueVo> skuAttrs=new ArrayList<>();
 }

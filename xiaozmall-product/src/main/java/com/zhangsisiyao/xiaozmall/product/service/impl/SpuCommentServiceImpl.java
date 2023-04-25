@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.dao.SpuCommentDao;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuCommentEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuCommentService;
@@ -23,9 +24,9 @@ public class SpuCommentServiceImpl extends ServiceImpl<SpuCommentDao, SpuComment
 
     @Override
     @Cacheable(value = {"SpuComment"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils queryPage(PageParamVo params) {
         IPage<SpuCommentEntity> page = this.page(
-                new Query<SpuCommentEntity>().getPage(params),
+                new Query<SpuCommentEntity>().getPage(params.getPageIndex(),params.getPageSize()),
                 new QueryWrapper<SpuCommentEntity>()
         );
 

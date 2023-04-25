@@ -1,9 +1,9 @@
 package com.zhangsisiyao.xiaozmall.search.entity;
 
-import com.zhangsisiyao.common.vo.AttrGroupWithAttrValueVo;
-import com.zhangsisiyao.common.vo.BoundsVo;
-import com.zhangsisiyao.common.vo.ImageVo;
-import com.zhangsisiyao.common.vo.SkuVo;
+import com.zhangsisiyao.common.vo.product.AttrGroupVo.AttrGroupWithAttrValueVo;
+import com.zhangsisiyao.common.vo.product.ProductVo.BoundsVo;
+import com.zhangsisiyao.common.vo.product.ImageVo;
+import com.zhangsisiyao.common.vo.product.ProductVo.SkuVo;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;

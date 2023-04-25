@@ -2,10 +2,10 @@ package com.zhangsisiyao.xiaozmall.product.controller;
 
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
-import com.zhangsisiyao.common.vo.BrandVo;
+import com.zhangsisiyao.common.vo.product.BrandVo;
 import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
 import com.zhangsisiyao.xiaozmall.product.service.BrandService;
-import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.Map;
-
 
 
 /**

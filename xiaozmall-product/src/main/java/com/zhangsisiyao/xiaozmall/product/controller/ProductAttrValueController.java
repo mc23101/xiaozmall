@@ -2,22 +2,19 @@ package com.zhangsisiyao.xiaozmall.product.controller;
 
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
-import com.zhangsisiyao.common.vo.AttrValueVo;
+import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
-import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
 
 
 /**
@@ -47,9 +44,9 @@ public class ProductAttrValueController {
 
     @PostMapping("/list/{spuId}")
     @ApiOperation("通过SpuId查询关联的属性值")
-    public R<List<AttrValueVo>> productattrvalueWithSpu(@PathVariable @ApiParam(value = "商品spuId") String spuId){
-        List<AttrValueVo> list = productAttrValueService.queryBySpuId(spuId);
-        return new R<List<AttrValueVo>>().ok().put(list);
+    public R<List<AttrVo.AttrValueVo>> productattrvalueWithSpu(@PathVariable @ApiParam(value = "商品spuId") String spuId){
+        List<AttrVo.AttrValueVo> list = productAttrValueService.queryBySpuId(spuId);
+        return new R<List<AttrVo.AttrValueVo>>().ok().put(list);
     }
 
 
@@ -58,11 +55,11 @@ public class ProductAttrValueController {
      */
     @PostMapping("/info/{id}")
     @ApiOperation(value = "查询spu属性值信息")
-    public R<AttrValueVo> info(@PathVariable("id") @ApiParam(value = "spu属性值Id") Long id){
+    public R<AttrVo.AttrValueVo> info(@PathVariable("id") @ApiParam(value = "spu属性值Id") Long id){
 		ProductAttrValueEntity productAttrValue = productAttrValueService.getById(id);
-        AttrValueVo attrValueVo=new AttrValueVo();
+        AttrVo.AttrValueVo attrValueVo=new AttrVo.AttrValueVo();
         BeanUtils.copyProperties(productAttrValue,attrValueVo);
-        return new  R<AttrValueVo>().ok().put(attrValueVo);
+        return new  R<AttrVo.AttrValueVo>().ok().put(attrValueVo);
     }
 
     /**
@@ -70,7 +67,7 @@ public class ProductAttrValueController {
      */
     @PostMapping("/save")
     @ApiOperation(value = "新增Spu属性值")
-    public R save(@RequestBody @ApiParam(value = "Spu属性值信息") AttrValueVo attrValueVo){
+    public R save(@RequestBody @ApiParam(value = "Spu属性值信息") AttrVo.AttrValueVo attrValueVo){
         ProductAttrValueEntity productAttrValue=new ProductAttrValueEntity();
         BeanUtils.copyProperties(attrValueVo,productAttrValue);
 		productAttrValueService.save(productAttrValue);
@@ -82,7 +79,7 @@ public class ProductAttrValueController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "更新Spu属性值")
-    public R update(@RequestBody @ApiParam(value = "Spu属性值信息") AttrValueVo attrValueVo){
+    public R update(@RequestBody @ApiParam(value = "Spu属性值信息") AttrVo.AttrValueVo attrValueVo){
         ProductAttrValueEntity productAttrValue=new ProductAttrValueEntity();
         BeanUtils.copyProperties(attrValueVo,productAttrValue);
 		productAttrValueService.updateById(productAttrValue);

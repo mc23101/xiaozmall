@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.dao.SkuSaleAttrValueDao;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuSaleAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SkuSaleAttrValueService;
@@ -23,9 +24,9 @@ public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao
 
     @Override
     @Cacheable(value = {"SkuSaleAttrValue"},keyGenerator = "customKeyGenerator")
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils queryPage(PageParamVo params) {
         IPage<SkuSaleAttrValueEntity> page = this.page(
-                new Query<SkuSaleAttrValueEntity>().getPage(params),
+                new Query<SkuSaleAttrValueEntity>().getPage(params.getPageIndex(),params.getPageSize()),
                 new QueryWrapper<SkuSaleAttrValueEntity>()
         );
 

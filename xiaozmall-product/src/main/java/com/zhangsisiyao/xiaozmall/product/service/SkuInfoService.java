@@ -2,7 +2,9 @@ package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
+import com.zhangsisiyao.common.vo.product.SkuInfoVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuInfoEntity;
+import com.zhangsisiyao.xiaozmall.product.vo.SkuInfoQueryVo;
 
 import java.util.List;
 import java.util.Map;
@@ -18,8 +20,8 @@ public interface SkuInfoService extends IService<SkuInfoEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
-    PageUtils queryPageLimit(Map<String, Object> params);
+    PageUtils queryPageLimit(SkuInfoQueryVo queryVo);
 
-    List<SkuInfoEntity> listWithCatalogBrandSpu(String catalog, String brand, String spu);
+    List<SkuInfoVo> listWithCatalogBrandSpu(String catalog, String brand, String spu);
 }
 

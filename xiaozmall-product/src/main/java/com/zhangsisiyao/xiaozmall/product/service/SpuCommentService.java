@@ -2,6 +2,7 @@ package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuCommentEntity;
 
 import java.util.Map;
@@ -15,6 +16,6 @@ import java.util.Map;
  */
 public interface SpuCommentService extends IService<SpuCommentEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils queryPage(PageParamVo params);
 }
 

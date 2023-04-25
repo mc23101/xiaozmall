@@ -2,28 +2,25 @@ package com.zhangsisiyao.xiaozmall.product.controller;
 
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
-import com.zhangsisiyao.common.vo.BrandVo;
-import com.zhangsisiyao.common.vo.CategoryBrandRelationVo;
+import com.zhangsisiyao.common.vo.product.BrandVo;
+import com.zhangsisiyao.common.vo.product.CatalogVo;
 import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.CategoryBrandRelationEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.CategoryEntity;
 import com.zhangsisiyao.xiaozmall.product.service.BrandService;
 import com.zhangsisiyao.xiaozmall.product.service.CategoryBrandRelationService;
 import com.zhangsisiyao.xiaozmall.product.service.CategoryService;
-import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
 
 
 /**
@@ -48,14 +45,14 @@ public class CategoryBrandRelationController {
 
     @GetMapping("catalog/list/{brandId}")
     @ApiOperation(value = "通过品牌id查询商品分类品牌关联信息")
-    public R<List<CategoryBrandRelationVo>> catalogList(@PathVariable @ApiParam(value = "品牌Id") String brandId){
-        List<CategoryBrandRelationVo> result=new ArrayList<>();
+    public R<List<CatalogVo.CatalogBrandRelationVo>> catalogList(@PathVariable @ApiParam(value = "品牌Id") String brandId){
+        List<CatalogVo.CatalogBrandRelationVo> result=new ArrayList<>();
         categoryBrandRelationService.query().eq("brand_id", brandId).list().forEach((relation)->{
-            CategoryBrandRelationVo cur=new CategoryBrandRelationVo();
+            CatalogVo.CatalogBrandRelationVo cur=new CatalogVo.CatalogBrandRelationVo();
             BeanUtils.copyProperties(relation,cur);
             result.add(cur);
         });
-        return new R<List<CategoryBrandRelationVo>>().ok().put(result);
+        return new R<List<CatalogVo.CatalogBrandRelationVo>>().ok().put(result);
     }
 
     /**
@@ -81,11 +78,11 @@ public class CategoryBrandRelationController {
      */
     @GetMapping("/info/{id}")
     @ApiOperation(value = "查询商品分类品牌关联信息")
-    public R<CategoryBrandRelationVo> info(@PathVariable @ApiParam("商品分类品牌关联信息Id") Long id){
+    public R<CatalogVo.CatalogBrandRelationVo> info(@PathVariable @ApiParam("商品分类品牌关联信息Id") Long id){
 		CategoryBrandRelationEntity categoryBrandRelation = categoryBrandRelationService.getById(id);
-        CategoryBrandRelationVo result=new CategoryBrandRelationVo();
+        CatalogVo.CatalogBrandRelationVo result=new CatalogVo.CatalogBrandRelationVo();
         BeanUtils.copyProperties(categoryBrandRelation,result);
-        return new  R<CategoryBrandRelationVo>().ok().put(result);
+        return new  R<CatalogVo.CatalogBrandRelationVo>().ok().put(result);
     }
 
     /**
@@ -93,13 +90,13 @@ public class CategoryBrandRelationController {
      */
     @PostMapping("/save")
     @ApiOperation(value = "新增商品分类品牌关联信息")
-    public R<Object> save(@RequestBody @ApiParam(value = "商品分类品牌关联信息") CategoryBrandRelationVo categoryBrandRelationVo){
-        BrandEntity brand = brandService.query().eq("brand_id", categoryBrandRelationVo.getBrandId()).one();
-        CategoryEntity category=categoryService.query().eq("cat_id",categoryBrandRelationVo.getCatalogId()).one();
-        categoryBrandRelationVo.setBrandName(brand.getName());
-        categoryBrandRelationVo.setCatalogName(category.getName());
+    public R<Object> save(@RequestBody @ApiParam(value = "商品分类品牌关联信息") CatalogVo.CatalogBrandRelationVo catalogBrandRelationVo){
+        BrandEntity brand = brandService.query().eq("brand_id", catalogBrandRelationVo.getBrandId()).one();
+        CategoryEntity category=categoryService.query().eq("cat_id", catalogBrandRelationVo.getCatalogId()).one();
+        catalogBrandRelationVo.setBrandName(brand.getName());
+        catalogBrandRelationVo.setCatalogName(category.getName());
         CategoryBrandRelationEntity entity=new CategoryBrandRelationEntity();
-        BeanUtils.copyProperties(categoryBrandRelationVo,entity);
+        BeanUtils.copyProperties(catalogBrandRelationVo,entity);
         categoryBrandRelationService.save(entity);
         return new R<>().ok();
     }
@@ -109,9 +106,9 @@ public class CategoryBrandRelationController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "更新商品分类品牌关联信息")
-    public R<Object> update(@RequestBody @ApiParam(value = "商品分类品牌关联信息") CategoryBrandRelationVo categoryBrandRelationVo){
+    public R<Object> update(@RequestBody @ApiParam(value = "商品分类品牌关联信息") CatalogVo.CatalogBrandRelationVo catalogBrandRelationVo){
         CategoryBrandRelationEntity entity=new CategoryBrandRelationEntity();
-        BeanUtils.copyProperties(categoryBrandRelationVo,entity);
+        BeanUtils.copyProperties(catalogBrandRelationVo,entity);
 		categoryBrandRelationService.updateById(entity);
         return new R<>().ok();
     }

@@ -6,15 +6,19 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.product.SkuInfoVo;
 import com.zhangsisiyao.xiaozmall.product.dao.SkuInfoDao;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SkuInfoService;
+import com.zhangsisiyao.xiaozmall.product.vo.SkuInfoQueryVo;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -36,26 +40,22 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
 
     @Override
     @Cacheable(value = {"SkuInfo"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPageLimit(Map<String, Object> params) {
+    public PageUtils queryPageLimit(SkuInfoQueryVo queryVo) {
         QueryWrapper<SkuInfoEntity> queryWrapper = new QueryWrapper<>();
-        if(params.containsKey("brandId")&&!params.get("brandId").equals("0")){
-            queryWrapper=queryWrapper.eq("brand_id",params.get("brandId"));
+        if(queryVo.getBrandId()!=0){
+            queryWrapper=queryWrapper.eq("brand_id",queryVo.getBrandId());
         }
-        if(params.containsKey("catalogId")&&!params.get("catalogId").equals("0")){
-            queryWrapper=queryWrapper.eq("catalog_id",params.get("catalogId"));
+        if(queryVo.getCatalogId()!=0){
+            queryWrapper=queryWrapper.eq("catalog_id",queryVo.getCatalogId());
         }
-        if(params.containsKey("key")&&!params.get("key").equals("")){
-            queryWrapper=queryWrapper.like("spu_name", params.get("key"));
+        if(StringUtils.isNotEmpty(queryVo.getKey())){
+            queryWrapper=queryWrapper.like("spu_name", queryVo.getKey());
         }
-        if(params.containsKey("max")&&params.containsKey("min")){
-            BigDecimal max= new BigDecimal((String) params.get("max"));
-            BigDecimal min= new BigDecimal((String) params.get("min"));
-            if(max.compareTo(new BigDecimal("-1"))!=0&&min.compareTo(new BigDecimal("-1"))!=0){
-                queryWrapper=queryWrapper.between("price",min,max);
-            }
+        if(queryVo.getMin().compareTo(queryVo.getMax()) < 0){
+            queryWrapper=queryWrapper.between("price",queryVo.getMin(),queryVo.getMax());
         }
         IPage<SkuInfoEntity> page = this.page(
-                new Query<SkuInfoEntity>().getPage(params),
+                new Query<SkuInfoEntity>().getPage(queryVo.getPageIndex(),queryVo.getPageSize()),
                 queryWrapper
         );
         return new PageUtils(page);
@@ -63,8 +63,14 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
 
     @Override
     @Cacheable(value = {"SkuInfo"},keyGenerator = "customKeyGenerator",sync = true)
-    public List<SkuInfoEntity> listWithCatalogBrandSpu(String catalog, String brand, String spu) {
-        return this.query().eq("catalog_id",catalog).eq("brand_id",brand).eq("spu_id",spu).list();
+    public List<SkuInfoVo> listWithCatalogBrandSpu(String catalog, String brand, String spu) {
+        List<SkuInfoVo> result=new ArrayList<>();
+        this.query().eq("catalog_id",catalog).eq("brand_id",brand).eq("spu_id",spu).list().forEach((sku)->{
+            SkuInfoVo cur=new SkuInfoVo();
+            BeanUtils.copyProperties(sku,cur);
+            result.add(cur);
+        });
+        return result;
     }
 
 

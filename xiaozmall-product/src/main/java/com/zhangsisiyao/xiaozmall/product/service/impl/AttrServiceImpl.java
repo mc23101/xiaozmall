@@ -6,13 +6,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.dao.AttrDao;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrService;
 import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
-import com.zhangsisiyao.common.vo.AttrValueVo;
-import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,10 +85,10 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Override
     @Cacheable(value = {"attr"},keyGenerator = "customKeyGenerator",sync = true)
-    public List<AttrValueVo> queryListForSpu(Long spuId) {
-        List<AttrValueVo> result=new ArrayList<>();
+    public List<AttrVo.AttrValueVo> queryListForSpu(Long spuId) {
+        List<AttrVo.AttrValueVo> result=new ArrayList<>();
         productAttrValueService.query().eq("spu_id", spuId).list().forEach(attr->{
-            AttrValueVo cur=new AttrValueVo();
+            AttrVo.AttrValueVo cur=new AttrVo.AttrValueVo();
             BeanUtils.copyProperties(attr,cur);
             result.add(cur);
         });
@@ -170,7 +170,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Override
     @CacheEvict(value = {"attr"},allEntries = true)
-    public void UpdateAttrsBySpuId(List<AttrValueVo> attrs, String spuId) {
+    public void UpdateAttrsBySpuId(List<AttrVo.AttrValueVo> attrs, String spuId) {
         attrs.forEach((attrVo)->{
             ProductAttrValueEntity one = productAttrValueService.query().eq("spu_id", spuId).eq("attr_id", attrVo.getAttrId()).one();
             if(one!=null){

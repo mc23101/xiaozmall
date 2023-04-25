@@ -1,14 +1,9 @@
 package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
-import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Map;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 
 /**
  * 品牌

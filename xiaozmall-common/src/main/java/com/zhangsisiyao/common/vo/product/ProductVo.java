@@ -1,6 +1,7 @@
-package com.zhangsisiyao.common.vo;
+package com.zhangsisiyao.common.vo.product;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -10,7 +11,6 @@ import java.util.List;
 
 @Data
 public class ProductVo implements Serializable {
-
     @Min(1)
     private Long id;
 
@@ -62,8 +62,45 @@ public class ProductVo implements Serializable {
 
     BoundsVo bounds;
 
-    List<AttrGroupWithAttrValueVo> spuAttrGroup;
+    List<AttrGroupVo.AttrGroupWithAttrValueVo> spuAttrGroup;
 
     @Size(min = 1)
     List<SkuVo> skus;
+
+
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    public static class SkuVo extends SkuInfoVo implements Serializable {
+
+        List<ImageVo> images;
+
+        List<AttrVo.AttrValueVo> attr;
+
+        //TODO 会员信息折扣
+
+        BigDecimal fullCount;
+
+        BigDecimal discount;
+
+        Integer countStatus;
+
+        BigDecimal fullPrice;
+
+        BigDecimal reducePrice;
+
+        Integer priceStatus;
+
+        List<Integer> memberPrice;
+
+    }
+
+    @Data
+    public static class BoundsVo implements Serializable {
+
+        @NotNull
+        BigDecimal buyBounds;
+
+        @NotNull
+        BigDecimal growBounds;
+    }
 }

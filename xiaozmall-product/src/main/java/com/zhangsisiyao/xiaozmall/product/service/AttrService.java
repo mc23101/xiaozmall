@@ -2,13 +2,11 @@ package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
+import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
-import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
-import com.zhangsisiyao.common.vo.AttrValueVo;
-import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 商品属性
@@ -26,7 +24,7 @@ public interface AttrService extends IService<AttrEntity> {
 
     List<AttrEntity> queryWithAttrGroup(String groupId);
 
-    List<AttrValueVo> queryListForSpu(Long spuId);
+    List<AttrVo.AttrValueVo> queryListForSpu(Long spuId);
 
-    void UpdateAttrsBySpuId(List<AttrValueVo> attrs, String spuId);
+    void UpdateAttrsBySpuId(List<AttrVo.AttrValueVo> attrs, String spuId);
 }

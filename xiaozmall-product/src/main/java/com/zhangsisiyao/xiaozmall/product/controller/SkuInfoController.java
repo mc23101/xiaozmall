@@ -2,16 +2,19 @@ package com.zhangsisiyao.xiaozmall.product.controller;
 
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
+import com.zhangsisiyao.common.vo.product.SkuInfoVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SkuInfoService;
+import com.zhangsisiyao.xiaozmall.product.vo.SkuInfoQueryVo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
 
 
 /**
@@ -23,7 +26,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("product/skuinfo")
-@Api(tags = "Sku信息操作")
+@Api(tags = "Sku操作")
 public class SkuInfoController {
     @Autowired
     private SkuInfoService skuInfoService;
@@ -32,19 +35,17 @@ public class SkuInfoController {
      * 列表
      */
     @PostMapping("/list")
-    //@RequiresPermissions("product:skuinfo:list")
-    public R<PageUtils> list(@RequestParam Map<String, Object> params){
-        PageUtils page = skuInfoService.queryPageLimit(params);
-
+    @ApiOperation(value = "分页搜索sku信息")
+    public R<PageUtils> list(@RequestBody @ApiParam(value = "sku信息分页搜索参数") SkuInfoQueryVo queryVo){
+        PageUtils page = skuInfoService.queryPageLimit(queryVo);
         return new  R<PageUtils>().ok().put(page);
     }
 
     @PostMapping("/list/{catalog}/{brand}/{spu}")
-    //@RequiresPermissions("product:skuinfo:list")
-    public R<List<SkuInfoEntity>> listWithCatalogBrandSpu(@PathVariable String brand, @PathVariable String catalog, @PathVariable String spu){
-        List<SkuInfoEntity> entities = skuInfoService.listWithCatalogBrandSpu(catalog, brand, spu);
-
-        return new R<List<SkuInfoEntity>>().ok().put(entities);
+    @ApiOperation(value = "通过分类id，品牌id，spuId查询sku信息")
+    public R<List<SkuInfoVo>> listWithCatalogBrandSpu (@PathVariable(value = "catalog") @ApiParam(value = "分类Id") String catalog,@PathVariable(value = "brand") @ApiParam(value = "品牌Id") String brand, @PathVariable(value = "spu") @ApiParam(value = "spuId") String spu){
+        List<SkuInfoVo> entities = skuInfoService.listWithCatalogBrandSpu(catalog, brand, spu);
+        return new R<List<SkuInfoVo>>().ok().put(entities);
     }
 
 
@@ -52,18 +53,22 @@ public class SkuInfoController {
      * 信息
      */
     @PostMapping("/info/{skuId}")
-    //@RequiresPermissions("product:skuinfo:info")
-    public R<SkuInfoEntity> info(@PathVariable("skuId") Long skuId){
+    @ApiOperation(value = "查询sku信息")
+    public R<SkuInfoVo> info(@PathVariable("skuId") @ApiParam(value = "skuId") Long skuId){
 		SkuInfoEntity skuInfo = skuInfoService.getById(skuId);
-
-        return new R<SkuInfoEntity>().ok().put( skuInfo);
+        SkuInfoVo skuInfoVo=new SkuInfoVo();
+        BeanUtils.copyProperties(skuInfo,skuInfoVo);
+        return new R<SkuInfoVo>().ok().put(skuInfoVo);
     }
 
     /**
      * 保存
      */
     @PostMapping("/save")
-    public R save(@RequestBody SkuInfoEntity skuInfo){
+    @ApiOperation(value = "新增Sku信息")
+    public R save(@RequestBody @ApiParam(value = "sku信息") SkuInfoVo skuInfoVo){
+        SkuInfoEntity skuInfo=new SkuInfoEntity();
+        BeanUtils.copyProperties(skuInfoVo,skuInfo);
 		skuInfoService.save(skuInfo);
         return new R<>().ok();
     }
@@ -72,19 +77,21 @@ public class SkuInfoController {
      * 修改
      */
     @PostMapping("/update")
-    public R update(@RequestBody SkuInfoEntity skuInfo){
+    @ApiOperation(value = "修改Spu信息")
+    public R update(@RequestBody @ApiParam(value = "sku信息") SkuInfoVo skuInfoVo){
+        SkuInfoEntity skuInfo=new SkuInfoEntity();
+        BeanUtils.copyProperties(skuInfoVo,skuInfo);
 		skuInfoService.updateById(skuInfo);
-
         return new R<>().ok();
     }
 
     /**
      * 删除
      */
-    @PostMapping("/delete")
-    public R delete(@RequestBody Long[] skuIds){
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "删除Spu信息")
+    public R delete(@RequestBody @ApiParam(value = "spu信息ID数组") Long[] skuIds){
 		skuInfoService.removeByIds(Arrays.asList(skuIds));
-
         return new R<>().ok();
     }
 

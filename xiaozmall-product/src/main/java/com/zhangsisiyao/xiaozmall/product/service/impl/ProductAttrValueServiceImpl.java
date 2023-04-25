@@ -6,11 +6,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
-import com.zhangsisiyao.common.vo.AttrValueVo;
+import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.dao.ProductAttrValueDao;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
-import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -39,10 +39,10 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
 
     @Override
     @Cacheable(value = {"ProductAttrValue"},keyGenerator = "customKeyGenerator",sync = true)
-    public List<AttrValueVo> queryBySpuId(String spuId) {
-        List<AttrValueVo> list=new ArrayList<>();
+    public List<AttrVo.AttrValueVo> queryBySpuId(String spuId) {
+        List<AttrVo.AttrValueVo> list=new ArrayList<>();
         this.query().eq("spu_id",spuId).list().forEach((attrValue)->{
-            AttrValueVo cur=new AttrValueVo();
+            AttrVo.AttrValueVo cur=new AttrVo.AttrValueVo();
             BeanUtils.copyProperties(attrValue,cur);
             list.add(cur);
         });

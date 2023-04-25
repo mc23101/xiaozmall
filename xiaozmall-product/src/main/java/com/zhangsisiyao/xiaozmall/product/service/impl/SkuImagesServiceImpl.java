@@ -9,6 +9,7 @@ import com.zhangsisiyao.common.utils.Query;
 import com.zhangsisiyao.xiaozmall.product.dao.SkuImagesDao;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuImagesEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SkuImagesService;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,9 @@ public class SkuImagesServiceImpl extends ServiceImpl<SkuImagesDao, SkuImagesEnt
 
     @Override
     @Cacheable(value = {"SkuImages"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils queryPage(PageParamVo params) {
         IPage<SkuImagesEntity> page = this.page(
-                new Query<SkuImagesEntity>().getPage(params),
+                new Query<SkuImagesEntity>().getPage(params.getPageIndex(),params.getPageSize()),
                 new QueryWrapper<SkuImagesEntity>()
         );
 

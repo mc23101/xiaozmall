@@ -1,6 +1,5 @@
-package com.zhangsisiyao.common.vo;
+package com.zhangsisiyao.common.vo.product;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,7 +17,6 @@ import java.io.Serializable;
 @ApiModel(description = "属性信息")
 public class AttrVo implements Serializable {
     private static final long serialVersionUID = 1L;
-
 
     @ApiModelProperty(value = "属性Id，新增属性时，自动生成，无需填写")
     private Long attrId;
@@ -47,4 +45,32 @@ public class AttrVo implements Serializable {
     @ApiModelProperty(value = "是否快速展示")
     private Integer showDesc;
 
+    @Data
+    @ApiModel(description = "商品spu或sku属性值信息")
+    public static class AttrValueVo implements Serializable {
+
+        @ApiModelProperty("属性值信息id")
+        private Long id;
+
+        @ApiModelProperty("属性Id")
+        private Long attrId;
+
+        @ApiModelProperty(value = "spuId,如果为spu属性值信息，则此项不为0")
+        private Long spuId=0L;
+
+        @ApiModelProperty(value = "skuId,如果为sku属性值信息，则此项不为0")
+        private Long skuId;
+
+        @ApiModelProperty(value = "属性组id，如果为spu属性值信息，则此项不为0")
+        private Long groupId;
+
+        @ApiModelProperty(value = "属性值")
+        private String attrValue;
+
+        @ApiModelProperty(value = "属性名称")
+        private String attrName;
+
+        @ApiModelProperty(value = "是否快速展示")
+        private Integer showDesc;
+    }
 }

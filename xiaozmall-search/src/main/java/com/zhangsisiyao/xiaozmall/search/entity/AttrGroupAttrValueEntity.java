@@ -1,6 +1,6 @@
 package com.zhangsisiyao.xiaozmall.search.entity;
 
-import com.zhangsisiyao.common.vo.AttrValueVo;
+import com.zhangsisiyao.common.vo.product.AttrVo;
 import lombok.Data;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -37,5 +37,5 @@ public class AttrGroupAttrValueEntity implements Serializable {
     private Long catalogId;
 
     @Field(type = FieldType.Nested)
-    private List<AttrValueVo> attrs=new ArrayList<>();
+    private List<AttrVo.AttrValueVo> attrs=new ArrayList<>();
 }

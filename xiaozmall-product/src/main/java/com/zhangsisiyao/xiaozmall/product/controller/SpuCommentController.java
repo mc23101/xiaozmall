@@ -2,9 +2,14 @@ package com.zhangsisiyao.xiaozmall.product.controller;
 
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
+import com.zhangsisiyao.common.vo.product.CommentVo;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuCommentEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuCommentService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +29,7 @@ import java.util.Map;
 @RequestMapping("product/spucomment")
 @Api(tags = "商品评论操作")
 public class SpuCommentController {
+
     @Autowired
     private SpuCommentService spuCommentService;
 
@@ -31,7 +37,8 @@ public class SpuCommentController {
      * 列表
      */
     @PostMapping("/list")
-    public R<PageUtils> list(@RequestParam Map<String, Object> params){
+    @ApiOperation(value = "分页查询商品评论")
+    public R<PageUtils> list(@RequestParam @ApiParam(value = "分页查询参数") PageParamVo params){
         PageUtils page = spuCommentService.queryPage(params);
 
         return new R<PageUtils>().ok().put( page);
@@ -42,21 +49,23 @@ public class SpuCommentController {
      * 信息
      */
     @PostMapping("/info/{id}")
-    //@RequiresPermissions("product:spucomment:info")
-    public R<SpuCommentEntity> info(@PathVariable("id") Long id){
+    @ApiOperation(value = "查询商品评论信息")
+    public R<CommentVo> info(@PathVariable("id") @ApiParam(value = "评论Id") Long id){
 		SpuCommentEntity spuComment = spuCommentService.getById(id);
-
-        return new R<SpuCommentEntity>().ok().put( spuComment);
+        CommentVo commentVo=new CommentVo();
+        BeanUtils.copyProperties(spuCommentService,commentVo);
+        return new R<CommentVo>().ok().put(commentVo);
     }
 
     /**
      * 保存
      */
     @PostMapping("/save")
-    //@RequiresPermissions("product:spucomment:save")
-    public R save(@RequestBody SpuCommentEntity spuComment){
+    @ApiOperation(value = "新增商品评论")
+    public R save(@RequestBody @ApiParam(value = "商品评论信息") CommentVo commentVo){
+        SpuCommentEntity spuComment=new SpuCommentEntity();
+        BeanUtils.copyProperties(commentVo,spuComment);
 		spuCommentService.save(spuComment);
-
         return new R<>().ok();
     }
 
@@ -64,10 +73,11 @@ public class SpuCommentController {
      * 修改
      */
     @PostMapping("/update")
-    //@RequiresPermissions("product:spucomment:update")
-    public R update(@RequestBody SpuCommentEntity spuComment){
+    @ApiOperation(value = "修改商品评论")
+    public R update(@RequestBody @ApiParam(value = "商品评论信息") CommentVo commentVo){
+        SpuCommentEntity spuComment=new SpuCommentEntity();
+        BeanUtils.copyProperties(commentVo,spuComment);
 		spuCommentService.updateById(spuComment);
-
         return new R<>().ok();
     }
 
@@ -75,8 +85,8 @@ public class SpuCommentController {
      * 删除
      */
     @PostMapping("/delete")
-    //@RequiresPermissions("product:spucomment:delete")
-    public R delete(@RequestBody Long[] ids){
+    @ApiOperation("删除商品评论")
+    public R delete(@RequestBody @ApiParam("商品评论id数组") Long[] ids){
 		spuCommentService.removeByIds(Arrays.asList(ids));
 
         return new R<>().ok();

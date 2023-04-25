@@ -2,12 +2,10 @@ package com.zhangsisiyao.xiaozmall.product.controller;
 
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
-import com.zhangsisiyao.common.vo.AttrVo;
+import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
-import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrService;
-import com.zhangsisiyao.common.vo.AttrValueVo;
-import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import io.swagger.annotations.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
 
 
 /**
@@ -51,9 +47,9 @@ public class AttrController {
 
     @GetMapping("/base/listforspu/{spuId}")
     @ApiOperation(value = "通过spuId获取spu属性")
-    public R<List<AttrValueVo>> baseListForSpu(@PathVariable @ApiParam(value = "spuId") Long spuId){
-        List<AttrValueVo> entities = attrService.queryListForSpu(spuId);
-        return new R<List<AttrValueVo>>().ok().put(entities);
+    public R<List<AttrVo.AttrValueVo>> baseListForSpu(@PathVariable @ApiParam(value = "spuId") Long spuId){
+        List<AttrVo.AttrValueVo> entities = attrService.queryListForSpu(spuId);
+        return new R<List<AttrVo.AttrValueVo>>().ok().put(entities);
     }
 
     /**
@@ -104,7 +100,7 @@ public class AttrController {
 
     @PostMapping("/update/{spuId}")
     @ApiOperation("更新spu属性信息")
-    public R<String> updateSpu(@RequestBody @ApiParam(value = "属性信息") List<AttrValueVo> attrs, @PathVariable @ApiParam(value = "spuId") String spuId){
+    public R<String> updateSpu(@RequestBody @ApiParam(value = "属性信息") List<AttrVo.AttrValueVo> attrs, @PathVariable @ApiParam(value = "spuId") String spuId){
         attrService.UpdateAttrsBySpuId(attrs,spuId);
         return new R<String>().ok();
     }

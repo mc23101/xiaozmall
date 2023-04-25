@@ -2,13 +2,11 @@ package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
-import com.zhangsisiyao.common.vo.BrandVo;
-import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
+import com.zhangsisiyao.common.vo.product.BrandVo;
 import com.zhangsisiyao.xiaozmall.product.entity.CategoryBrandRelationEntity;
-import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 品牌分类关联

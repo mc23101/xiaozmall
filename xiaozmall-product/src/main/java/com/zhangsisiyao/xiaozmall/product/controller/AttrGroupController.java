@@ -2,15 +2,12 @@ package com.zhangsisiyao.xiaozmall.product.controller;
 
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
-import com.zhangsisiyao.common.vo.AttrAttrgroupRelationVo;
-import com.zhangsisiyao.common.vo.AttrGroupVo;
-import com.zhangsisiyao.common.vo.AttrVo;
-import com.zhangsisiyao.xiaozmall.product.entity.AttrAttrgroupRelationEntity;
-import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
+import com.zhangsisiyao.common.vo.product.AttrGroupVo.*;
+import com.zhangsisiyao.common.vo.product.AttrGroupVo;
+import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrGroupEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrGroupService;
-import com.zhangsisiyao.xiaozmall.product.vo.PageParamVo;
-import feign.Param;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -20,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
 
 
 /**

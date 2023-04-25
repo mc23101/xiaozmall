@@ -1,12 +1,9 @@
-package com.zhangsisiyao.common.vo;
+package com.zhangsisiyao.common.vo.product;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.List;
 
@@ -44,4 +41,25 @@ public class CatalogVo implements Serializable {
 
     @ApiModelProperty(value = "子分类")
     List<CatalogVo> children;
+
+    @Data
+    @ApiModel(description = "商品分类和品牌关联信息")
+    public static class CatalogBrandRelationVo implements Serializable {
+
+        @ApiModelProperty(value = "商品分类和品牌关联信息Id")
+        private Long id;
+
+        @ApiModelProperty(value = "品牌id")
+        private Long brandId;
+
+        @ApiModelProperty(value = "分类id")
+        private Long catalogId;
+
+        @ApiModelProperty(value = "品牌名称")
+        private String brandName;
+
+        @ApiModelProperty(value = "分类名称")
+        private String catalogName;
+
+    }
 }

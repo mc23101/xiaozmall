@@ -8,7 +8,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
-import com.zhangsisiyao.common.vo.*;
+import com.zhangsisiyao.common.vo.product.*;
+import com.zhangsisiyao.common.vo.product.ProductVo.*;
+import com.zhangsisiyao.common.vo.product.AttrGroupVo.*;
 import com.zhangsisiyao.xiaozmall.product.dao.SpuInfoDao;
 import com.zhangsisiyao.xiaozmall.product.entity.*;
 import com.zhangsisiyao.xiaozmall.product.service.*;
@@ -140,7 +142,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         //存储SpuAttrValue
         List<AttrGroupWithAttrValueVo> baseAttrs = product.getSpuAttrGroup();
         baseAttrs.forEach((attrGroup)->{
-            attrGroup.getAttrs().forEach((attr)->{
+            attrGroup.getAttrValues().forEach((attr)->{
                 ProductAttrValueEntity productAttr = new ProductAttrValueEntity();
                 productAttr.setAttrId(attr.getAttrId());
                 productAttr.setAttrValue(attr.getAttrValue());
@@ -175,7 +177,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             });
 
             //储存SkuAttrValue
-            List<AttrValueVo> attrs = skuVo.getAttr();
+            List<AttrVo.AttrValueVo> attrs = skuVo.getAttr();
             attrs.forEach((attr)->{
                 SkuSaleAttrValueEntity attrValue = new SkuSaleAttrValueEntity();
                 attrValue.setAttrId(attr.getAttrId());
@@ -226,13 +228,13 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             AttrGroupWithAttrValueVo cur=new AttrGroupWithAttrValueVo();
             BeanUtils.copyProperties(group,cur);
             List<ProductAttrValueEntity> attrs = productAttrValueService.query().eq("group_id", group.getAttrGroupId()).list();
-            List<AttrValueVo> valueVos=new ArrayList<>();
+            List<AttrVo.AttrValueVo> valueVos=new ArrayList<>();
             attrs.forEach((attr)->{
-                AttrValueVo curAttr=new AttrValueVo();
+                AttrVo.AttrValueVo curAttr=new AttrVo.AttrValueVo();
                 BeanUtils.copyProperties(attr,curAttr);
                 valueVos.add(curAttr);
             });
-            cur.setAttrs(valueVos);
+            cur.setAttrValues(valueVos);
             attrValueVos.add(cur);
         });
         productVo.setSpuAttrGroup(attrValueVos);
@@ -253,9 +255,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             skuVo.setImages(imageVos);
 
             //获取sku的属性值
-            List<AttrValueVo> skuAttrValueVos =new ArrayList<>();
+            List<AttrVo.AttrValueVo> skuAttrValueVos =new ArrayList<>();
             skuSaleAttrValueService.query().eq("sku_id",entity.getSkuId()).list().forEach((skuAttrValue)->{
-                AttrValueVo skuAttrValueVo =new AttrValueVo();
+                AttrVo.AttrValueVo skuAttrValueVo =new AttrVo.AttrValueVo();
                 BeanUtils.copyProperties(skuAttrValue, skuAttrValueVo);
                 skuAttrValueVos.add(skuAttrValueVo);
             });

@@ -2,9 +2,14 @@ package com.zhangsisiyao.xiaozmall.product.controller;
 
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
+import com.zhangsisiyao.common.vo.product.ImageVo;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuImagesEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuImagesService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,10 +36,9 @@ public class SpuImagesController {
      * 列表
      */
     @PostMapping("/list")
-    //@RequiresPermissions("product:spuimages:list")
-    public R<PageUtils> list(@RequestParam Map<String, Object> params){
+    @ApiOperation(value = "分页查询spu图片")
+    public R<PageUtils> list(@RequestParam @ApiParam(value = "分页查询参数") PageParamVo params){
         PageUtils page = spuImagesService.queryPage(params);
-
         return new  R<PageUtils>().ok().put( page);
     }
 
@@ -43,21 +47,23 @@ public class SpuImagesController {
      * 信息
      */
     @PostMapping("/info/{id}")
-    //@RequiresPermissions("product:spuimages:info")
-    public R<SpuImagesEntity> info(@PathVariable("id") Long id){
+    @ApiOperation(value = "查询spu图片")
+    public R<ImageVo> info(@PathVariable("id") @ApiParam(value = "spu图片id") Long id){
 		SpuImagesEntity spuImages = spuImagesService.getById(id);
-
-        return new  R<SpuImagesEntity>().ok().put( spuImages);
+        ImageVo imageVo=new ImageVo();
+        BeanUtils.copyProperties(spuImages,imageVo);
+        return new  R<ImageVo>().ok().put(imageVo);
     }
 
     /**
      * 保存
      */
     @PostMapping("/save")
-    //@RequiresPermissions("product:spuimages:save")
-    public R save(@RequestBody SpuImagesEntity spuImages){
+    @ApiOperation(value = "新增spu图片")
+    public R save(@RequestBody @ApiParam(value = "spu图片信息") ImageVo imageVo){
+        SpuImagesEntity spuImages=new SpuImagesEntity();
+        BeanUtils.copyProperties(imageVo,spuImages);
 		spuImagesService.save(spuImages);
-
         return new R<>().ok();
     }
 
@@ -65,10 +71,11 @@ public class SpuImagesController {
      * 修改
      */
     @PostMapping("/update")
-    //@RequiresPermissions("product:spuimages:update")
-    public R update(@RequestBody SpuImagesEntity spuImages){
+    @ApiOperation(value = "修改spu图片")
+    public R update(@RequestBody @ApiParam(value = "spu图片信息") ImageVo imageVo){
+        SpuImagesEntity spuImages=new SpuImagesEntity();
+        BeanUtils.copyProperties(imageVo,spuImages);
 		spuImagesService.updateById(spuImages);
-
         return new R<>().ok();
     }
 
@@ -76,10 +83,9 @@ public class SpuImagesController {
      * 删除
      */
     @PostMapping("/delete")
-    //@RequiresPermissions("product:spuimages:delete")
-    public R delete(@RequestBody Long[] ids){
+    @ApiOperation(value = "删除spu图片")
+    public R delete(@RequestBody @ApiParam(value = "spu图片id数组") Long[] ids){
 		spuImagesService.removeByIds(Arrays.asList(ids));
-
         return new R<>().ok();
     }
 

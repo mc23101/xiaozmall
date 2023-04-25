@@ -3,8 +3,7 @@ package com.zhangsisiyao.xiaozmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuImagesEntity;
-
-import java.util.Map;
+import com.zhangsisiyao.common.vo.product.PageParamVo;
 
 /**
  * sku图片
@@ -15,6 +14,6 @@ import java.util.Map;
  */
 public interface SkuImagesService extends IService<SkuImagesEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils queryPage(PageParamVo params);
 }
 
