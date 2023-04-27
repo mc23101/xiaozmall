@@ -7,6 +7,7 @@ import com.zhangsisiyao.common.vo.product.ImageVo;
 import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuImagesEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuImagesService;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.ImageQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -39,7 +40,7 @@ public class SpuImagesController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "分页查询spu图片")
-    public R<PageUtils> list(@RequestParam @ApiParam(value = "分页查询参数") PageParamVo params){
+    public R<PageUtils> list(@RequestParam @ApiParam(value = "分页查询参数") ImageQueryVo params){
         PageUtils page = spuImagesService.queryPage(params);
         return new  R<PageUtils>().ok().put( page);
     }

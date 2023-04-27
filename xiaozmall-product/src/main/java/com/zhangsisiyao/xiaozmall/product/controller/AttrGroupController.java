@@ -9,6 +9,7 @@ import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrGroupEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrGroupService;
 import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrGroupQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -70,24 +71,12 @@ public class AttrGroupController {
         return new R<PageUtils>().ok().put(page);
     }
 
-    @PostMapping("/list/{cat_Id}")
-    @ApiOperation(value = "通过分类Id获取属性分组信息")
-    public R<PageUtils> getListByCatId(@PathVariable @ApiParam(value = "分类Id") Long cat_Id,@RequestBody @ApiParam(value = "分页查询信息") PageParamVo params){
-        PageUtils page;
-        if(cat_Id==0){
-            page = attrGroupService.queryPageByColumn(null,null,params);
-        }else{
-            page = attrGroupService.queryPageByColumn("catalog_id",cat_Id,params);
-        }
-        return new R<PageUtils>().ok().put(page);
-    }
-
     /**
      * 列表
      */
     @PostMapping("/list")
-    @ApiOperation(value = "分页查询属性分组")
-    public R<PageUtils> list(@RequestBody @ApiParam(value = "分页查询参数") PageParamVo params){
+    @ApiOperation(value = "属性分组条件查询")
+    public R<PageUtils> list(@RequestBody @ApiParam(value = "条件查询参数") AttrGroupQueryVo params){
         PageUtils page = attrGroupService.queryPage(params);
         return new R<PageUtils>().ok().put(page);
     }

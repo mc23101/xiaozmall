@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.product.ImageVo;
 import com.zhangsisiyao.xiaozmall.product.dao.SpuInfoDescDao;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoDescEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuInfoDescService;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.ImageQueryVo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -23,10 +25,18 @@ public class SpuInfoDescServiceImpl extends ServiceImpl<SpuInfoDescDao, SpuInfoD
 
     @Override
     @Cacheable(value = {"SpuInfoDesc"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils queryPage(ImageQueryVo params) {
+        QueryWrapper<SpuInfoDescEntity> wrapper = new QueryWrapper<>();
+        ImageVo imageVo=params.getImageVo();
+        if(imageVo.getSpuId()!=null){
+            wrapper.eq("spu_id",imageVo.getSpuId());
+        }
+        if(imageVo.getImgSort()!=null){
+            wrapper.eq("img_sort",imageVo.getImgSort());
+        }
         IPage<SpuInfoDescEntity> page = this.page(
-                new Query<SpuInfoDescEntity>().getPage(params),
-                new QueryWrapper<SpuInfoDescEntity>()
+                new Query<SpuInfoDescEntity>().getPage(params.getPageParamVo().getPageIndex(),params.getPageParamVo().getPageSize()),
+                wrapper
         );
 
         return new PageUtils(page);

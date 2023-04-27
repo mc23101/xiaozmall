@@ -56,7 +56,7 @@ public class AttrVo implements Serializable {
         private Long attrId;
 
         @ApiModelProperty(value = "spuId,如果为spu属性值信息，则此项不为0",position = 2)
-        private Long spuId=0L;
+        private Long spuId;
 
         @ApiModelProperty(value = "skuId,如果为sku属性值信息，则此项不为0",position = 3)
         private Long skuId;

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrValueQueryVo;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface ProductAttrValueService extends IService<ProductAttrValueEntity> {
 
-    PageUtils queryPage(PageParamVo params);
+    PageUtils queryPage(AttrValueQueryVo params);
 
     List<AttrVo.AttrValueVo> queryBySpuId(String spuId);
 }

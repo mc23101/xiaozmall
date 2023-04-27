@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.vo.product.CatalogVo;
 import com.zhangsisiyao.xiaozmall.product.entity.CategoryEntity;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.CatalogQueryVo;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public interface CategoryService extends IService<CategoryEntity> {
 
-    PageUtils queryPage(PageParamVo params);
+    PageUtils queryPage(CatalogQueryVo params);
 
     List<CatalogVo> listWithTree();
 

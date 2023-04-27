@@ -13,6 +13,7 @@ import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrService;
 import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
 import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrQueryVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +33,37 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Override
     @Cacheable(value = {"attr"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(PageParamVo params) {
+    public PageUtils queryPage(AttrQueryVo params) {
+        QueryWrapper<AttrEntity> wrapper = new QueryWrapper<>();
+        AttrVo attrVo=params.getAttrVo();
+        if(attrVo.getAttrId()!=null){
+            wrapper.eq("attr_id",attrVo.getAttrId());
+        }
+        if(attrVo.getAttrName()!=null){
+            wrapper.eq("attr_name",attrVo.getAttrName());
+        }
+        if(attrVo.getSearchType()!=null){
+            wrapper.eq("search_type",attrVo.getSearchType());
+        }
+        if(attrVo.getAttrType()!=null){
+            wrapper.eq("attr_type",attrVo.getAttrType());
+        }
+        if(attrVo.getEnable()!=null){
+            wrapper.eq("enable",attrVo.getEnable());
+        }
+        if(attrVo.getCatalogId()!=null){
+            wrapper.eq("catalog_id",attrVo.getCatalogId());
+        }
+        if(attrVo.getShowDesc()!=null){
+            wrapper.eq("show_desc",attrVo.getShowDesc());
+        }
+        if(StringUtils.isNotEmpty(params.getPageParams().getKey())){
+            wrapper.like("attr_name",params.getPageParams().getKey());
+        }
         IPage<AttrEntity> page = this.page(
-                new Query<AttrEntity>().getPage(params.getPageIndex(),params.getPageIndex()),
-                new QueryWrapper<>()
+                new Query<AttrEntity>().getPage(params.getPageParams().getPageIndex(),params.getPageParams().getPageIndex()),
+                wrapper
         );
-
         return new PageUtils(page);
     }
 

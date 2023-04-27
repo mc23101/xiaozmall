@@ -10,7 +10,8 @@ import com.zhangsisiyao.common.vo.product.CatalogVo;
 import com.zhangsisiyao.xiaozmall.product.dao.CategoryDao;
 import com.zhangsisiyao.xiaozmall.product.entity.CategoryEntity;
 import com.zhangsisiyao.xiaozmall.product.service.CategoryService;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.CatalogQueryVo;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -31,10 +32,39 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     @Cacheable(cacheNames = {"Category"},sync = true,keyGenerator = "customKeyGenerator")
-    public PageUtils queryPage(PageParamVo params) {
+    public PageUtils queryPage(CatalogQueryVo params) {
+        CatalogVo catalogVo=params.getCatalogVo();
+        QueryWrapper<CategoryEntity> wrapper = new QueryWrapper<>();
+        if(catalogVo.getCatId()!=null){
+            wrapper.eq("cat_id",catalogVo.getCatId());
+        }
+        if(catalogVo.getName()!=null){
+            wrapper.eq("name",catalogVo.getName());
+        }
+        if(catalogVo.getParentCid()!=null){
+            wrapper.eq("parent_cid",catalogVo.getParentCid());
+        }
+        if(catalogVo.getCatLevel()!=0){
+            wrapper.eq("cat_level",catalogVo.getCatLevel());
+        }
+        if(catalogVo.getShowStatus()!=null){
+            wrapper.eq("show_status",catalogVo.getShowStatus());
+        }
+        if(catalogVo.getProductUnit()!=null){
+            wrapper.eq("product_unit",catalogVo.getProductUnit());
+        }
+
+        if(catalogVo.getProductCount()!=null){
+            wrapper.eq("product_count",catalogVo.getProductCount());
+        }
+
+        if (StringUtils.isNotEmpty(params.getPageParamVo().getKey())){
+            wrapper.like("name",params.getPageParamVo().getKey());
+        }
+
         IPage<CategoryEntity> page = this.page(
-                new Query<CategoryEntity>().getPage(params.getPageIndex(),params.getPageSize()),
-                new QueryWrapper<CategoryEntity>()
+                new Query<CategoryEntity>().getPage(params.getPageParamVo().getPageIndex(),params.getPageParamVo().getPageSize()),
+                wrapper
         );
 
         return new PageUtils(page);

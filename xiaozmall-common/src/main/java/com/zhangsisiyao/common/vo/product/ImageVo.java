@@ -25,5 +25,5 @@ public class ImageVo implements Serializable {
     String imgUrl;
 
     @ApiModelProperty(value = "图片排序",position = 4)
-    int imgSort;
+    Integer imgSort;
 }

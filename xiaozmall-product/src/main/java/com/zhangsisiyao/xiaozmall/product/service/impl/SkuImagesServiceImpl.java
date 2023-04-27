@@ -6,10 +6,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.product.ImageVo;
 import com.zhangsisiyao.xiaozmall.product.dao.SkuImagesDao;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuImagesEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SkuImagesService;
 import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.ImageQueryVo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -24,10 +26,22 @@ public class SkuImagesServiceImpl extends ServiceImpl<SkuImagesDao, SkuImagesEnt
 
     @Override
     @Cacheable(value = {"SkuImages"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(PageParamVo params) {
+    public PageUtils queryPage(ImageQueryVo params) {
+        QueryWrapper<SkuImagesEntity> wrapper = new QueryWrapper<>();
+        ImageVo imageVo=params.getImageVo();
+        if(imageVo.getId()!=null){
+            wrapper.eq("id",imageVo.getId());
+        }
+        if(imageVo.getSkuId()!=null){
+            wrapper.eq("sku_id",imageVo.getSkuId());
+        }
+        if(imageVo.getImgSort()!=null){
+            wrapper.eq("img_sort",imageVo.getImgSort());
+        }
+
         IPage<SkuImagesEntity> page = this.page(
-                new Query<SkuImagesEntity>().getPage(params.getPageIndex(),params.getPageSize()),
-                new QueryWrapper<SkuImagesEntity>()
+                new Query<SkuImagesEntity>().getPage(params.getPageParamVo().getPageIndex(),params.getPageParamVo().getPageSize()),
+                wrapper
         );
 
         return new PageUtils(page);

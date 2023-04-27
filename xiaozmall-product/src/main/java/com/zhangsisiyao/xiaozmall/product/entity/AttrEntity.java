@@ -32,6 +32,7 @@ public class AttrEntity implements Serializable {
 	 */
 	@NotEmpty
 	private String attrName;
+
 	/**
 	 * 是否需要检索[0-不需要，1-需要]
 	 */

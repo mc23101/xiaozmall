@@ -10,7 +10,8 @@ import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.dao.ProductAttrValueDao;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrValueQueryVo;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,10 +29,38 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
 
     @Override
     @Cacheable(value = {"ProductAttrValue"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(PageParamVo params) {
+    public PageUtils queryPage(AttrValueQueryVo params) {
+        QueryWrapper<ProductAttrValueEntity> wrapper = new QueryWrapper<>();
+        AttrVo.AttrValueVo attrValueVo=params.getAttrValueVo();
+        if(attrValueVo.getId()!=null){
+            wrapper.eq("id",attrValueVo.getId());
+        }
+        if(attrValueVo.getSpuId()!=null){
+            wrapper.eq("spu_id",attrValueVo.getSpuId());
+        }
+        if(attrValueVo.getAttrId()!=null){
+            wrapper.eq("attr_id",attrValueVo.getAttrId());
+        }
+
+        if(attrValueVo.getAttrValue()!=null){
+            wrapper.eq("attr_value",attrValueVo.getAttrValue());
+        }
+
+        if(attrValueVo.getAttrName()!=null){
+            wrapper.eq("attr_name",attrValueVo.getAttrName());
+        }
+
+        if(attrValueVo.getGroupId()!=null){
+            wrapper.eq("group_id",attrValueVo.getGroupId());
+        }
+
+        if(StringUtils.isNotEmpty(params.getPageParamVo().getKey())){
+            wrapper.like("attr_name",params.getPageParamVo().getKey());
+        }
+
         IPage<ProductAttrValueEntity> page = this.page(
-                new Query<ProductAttrValueEntity>().getPage(params.getPageIndex(),params.getPageSize()),
-                new QueryWrapper<ProductAttrValueEntity>()
+                new Query<ProductAttrValueEntity>().getPage(params.getPageParamVo().getPageIndex(),params.getPageParamVo().getPageSize()),
+                wrapper
         );
 
         return new PageUtils(page);

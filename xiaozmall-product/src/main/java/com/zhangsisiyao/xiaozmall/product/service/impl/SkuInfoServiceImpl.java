@@ -10,7 +10,7 @@ import com.zhangsisiyao.common.vo.product.SkuInfoVo;
 import com.zhangsisiyao.xiaozmall.product.dao.SkuInfoDao;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SkuInfoService;
-import com.zhangsisiyao.xiaozmall.product.vo.SkuInfoQueryVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.SkuInfoQueryVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
@@ -29,10 +29,38 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
 
     @Override
     @Cacheable(value = {"SkuInfo"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils queryPage(SkuInfoQueryVo params) {
+        QueryWrapper<SkuInfoEntity> wrapper = new QueryWrapper<>();
+        SkuInfoVo skuInfoVo=params.getSkuInfoVo();
+        if(skuInfoVo.getSkuId()!=null){
+            wrapper.eq("sku_id",skuInfoVo.getSkuId());
+        }
+        if(skuInfoVo.getSkuName()!=null){
+            wrapper.eq("spu_id",skuInfoVo.getSkuId());
+        }
+        if(skuInfoVo.getSkuName()!=null){
+            wrapper.eq("sku_name",skuInfoVo.getSkuName());
+        }
+        if(skuInfoVo.getCatalogId()!=null){
+            wrapper.eq("catalog_id",skuInfoVo.getCatalogId());
+        }
+        if(skuInfoVo.getBrandId()!=null){
+            wrapper.eq("brand_id",skuInfoVo.getBrandId());
+        }
+        if(skuInfoVo.getPrice()!=null){
+            wrapper.eq("price",skuInfoVo.getPrice());
+        }
+        if(skuInfoVo.getSaleCount()!=null){
+            wrapper.eq("sale_count",skuInfoVo.getSaleCount());
+        }
+
+        if(params.getPageParamVo().getKey()!=null){
+            wrapper.like("sku_name",params.getPageParamVo().getKey());
+        }
+
         IPage<SkuInfoEntity> page = this.page(
-                new Query<SkuInfoEntity>().getPage(params),
-                new QueryWrapper<SkuInfoEntity>()
+                new Query<SkuInfoEntity>().getPage(params.getPageParamVo().getPageIndex(),params.getPageParamVo().getPageSize()),
+                wrapper
         );
 
         return new PageUtils(page);
@@ -48,14 +76,14 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
         if(queryVo.getCatalogId()!=0){
             queryWrapper=queryWrapper.eq("catalog_id",queryVo.getCatalogId());
         }
-        if(StringUtils.isNotEmpty(queryVo.getKey())){
-            queryWrapper=queryWrapper.like("spu_name", queryVo.getKey());
+        if(StringUtils.isNotEmpty(queryVo.getPageParams().getKey())){
+            queryWrapper=queryWrapper.like("spu_name", queryVo.getPageParams().getKey());
         }
         if(queryVo.getMin().compareTo(queryVo.getMax()) < 0){
             queryWrapper=queryWrapper.between("price",queryVo.getMin(),queryVo.getMax());
         }
         IPage<SkuInfoEntity> page = this.page(
-                new Query<SkuInfoEntity>().getPage(queryVo.getPageIndex(),queryVo.getPageSize()),
+                new Query<SkuInfoEntity>().getPage(queryVo.getPageParams().getPageIndex(),queryVo.getPageParams().getPageSize()),
                 queryWrapper
         );
         return new PageUtils(page);

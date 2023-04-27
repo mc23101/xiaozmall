@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuImagesEntity;
 import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.ImageQueryVo;
 
 /**
  * sku图片
@@ -14,6 +15,6 @@ import com.zhangsisiyao.common.vo.product.PageParamVo;
  */
 public interface SkuImagesService extends IService<SkuImagesEntity> {
 
-    PageUtils queryPage(PageParamVo params);
+    PageUtils queryPage(ImageQueryVo params);
 }
 

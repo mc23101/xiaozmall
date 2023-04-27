@@ -6,7 +6,7 @@ import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrValueQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -37,8 +37,8 @@ public class ProductAttrValueController {
      * 列表
      */
     @PostMapping("/list")
-    @ApiOperation(value = "分页查询spu属性值信息")
-    public R<PageUtils> list(@RequestParam @ApiParam("分页查询参数") PageParamVo params){
+    @ApiOperation(value = "条件查询spu属性值信息")
+    public R<PageUtils> list(@RequestParam @ApiParam("条件查询参数") AttrValueQueryVo params){
         PageUtils page = productAttrValueService.queryPage(params);
 
         return new R<PageUtils>().ok().put( page);

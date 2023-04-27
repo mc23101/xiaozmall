@@ -6,7 +6,7 @@ import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.vo.product.SpuInfoVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.common.vo.product.ProductVo;
-import com.zhangsisiyao.xiaozmall.product.vo.SpuInfoQueryVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.SpuInfoQueryVo;
 
 import java.util.List;
 import java.util.Map;
@@ -20,9 +20,8 @@ import java.util.Map;
  */
 public interface SpuInfoService extends IService<SpuInfoEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils queryPage(SpuInfoQueryVo params);
 
-    PageUtils queryPageLimit(SpuInfoQueryVo params);
 
     boolean saveProduct(ProductVo product);
 

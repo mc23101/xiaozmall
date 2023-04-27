@@ -6,10 +6,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.product.BrandVo;
 import com.zhangsisiyao.xiaozmall.product.dao.BrandDao;
 import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
 import com.zhangsisiyao.xiaozmall.product.service.BrandService;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.BrandQueryVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -25,16 +26,32 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
 
     @Override
     @Cacheable(value = {"brand"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(PageParamVo params) {
-        QueryWrapper<BrandEntity> queryWrapper = new QueryWrapper<>();
-        if(StringUtils.isNotEmpty(params.getKey())){
-            queryWrapper.like("name",params.getKey());
+    public PageUtils queryPage(BrandQueryVo params) {
+        QueryWrapper<BrandEntity> wrapper = new QueryWrapper<>();
+        BrandVo brandVo=params.getBrandVo();
+
+        if(brandVo.getBrandId()!=null){
+            wrapper.eq("brand_id",brandVo.getBrandId());
+        }
+        if(brandVo.getName()!=null){
+            wrapper.eq("name",brandVo.getName());
+        }
+        if(brandVo.getShowStatus()!=null){
+            wrapper.eq("show_status",brandVo.getShowStatus());
+        }
+        if(brandVo.getFirstLetter()!=null){
+            wrapper.eq("first_letter",brandVo.getFirstLetter());
+        }
+        if(brandVo.getSort()!=null){
+            wrapper.eq("sort",brandVo.getSort());
+        }
+        if(StringUtils.isNotEmpty(params.getPageParamVo().getKey())){
+            wrapper.like("name",params.getPageParamVo().getKey());
         }
         IPage<BrandEntity> page = this.page(
-                new Query<BrandEntity>().getPage(params.getPageIndex(),params.getPageSize()),
-                queryWrapper
+                new Query<BrandEntity>().getPage(params.getPageParamVo().getPageIndex(),params.getPageParamVo().getPageSize()),
+                wrapper
         );
-
         return new PageUtils(page);
     }
 

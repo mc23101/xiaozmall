@@ -6,7 +6,7 @@ import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.common.vo.product.CatalogVo;
 import com.zhangsisiyao.xiaozmall.product.entity.CategoryEntity;
 import com.zhangsisiyao.xiaozmall.product.service.CategoryService;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.CatalogQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -54,8 +54,8 @@ public class CategoryController {
      * 列表
      */
     @PostMapping("/list")
-    @ApiOperation(value = "分页查询商品分类信息")
-    public R<PageUtils> list(@RequestParam @ApiParam(value = "分页查询参数") PageParamVo params){
+    @ApiOperation(value = "条件查询商品分类信息")
+    public R<PageUtils> list(@RequestParam @ApiParam(value = "条件参数") CatalogQueryVo params){
         PageUtils page = categoryService.queryPage(params);
 
         return new  R<PageUtils>().ok().put( page);

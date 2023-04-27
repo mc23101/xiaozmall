@@ -1,6 +1,5 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
-import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
@@ -8,6 +7,7 @@ import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrService;
 import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrQueryVo;
 import io.swagger.annotations.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +59,9 @@ public class AttrController {
      * 列表
      */
     @PostMapping("/list")
-    @ApiOperation(value = "分页查询属性")
-    public R<PageUtils> list(@RequestBody @ApiParam(value = "分页查询参数") PageParamVo params){
+    @ApiOperation(value = "属性条件查询")
+    public R<PageUtils> list(@RequestBody @ApiParam(value = "条件查询参数") AttrQueryVo params){
+        System.out.println(params);
         PageUtils page = attrService.queryPage(params);
         return new R<PageUtils>().ok().put(page);
     }
@@ -71,7 +72,7 @@ public class AttrController {
     @GetMapping("/info/{attrId}")
     @ApiOperation(value = "查询属性信息")
     public R<AttrVo> info(@PathVariable("attrId") @ApiParam(value = "属性id") Long attrId){
-		AttrEntity attr = attrService.getById(attrId);
+        AttrEntity attr = attrService.getById(attrId);
         AttrVo attrVo=new AttrVo();
         BeanUtils.copyProperties(attr,attrVo);
         return new R<AttrVo>().ok().put(attrVo);
@@ -85,7 +86,7 @@ public class AttrController {
     public R<String> save(@RequestBody @ApiParam(value = "属性信息") AttrVo attr){
         AttrEntity attrEntity=new AttrEntity();
         BeanUtils.copyProperties(attr,attrEntity);
-		attrService.save(attrEntity);
+        attrService.save(attrEntity);
         return new R<String>().ok();
     }
 
@@ -97,7 +98,7 @@ public class AttrController {
     public R<String> update(@RequestBody @ApiParam(value = "属性信息") AttrVo attr){
         AttrEntity attrEntity=new AttrEntity();
         BeanUtils.copyProperties(attr,attrEntity);
-		attrService.updateById(attrEntity);
+        attrService.updateById(attrEntity);
         return new R<String>().ok();
     }
 
@@ -114,7 +115,7 @@ public class AttrController {
     @DeleteMapping("/delete")
     @ApiOperation("批量删除属性")
     public R<String> delete(@RequestBody @ApiParam(value = "属性id数组") Long[] attrIds){
-		attrService.removeByIds(Arrays.asList(attrIds));
+        attrService.removeByIds(Arrays.asList(attrIds));
         return new R<String>().ok();
     }
 

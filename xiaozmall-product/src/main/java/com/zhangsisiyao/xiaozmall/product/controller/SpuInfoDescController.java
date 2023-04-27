@@ -6,6 +6,7 @@ import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoDescEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuInfoDescService;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.ImageQueryVo;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class SpuInfoDescController {
      */
     @PostMapping("/list")
     //@RequiresPermissions("product:spuinfodesc:list")
-    public R<PageUtils> list(@RequestParam Map<String, Object> params){
+    public R<PageUtils> list(@RequestParam ImageQueryVo params){
         PageUtils page = spuInfoDescService.queryPage(params);
 
         return new  R<PageUtils>().ok().put( page);

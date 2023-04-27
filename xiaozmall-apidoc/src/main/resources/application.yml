@@ -13,3 +13,9 @@ knife4j:
         location: /v2/api-docs?group=default
         swaggerVersion: 2.0
         servicePath: /product
+
+      - name: 第三方业务
+        service-name: thirdpart
+        location: /v2/api-docs?group=default
+        swaggerVersion: 2.0
+        servicePath: /thirdpart

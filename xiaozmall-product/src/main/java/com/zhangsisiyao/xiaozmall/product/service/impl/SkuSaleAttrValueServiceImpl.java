@@ -6,10 +6,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.dao.SkuSaleAttrValueDao;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuSaleAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SkuSaleAttrValueService;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrQueryVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrValueQueryVo;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -24,10 +28,34 @@ public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao
 
     @Override
     @Cacheable(value = {"SkuSaleAttrValue"},keyGenerator = "customKeyGenerator")
-    public PageUtils queryPage(PageParamVo params) {
+    public PageUtils queryPage(AttrValueQueryVo params) {
+        QueryWrapper<SkuSaleAttrValueEntity> wrapper = new QueryWrapper<>();
+        AttrVo.AttrValueVo attrValueVo=params.getAttrValueVo();
+        if(attrValueVo.getId()!=null){
+            wrapper.eq("id",attrValueVo.getId());
+        }
+        if(attrValueVo.getSkuId()!=null){
+            wrapper.eq("sku_id",attrValueVo.getSkuId());
+        }
+        if(attrValueVo.getAttrId()!=null){
+            wrapper.eq("attr_id",attrValueVo.getAttrId());
+        }
+
+        if(attrValueVo.getAttrValue()!=null){
+            wrapper.eq("attr_value",attrValueVo.getAttrValue());
+        }
+
+        if(attrValueVo.getAttrName()!=null){
+            wrapper.eq("attr_name",attrValueVo.getAttrName());
+        }
+
+        if(StringUtils.isNotEmpty(params.getPageParamVo().getKey())){
+            wrapper.like("attr_name",params.getPageParamVo().getKey());
+        }
+
         IPage<SkuSaleAttrValueEntity> page = this.page(
-                new Query<SkuSaleAttrValueEntity>().getPage(params.getPageIndex(),params.getPageSize()),
-                new QueryWrapper<SkuSaleAttrValueEntity>()
+                new Query<SkuSaleAttrValueEntity>().getPage(params.getPageParamVo().getPageIndex(),params.getPageParamVo().getPageSize()),
+                wrapper
         );
 
         return new PageUtils(page);

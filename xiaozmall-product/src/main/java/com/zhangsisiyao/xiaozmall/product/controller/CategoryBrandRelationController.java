@@ -11,7 +11,7 @@ import com.zhangsisiyao.xiaozmall.product.entity.CategoryEntity;
 import com.zhangsisiyao.xiaozmall.product.service.BrandService;
 import com.zhangsisiyao.xiaozmall.product.service.CategoryBrandRelationService;
 import com.zhangsisiyao.xiaozmall.product.service.CategoryService;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.CatalogBrandRelationQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -61,8 +61,8 @@ public class CategoryBrandRelationController {
      * 列表
      */
     @PostMapping("/list")
-    @ApiOperation(value = "分页查询商品分类品牌关联信息")
-    public R<PageUtils> list(@RequestParam @ApiParam(value = "分页查询参数")  PageParamVo params){
+    @ApiOperation(value = "商品分类品牌关联信息条件查询")
+    public R<PageUtils> list(@RequestParam @ApiParam(value = "条件查询参数") CatalogBrandRelationQueryVo params){
         PageUtils page = categoryBrandRelationService.queryPage(params);
         return new  R<PageUtils>().ok().put(page);
     }

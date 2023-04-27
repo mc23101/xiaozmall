@@ -7,6 +7,7 @@ import com.zhangsisiyao.common.vo.product.AttrGroupVo;
 import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrGroupEntity;
 import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrGroupQueryVo;
 
 import java.util.List;
 
@@ -19,11 +20,8 @@ import java.util.List;
  */
 public interface AttrGroupService extends IService<AttrGroupEntity> {
 
-    PageUtils queryPage(PageParamVo params);
+    PageUtils queryPage(AttrGroupQueryVo params);
 
-    PageUtils queryPageByColumn(Object column,Object val,PageParamVo params);
-
-    //List<AttrGroupEntity> queryByColumn(Map<String,Object> columns);
 
     public List<AttrGroupVo> queryWithAttr(String catalogId);
 

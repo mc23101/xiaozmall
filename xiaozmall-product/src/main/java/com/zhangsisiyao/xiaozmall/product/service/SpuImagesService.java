@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuImagesEntity;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.ImageQueryVo;
 
 import java.util.Map;
 
@@ -16,6 +17,6 @@ import java.util.Map;
  */
 public interface SpuImagesService extends IService<SpuImagesEntity> {
 
-    PageUtils queryPage(PageParamVo params);
+    PageUtils queryPage(ImageQueryVo params);
 }
 

@@ -17,6 +17,7 @@ import com.zhangsisiyao.xiaozmall.product.entity.AttrGroupEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrAttrgroupRelationService;
 import com.zhangsisiyao.xiaozmall.product.service.AttrGroupService;
 import com.zhangsisiyao.xiaozmall.product.service.AttrService;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrGroupQueryVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,32 +37,30 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
     @Autowired
     AttrService attrService;
 
-
     @Override
     @Cacheable(value = {"attrGroup"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(PageParamVo params) {
-
-        IPage<AttrGroupEntity> page = this.page(
-                new Query<AttrGroupEntity>().getPage(params.getPageIndex(), params.getPageSize()),
-                new QueryWrapper<>()
-        );
-
-        return new PageUtils(page);
-    }
-
-    @Override
-    @Cacheable(value = {"attrGroup"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPageByColumn(Object column, Object val, PageParamVo params) {
-        QueryWrapper<AttrGroupEntity> queryWrapper = new QueryWrapper<>();
-        if(column!=null){
-            queryWrapper=queryWrapper.eq(String.valueOf(column),val);
+    public PageUtils queryPage(AttrGroupQueryVo params) {
+        QueryWrapper<AttrGroupEntity> wrapper = new QueryWrapper<>();
+        AttrGroupVo attrGroupVo=params.getAttrGroupVo();
+        if(attrGroupVo.getAttrGroupId()!=null){
+            wrapper.eq("attr_group_id",attrGroupVo.getAttrGroupId());
         }
-        if(StringUtils.isNotEmpty(params.getKey())){
-            queryWrapper=queryWrapper.like("attr_group_name",params.getKey());
+        if(attrGroupVo.getAttrGroupName()!=null){
+            wrapper.eq("attr_group_name",attrGroupVo.getAttrGroupName());
+        }
+        if(attrGroupVo.getSort()!=null){
+            wrapper.eq("sort",attrGroupVo.getSort());
+        }
+        if(attrGroupVo.getCatalogId()!=null){
+            wrapper.like("catalog_id",attrGroupVo.getCatalogId());
+        }
+
+        if(StringUtils.isNotEmpty(params.getPageParams().getKey())){
+            wrapper.like("attr_group_name",params.getPageParams().getKey());
         }
         IPage<AttrGroupEntity> page = this.page(
-                new Query<AttrGroupEntity>().getPage(params.getPageIndex(), params.getPageSize()),
-                queryWrapper
+                new Query<AttrGroupEntity>().getPage(params.getPageParams().getPageIndex(), params.getPageParams().getPageSize()),
+                wrapper
         );
         return new PageUtils(page);
     }

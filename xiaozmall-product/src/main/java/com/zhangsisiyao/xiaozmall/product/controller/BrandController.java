@@ -6,7 +6,7 @@ import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.common.vo.product.BrandVo;
 import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
 import com.zhangsisiyao.xiaozmall.product.service.BrandService;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.BrandQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -36,8 +36,8 @@ public class BrandController {
      * 列表
      */
     @PostMapping("/list")
-    @ApiOperation(value = "分页查询品牌信息")
-    public R<PageUtils> list(@RequestParam @ApiParam("分页查询参数") PageParamVo params){
+    @ApiOperation(value = "品牌条件查询")
+    public R<PageUtils> list(@RequestParam @ApiParam("条件查询参数") BrandQueryVo params){
         PageUtils page = brandService.queryPage(params);
         return new R<PageUtils>().ok().put( page);
     }

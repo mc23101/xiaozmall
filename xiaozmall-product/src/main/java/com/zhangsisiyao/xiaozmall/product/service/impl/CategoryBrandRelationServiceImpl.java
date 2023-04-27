@@ -7,12 +7,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
 import com.zhangsisiyao.common.vo.product.BrandVo;
+import com.zhangsisiyao.common.vo.product.CatalogVo;
 import com.zhangsisiyao.xiaozmall.product.dao.CategoryBrandRelationDao;
 import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.CategoryBrandRelationEntity;
 import com.zhangsisiyao.xiaozmall.product.service.BrandService;
 import com.zhangsisiyao.xiaozmall.product.service.CategoryBrandRelationService;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.CatalogBrandRelationQueryVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -30,12 +31,28 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
 
     @Override
     @Cacheable(value = {"CategoryBrandRelation"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(PageParamVo params) {
+    public PageUtils queryPage(CatalogBrandRelationQueryVo params) {
+        CatalogVo.CatalogBrandRelationVo relationVo=params.getCatalogBrandRelationVo();
+        QueryWrapper<CategoryBrandRelationEntity> wrapper = new QueryWrapper<>();
+        if(relationVo.getId()!=null){
+            wrapper.eq("id",relationVo.getId());
+        }
+        if(relationVo.getBrandId()!=null){
+            wrapper.eq("brand_id",relationVo.getBrandId());
+        }
+        if(relationVo.getCatalogId()!=null){
+            wrapper.eq("catalog_id",relationVo.getCatalogId());
+        }
+        if(relationVo.getBrandName()!=null){
+            wrapper.eq("brand_name",relationVo.getBrandName());
+        }
+        if(relationVo.getCatalogName()!=null){
+            wrapper.eq("catalog_name",relationVo.getCatalogName());
+        }
         IPage<CategoryBrandRelationEntity> page = this.page(
-                new Query<CategoryBrandRelationEntity>().getPage(params.getPageIndex(),params.getPageSize()),
-                new QueryWrapper<CategoryBrandRelationEntity>()
-        );
+                new Query<CategoryBrandRelationEntity>().getPage(params.getPageParamVo().getPageIndex(),params.getPageParamVo().getPageSize())
 
+        );
         return new PageUtils(page);
     }
 

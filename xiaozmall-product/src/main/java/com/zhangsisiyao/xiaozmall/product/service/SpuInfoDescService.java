@@ -3,6 +3,7 @@ package com.zhangsisiyao.xiaozmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoDescEntity;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.ImageQueryVo;
 
 import java.util.Map;
 
@@ -15,6 +16,6 @@ import java.util.Map;
  */
 public interface SpuInfoDescService extends IService<SpuInfoDescEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils queryPage(ImageQueryVo params);
 }
 

@@ -7,7 +7,7 @@ import com.zhangsisiyao.common.vo.product.SpuInfoVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuInfoService;
 import com.zhangsisiyao.common.vo.product.ProductVo;
-import com.zhangsisiyao.xiaozmall.product.vo.SpuInfoQueryVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.SpuInfoQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -55,9 +54,9 @@ public class SpuInfoController {
      * 列表
      */
     @PostMapping("/list")
-    @ApiOperation(value = "分页查询商品spu信息")
-    public R<PageUtils> list(@RequestParam @ApiParam(value = "分页搜索参数") SpuInfoQueryVo params){
-        PageUtils page = spuInfoService.queryPageLimit(params);
+    @ApiOperation(value = "条件查询商品spu信息")
+    public R<PageUtils> list(@RequestParam @ApiParam(value = "条件查询参数") SpuInfoQueryVo params){
+        PageUtils page = spuInfoService.queryPage(params);
         return new  R<PageUtils>().ok().put( page);
     }
 

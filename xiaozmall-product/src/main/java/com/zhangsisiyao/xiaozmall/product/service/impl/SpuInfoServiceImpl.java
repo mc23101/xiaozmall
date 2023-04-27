@@ -14,7 +14,7 @@ import com.zhangsisiyao.common.vo.product.AttrGroupVo.*;
 import com.zhangsisiyao.xiaozmall.product.dao.SpuInfoDao;
 import com.zhangsisiyao.xiaozmall.product.entity.*;
 import com.zhangsisiyao.xiaozmall.product.service.*;
-import com.zhangsisiyao.xiaozmall.product.vo.SpuInfoQueryVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.SpuInfoQueryVo;
 import org.apache.commons.lang.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -68,33 +68,39 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Override
     @Cacheable(value = {"SpuInfo"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(Map<String, Object> params) {
-        IPage<SpuInfoEntity> page = this.page(
-                new Query<SpuInfoEntity>().getPage(params),
-                new QueryWrapper<SpuInfoEntity>()
-        );
-        return new PageUtils(page);
-    }
+    public PageUtils queryPage(SpuInfoQueryVo params) {
+        QueryWrapper<SpuInfoEntity> wrapper = new QueryWrapper<>();
+        SpuInfoVo spuInfoVo=params.getSpuInfoVo();
 
-    @Override
-    @Cacheable(value = {"SpuInfo"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPageLimit(SpuInfoQueryVo params) {
-        QueryWrapper<SpuInfoEntity> queryWrapper = new QueryWrapper<>();
-        if(params.getBrandId()!=null){
-            queryWrapper=queryWrapper.eq("brand_id",params.getBrandId());
+        if(spuInfoVo.getId()!=null){
+            wrapper.eq("id",spuInfoVo.getId());
         }
-        if(params.getCatalogId()!=null){
-            queryWrapper=queryWrapper.eq("catalog_id",params.getCatalogId());
+
+        if(spuInfoVo.getSpuName()!=null){
+            wrapper.eq("spu_name",spuInfoVo.getSpuName());
         }
-        if(params.getKey()!=null&& StringUtils.isNotEmpty(params.getKey())){
-            queryWrapper=queryWrapper.like("spu_name", params.getKey());
+        if(spuInfoVo.getCatalogId()!=null){
+            wrapper.eq("catalog_id",spuInfoVo.getCatalogId());
         }
-        if(params.getStatus()!=null){
-            queryWrapper=queryWrapper.eq("publish_status", params.getStatus());
+        if(spuInfoVo.getBrandId()!=null){
+            wrapper.eq("brand_id",spuInfoVo.getBrandId());
         }
+        if(spuInfoVo.getWeight()!=null){
+            wrapper.eq("weight",spuInfoVo.getWeight());
+        }
+        if(spuInfoVo.getPublishStatus()!=null){
+            wrapper.eq("publish_status",spuInfoVo.getPublishStatus());
+        }
+
+
+        if(StringUtils.isNotEmpty(params.getPageParams().getKey())){
+            wrapper.like("spu_name",params.getPageParams().getKey());
+        }
+
         IPage<SpuInfoEntity> page = this.page(
-                new Query<SpuInfoEntity>().getPage(params.getPageIndex(),params.getPageSize()),
-                queryWrapper
+                new Query<SpuInfoEntity>().getPage(params.getPageParams().getPageIndex(),params.getPageParams().getPageSize()),
+                wrapper
+
         );
         return new PageUtils(page);
     }

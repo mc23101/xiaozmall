@@ -1,4 +1,4 @@
-package com.zhangsisiyao.xiaozmall.product.config.swagger2;
+package com.zhangsisiyao.xiaozmall.product.config.knife4j;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +30,7 @@ public class SwaggerConfiguration {
                 .title("product服务接口文档")
                 .description("product服务接口文档")
                 .termsOfServiceUrl("服务url")
-                .contact(new Contact("xxx", "url", "xxx@qq.com"))
+                .contact(new Contact("zhangsisiyao", "url", "2963456487@qq.com"))
                 .version("1.0")
                 .build();
     }

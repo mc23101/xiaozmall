@@ -3,7 +3,7 @@ package com.zhangsisiyao.xiaozmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.xiaozmall.product.entity.BrandEntity;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.BrandQueryVo;
 
 /**
  * 品牌
@@ -14,7 +14,7 @@ import com.zhangsisiyao.common.vo.product.PageParamVo;
  */
 public interface BrandService extends IService<BrandEntity> {
 
-    PageUtils queryPage(PageParamVo params);
+    PageUtils queryPage(BrandQueryVo params);
 
 
 }

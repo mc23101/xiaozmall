@@ -6,10 +6,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
+import com.zhangsisiyao.common.vo.product.ImageVo;
 import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.dao.SpuImagesDao;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuImagesEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuImagesService;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.ImageQueryVo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -24,10 +26,21 @@ public class SpuImagesServiceImpl extends ServiceImpl<SpuImagesDao, SpuImagesEnt
 
     @Override
     @Cacheable(value = {"SpuImages"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPage(PageParamVo params) {
+    public PageUtils queryPage(ImageQueryVo params) {
+        QueryWrapper<SpuImagesEntity> wrapper = new QueryWrapper<>();
+        ImageVo imageVo=params.getImageVo();
+        if(imageVo.getId()!=null){
+            wrapper.eq("id",imageVo.getId());
+        }
+        if(imageVo.getSpuId()!=null){
+            wrapper.eq("spu_id",imageVo.getSpuId());
+        }
+        if(imageVo.getImgSort()!=null){
+            wrapper.eq("img_sort",imageVo.getImgSort());
+        }
         IPage<SpuImagesEntity> page = this.page(
-                new Query<SpuImagesEntity>().getPage(params.getPageIndex(),params.getPageSize()),
-                new QueryWrapper<SpuImagesEntity>()
+                new Query<SpuImagesEntity>().getPage(params.getPageParamVo().getPageIndex(),params.getPageParamVo().getPageSize()),
+                wrapper
         );
 
         return new PageUtils(page);

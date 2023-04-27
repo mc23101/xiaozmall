@@ -5,6 +5,7 @@ import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
 import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrQueryVo;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public interface AttrService extends IService<AttrEntity> {
 
-    PageUtils queryPage(PageParamVo params);
+    PageUtils queryPage(AttrQueryVo params);
 
     public PageUtils queryBaseAttr(Long catId, PageParamVo params);
     public PageUtils querySaleAttr(Long catId, PageParamVo params);

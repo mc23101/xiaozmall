@@ -6,6 +6,7 @@ import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.MatchMode;
 import com.aliyun.oss.model.PolicyConditions;
 import com.zhangsisiyao.common.utils.R;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("thirdpart/oss")
+@Api("OSS储存操作")
 public class OSSController {
 
     @Autowired
@@ -65,7 +67,7 @@ public class OSSController {
             // Assert.fail(e.getMessage());
             System.out.println(e.getMessage());
         }
-        return R.ok().put("data",respMap);
+        return new R<>().ok().put(respMap);
     }
 
 
