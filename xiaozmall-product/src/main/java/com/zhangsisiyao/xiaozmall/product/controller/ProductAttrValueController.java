@@ -28,7 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("product/productattrvalue")
 @Api(tags = "Spu属性值操作")
-@ApiSupport(order = 1)
+@ApiSupport(order = 7)
 public class ProductAttrValueController {
     @Autowired
     private ProductAttrValueService productAttrValueService;

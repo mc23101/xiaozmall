@@ -66,28 +66,6 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
         return new PageUtils(page);
     }
 
-    @Override
-    @Cacheable(value = {"SkuInfo"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryPageLimit(SkuInfoQueryVo queryVo) {
-        QueryWrapper<SkuInfoEntity> queryWrapper = new QueryWrapper<>();
-        if(queryVo.getBrandId()!=0){
-            queryWrapper=queryWrapper.eq("brand_id",queryVo.getBrandId());
-        }
-        if(queryVo.getCatalogId()!=0){
-            queryWrapper=queryWrapper.eq("catalog_id",queryVo.getCatalogId());
-        }
-        if(StringUtils.isNotEmpty(queryVo.getPageParams().getKey())){
-            queryWrapper=queryWrapper.like("spu_name", queryVo.getPageParams().getKey());
-        }
-        if(queryVo.getMin().compareTo(queryVo.getMax()) < 0){
-            queryWrapper=queryWrapper.between("price",queryVo.getMin(),queryVo.getMax());
-        }
-        IPage<SkuInfoEntity> page = this.page(
-                new Query<SkuInfoEntity>().getPage(queryVo.getPageParams().getPageIndex(),queryVo.getPageParams().getPageSize()),
-                queryWrapper
-        );
-        return new PageUtils(page);
-    }
 
     @Override
     @Cacheable(value = {"SkuInfo"},keyGenerator = "customKeyGenerator",sync = true)

@@ -28,7 +28,7 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("product/skuimages")
 @Api(tags = "Sku图片操作")
-@ApiSupport(order = 7)
+@ApiSupport(order = 12)
 public class SkuImagesController {
     @Autowired
     private SkuImagesService skuImagesService;

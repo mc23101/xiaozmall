@@ -30,7 +30,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("product/spuimages")
 @Api(tags = "Spu图片信息操作")
-@ApiSupport(order = 2)
+@ApiSupport(order = 8)
 public class SpuImagesController {
     @Autowired
     private SpuImagesService spuImagesService;

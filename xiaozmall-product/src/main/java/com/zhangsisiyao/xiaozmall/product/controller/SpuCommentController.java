@@ -30,7 +30,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("product/spucomment")
 @Api(tags = "商品评论操作")
-@ApiSupport(order = 4)
+@ApiSupport(order = 13)
 public class SpuCommentController {
 
     @Autowired

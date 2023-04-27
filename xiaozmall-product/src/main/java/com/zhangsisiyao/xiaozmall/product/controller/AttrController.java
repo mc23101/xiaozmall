@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
@@ -27,13 +28,14 @@ import java.util.List;
 @RestController
 @RequestMapping("product/attr")
 @Api(tags = "属性操作")
-@ApiSupport(order = 8)
+@ApiSupport(order = 0)
 public class AttrController {
     @Autowired
     private AttrService attrService;
 
     @PostMapping("/base/list/{catId}")
     @ApiOperation(value = "通过分类id获取spu属性")
+    @ApiOperationSupport(order = 1)
     public R<PageUtils> baseList(@PathVariable @ApiParam(value = "分类Id",defaultValue = "225") Long catId,
                                  @RequestBody @ApiParam(value = "分页查询参数") PageParamVo params){
         PageUtils pageUtils = attrService.queryBaseAttr(catId,params);
@@ -42,24 +44,20 @@ public class AttrController {
 
     @PostMapping("/sale/list/{catId}")
     @ApiOperation(value = "通过分类id获取sku属性")
+    @ApiOperationSupport(order = 2)
     public R<PageUtils> saleList(@PathVariable @ApiParam(value = "分类Id",defaultValue = "225") Long catId,
                                  @RequestBody @ApiParam(value = "分页查询参数") PageParamVo params){
         PageUtils pageUtils = attrService.querySaleAttr(catId,params);
         return new R<PageUtils>().ok().put(pageUtils);
     }
 
-    @GetMapping("/base/listforspu/{spuId}")
-    @ApiOperation(value = "通过spuId获取spu属性")
-    public R<List<AttrVo.AttrValueVo>> baseListForSpu(@PathVariable @ApiParam(value = "spuId") Long spuId){
-        List<AttrVo.AttrValueVo> entities = attrService.queryListForSpu(spuId);
-        return new R<List<AttrVo.AttrValueVo>>().ok().put(entities);
-    }
 
     /**
      * 列表
      */
     @PostMapping("/list")
     @ApiOperation(value = "属性条件查询")
+    @ApiOperationSupport(order = 3)
     public R<PageUtils> list(@RequestBody @ApiParam(value = "条件查询参数") AttrQueryVo params){
         System.out.println(params);
         PageUtils page = attrService.queryPage(params);
@@ -71,6 +69,7 @@ public class AttrController {
      */
     @GetMapping("/info/{attrId}")
     @ApiOperation(value = "查询属性信息")
+    @ApiOperationSupport(order = 4)
     public R<AttrVo> info(@PathVariable("attrId") @ApiParam(value = "属性id") Long attrId){
         AttrEntity attr = attrService.getById(attrId);
         AttrVo attrVo=new AttrVo();
@@ -83,6 +82,7 @@ public class AttrController {
      */
     @PostMapping("/save")
     @ApiOperation(value = "新增/保存属性")
+    @ApiOperationSupport(order = 5)
     public R<String> save(@RequestBody @ApiParam(value = "属性信息") AttrVo attr){
         AttrEntity attrEntity=new AttrEntity();
         BeanUtils.copyProperties(attr,attrEntity);
@@ -95,6 +95,7 @@ public class AttrController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "更新属性信息")
+    @ApiOperationSupport(order = 6)
     public R<String> update(@RequestBody @ApiParam(value = "属性信息") AttrVo attr){
         AttrEntity attrEntity=new AttrEntity();
         BeanUtils.copyProperties(attr,attrEntity);
@@ -104,6 +105,7 @@ public class AttrController {
 
     @PostMapping("/update/{spuId}")
     @ApiOperation("更新spu属性信息")
+    @ApiOperationSupport(order = 7)
     public R<String> updateSpu(@RequestBody @ApiParam(value = "属性信息") List<AttrVo.AttrValueVo> attrs, @PathVariable @ApiParam(value = "spuId") String spuId){
         attrService.UpdateAttrsBySpuId(attrs,spuId);
         return new R<String>().ok();
@@ -114,6 +116,7 @@ public class AttrController {
      */
     @DeleteMapping("/delete")
     @ApiOperation("批量删除属性")
+    @ApiOperationSupport(order = 8)
     public R<String> delete(@RequestBody @ApiParam(value = "属性id数组") Long[] attrIds){
         attrService.removeByIds(Arrays.asList(attrIds));
         return new R<String>().ok();

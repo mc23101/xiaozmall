@@ -348,17 +348,6 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         }
     }
 
-    @Override
-    @Cacheable(value = {"SpuInfo"},keyGenerator = "customKeyGenerator",sync = true)
-    public List<SpuInfoVo> getWithCatalogAndBrand(String catalog, String brand) {
-        List<SpuInfoVo> result=new ArrayList<>();
-        this.query().eq("catalog_id",catalog).eq("brand_id",brand).list().forEach((spuInfoEntity -> {
-            SpuInfoVo cur=new SpuInfoVo();
-            BeanUtils.copyProperties(spuInfoEntity,cur);
-            result.add(cur);
-        }));
-        return result;
-    }
 
     @Override
     @CacheEvict(value = {"SpuInfo"},allEntries = true)

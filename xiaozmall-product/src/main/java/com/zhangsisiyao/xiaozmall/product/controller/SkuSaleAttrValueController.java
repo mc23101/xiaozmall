@@ -29,7 +29,7 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("product/skusaleattrvalue")
 @Api(tags = "Sku属性值操作")
-@ApiSupport(order = 6)
+@ApiSupport(order = 11)
 public class SkuSaleAttrValueController {
     @Autowired
     private SkuSaleAttrValueService skuSaleAttrValueService;

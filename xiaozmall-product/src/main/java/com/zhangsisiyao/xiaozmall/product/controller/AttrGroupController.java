@@ -30,8 +30,8 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("product/attrgroup")
-@Api(tags = "属性分类操作")
-@ApiSupport(order = 9)
+@Api(tags = "属性分组操作")
+@ApiSupport(order = 1)
 public class AttrGroupController {
     @Autowired
     private AttrGroupService attrGroupService;

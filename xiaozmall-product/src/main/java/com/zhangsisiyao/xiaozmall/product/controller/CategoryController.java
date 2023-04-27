@@ -30,7 +30,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("product/category")
 @Api(tags = "商品分类操作")
-@ApiSupport(order = 11)
+@ApiSupport(order = 3)
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;

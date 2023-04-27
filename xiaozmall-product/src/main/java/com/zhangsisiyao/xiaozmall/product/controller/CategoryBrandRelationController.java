@@ -34,7 +34,7 @@ import java.util.List;
 @RestController
 @RequestMapping("product/categorybrandrelation")
 @Api(tags = "商品分类与品牌关联操作")
-@ApiSupport(order = 13)
+@ApiSupport(order = 5)
 public class CategoryBrandRelationController {
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;

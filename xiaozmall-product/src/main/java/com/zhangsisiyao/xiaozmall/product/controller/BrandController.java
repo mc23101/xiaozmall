@@ -27,7 +27,7 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("product/brand")
 @Api(tags = "品牌操作")
-@ApiSupport(order = 12)
+@ApiSupport(order = 4)
 public class BrandController {
     @Autowired
     private BrandService brandService;

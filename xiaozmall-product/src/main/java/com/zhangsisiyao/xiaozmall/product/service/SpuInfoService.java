@@ -33,6 +33,6 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
 
     void deleteSpu(Long[] ids);
 
-    List<SpuInfoVo> getWithCatalogAndBrand(String catalog, String brand);
+
 }
 

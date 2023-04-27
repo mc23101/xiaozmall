@@ -26,7 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("product/spuinfodesc")
 @Api(tags = "Spu商品描述操作")
-@ApiSupport(order = 3,author = "zhangsisiyao")
+@ApiSupport(order = 9,author = "zhangsisiyao")
 public class SpuInfoDescController {
     @Autowired
     private SpuInfoDescService spuInfoDescService;

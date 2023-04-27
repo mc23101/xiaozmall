@@ -29,18 +29,11 @@ import java.util.List;
 @RestController
 @RequestMapping("product/spuinfo")
 @Api(tags = "Spu操作")
-@ApiSupport(order = 0)
+@ApiSupport(order = 6)
 public class SpuInfoController {
     @Autowired
     private SpuInfoService spuInfoService;
 
-
-    @PostMapping("/list/{catalog}/{brand}")
-    @ApiOperation(value = "通过分类id、品牌id获取Spu信息")
-    public R<List<SpuInfoVo>> listWithCatalogAndBrand(@PathVariable @ApiParam(value = "分类id") String catalog, @PathVariable @ApiParam(value = "品牌id") String brand){
-        List<SpuInfoVo> list = spuInfoService.getWithCatalogAndBrand(catalog, brand);
-        return new R<List<SpuInfoVo>>().ok().put( list);
-    }
 
     @PostMapping("/getProduct/{spuId}")
     @ApiOperation(value = "通过spuId获取整个商品信息")

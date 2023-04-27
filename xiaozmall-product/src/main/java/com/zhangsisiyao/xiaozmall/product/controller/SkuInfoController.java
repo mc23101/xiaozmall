@@ -29,7 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping("product/skuinfo")
 @Api(tags = "Sku操作")
-@ApiSupport(order = 5)
+@ApiSupport(order = 10)
 public class SkuInfoController {
     @Autowired
     private SkuInfoService skuInfoService;

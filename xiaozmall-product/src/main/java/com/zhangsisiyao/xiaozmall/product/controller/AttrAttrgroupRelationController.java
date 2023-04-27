@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("product/attrattrgrouprelation")
 @Api(tags="属性分类与属性关联操作")
-@ApiSupport(order = 10)
+@ApiSupport(order = 2)
 public class AttrAttrgroupRelationController {
     @Autowired
     private AttrAttrgroupRelationService attrAttrgroupRelationService;
