@@ -7,6 +7,7 @@ import com.zhangsisiyao.common.vo.product.CommentVo;
 import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuCommentEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuCommentService;
+import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.CommentQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -40,7 +41,7 @@ public class SpuCommentController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "分页查询商品评论")
-    public R<PageUtils> list(@RequestParam @ApiParam(value = "分页查询参数") PageParamVo params){
+    public R<PageUtils> list(@RequestParam @ApiParam(value = "分页查询参数") CommentQueryVo params){
         PageUtils page = spuCommentService.queryPage(params);
 
         return new R<PageUtils>().ok().put( page);
