@@ -23,7 +23,7 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
     PageUtils queryPage(AttrGroupQueryVo params);
 
 
-    public List<AttrGroupVo> queryWithAttr(String catalogId);
+    public List<AttrGroupVo> queryWithAttrGroup(String catalogId);
 
     public List<AttrVo> queryAttrRelation(String attrGroupId);
 

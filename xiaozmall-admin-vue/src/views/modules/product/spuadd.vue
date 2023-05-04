@@ -33,11 +33,11 @@
 </template>
 
 <script>
-import SpuInfo from './spuadd/spuInfo'
-import ProductAttr from './spuadd/productAttr'
+import SpuInfo from './spu/spuInfo'
+import ProductAttr from './spu/productAttr'
 import PubSub from 'pubsub-js'
-import saleAttr from './spuadd/saleAttr'
-import skuInfo from './spuadd/skuInfo'
+import saleAttr from './spu/saleAttr'
+import skuInfo from './spu/skuInfo'
 
 export default {
   // eslint-disable-next-line standard/object-curly-even-spacing

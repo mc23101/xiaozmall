@@ -20,12 +20,9 @@ public interface AttrService extends IService<AttrEntity> {
 
     PageUtils queryPage(AttrQueryVo params);
 
-    public PageUtils queryBaseAttr(Long catId, PageParamVo params);
-    public PageUtils querySaleAttr(Long catId, PageParamVo params);
+    PageUtils queryBaseAttr(Long catId, PageParamVo params);
+    PageUtils querySaleAttr(Long catId, PageParamVo params);
 
     List<AttrEntity> queryWithAttrGroup(String groupId);
 
-    List<AttrVo.AttrValueVo> queryListForSpu(Long spuId);
-
-    void UpdateAttrsBySpuId(List<AttrVo.AttrValueVo> attrs, String spuId);
 }

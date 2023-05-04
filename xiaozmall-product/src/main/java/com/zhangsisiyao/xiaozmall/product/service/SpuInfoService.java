@@ -3,6 +3,7 @@ package com.zhangsisiyao.xiaozmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
 
+import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.common.vo.product.SpuInfoVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.common.vo.product.ProductVo;
@@ -33,6 +34,6 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
 
     void deleteSpu(Long[] ids);
 
-
+    void addAttrs(String spuId,List<AttrVo.AttrValueVo> attrs);
 }
 

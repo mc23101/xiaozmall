@@ -23,4 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AttrAttrgroupRelationController {
     @Autowired
     private AttrAttrgroupRelationService attrAttrgroupRelationService;
+
+
 }

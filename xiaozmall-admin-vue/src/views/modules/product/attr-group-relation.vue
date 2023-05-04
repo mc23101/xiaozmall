@@ -203,12 +203,14 @@ export default {
         url: this.$http.adornUrl(
           `/product/product/attrgroup/noattr/relation/${this.attrGroupId}`
         ),
-        method: 'get',
-        params: this.$http.adornParams({
-          page: this.pageIndex,
-          limit: this.pageSize,
-          key: this.dataForm.key
-        })
+        method: 'post',
+        data: this.$http.adornData(
+          {
+            pageIndex: this.pageIndex,
+            pageSize: this.pageSize,
+            key: this.dataForm.key
+          }
+        )
       }).then(({ data }) => {
         if (data && data.code === 0) {
           this.dataList = data.page.list

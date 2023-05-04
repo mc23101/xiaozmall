@@ -89,6 +89,7 @@ export default {
       return new Promise((resolve, reject) => {
         policy()
           .then(response => {
+            console.log(response)
             _self.dataObj.policy = response.data.policy
             _self.dataObj.signature = response.data.signature
             _self.dataObj.ossaccessKeyId = response.data.ossaccessKeyId

@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
@@ -36,15 +37,54 @@ public class AttrGroupController {
     @Autowired
     private AttrGroupService attrGroupService;
 
-    @ApiOperation(value = "获取与属性分类组关联的属性")
-    @GetMapping("/attr/relation/get/{attrGroupId}")
-    public R<List<AttrVo>> getAttrRelation(@PathVariable @ApiParam(value = "属性分类组Id") String attrGroupId){
+
+    @PostMapping("/attr/relation/get/{attrGroupId}")
+    @ApiOperation(value = "获取与属性分组关联的属性")
+    @ApiOperationSupport(order = 1)
+    public R<List<AttrVo>> getAttrRelation(@ApiParam(value = "属性分类组Id") @PathVariable(value = "attrGroupId")  String attrGroupId){
         List<AttrVo> attrEntities = attrGroupService.queryAttrRelation(attrGroupId);
         return new R<List<AttrVo>>().put(attrEntities);
+    }
+    @PostMapping("/noattr/relation/{attrGroupId}")
+    @ApiOperation(value = "获取未与属性分组关联的属性")
+    @ApiOperationSupport(order = 2)
+    public R<PageUtils> getNoattrAttrRelation(
+            @ApiParam(value = "属性分组Id")  @PathVariable(value = "attrGroupId")String attrGroupId,
+            @RequestBody @ApiParam(value = "分页查询参数") PageParamVo params){
+        PageUtils page = attrGroupService.queryNoAttrRelation(attrGroupId, params);
+        return new R<PageUtils>().ok().put(page);
+    }
+
+    @GetMapping("/withattr/{catalogId}")
+    @ApiOperation(value = "获取商品分类下的属性分组")
+    @ApiOperationSupport(order = 3)
+    public R<List<AttrGroupVo>> withAttrGroupCatalogId(@PathVariable @ApiParam(value = "商品分类id") String catalogId){
+        List<AttrGroupVo> list = attrGroupService.queryWithAttrGroup(catalogId);
+        return new R<List<AttrGroupVo>>().ok().put(list);
+    }
+
+    @PostMapping("/list")
+    @ApiOperation(value = "属性分组条件查询")
+    @ApiOperationSupport(order = 4)
+    public R<PageUtils> list(@RequestBody @ApiParam(value = "条件查询参数") AttrGroupQueryVo params){
+        System.out.println(params);
+        PageUtils page = attrGroupService.queryPage(params);
+        return new R<PageUtils>().ok().put(page);
+    }
+
+
+    @GetMapping("/info/{attrGroupId}")
+    @ApiOperation(value = "查询属性分组信息")
+    @ApiOperationSupport(order = 5)
+    public R<Object> info(@PathVariable @ApiParam("属性分组Id") Long attrGroupId){
+        AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
+
+        return new R<>().ok().put(attrGroup);
     }
 
     @PostMapping("/attr/relation/add")
     @ApiOperation("添加属性分组关联信息")
+    @ApiOperationSupport(order = 6)
     public R<Object> addAttrRelation(@RequestBody @ApiParam(value = "添加的关联信息") List<AttrAttrgroupRelationVo> relationEntities){
         attrGroupService.addAttrRelation(relationEntities);
         return new R<>().ok();
@@ -52,79 +92,40 @@ public class AttrGroupController {
 
     @DeleteMapping("/attr/relation/delete")
     @ApiOperation(value = "删除属性分组关联信息")
+    @ApiOperationSupport(order = 7)
     public R<Object> deleteAttrRelation(@RequestBody @ApiParam(value = "删除的关联信息id") Long[] relationIds){
         attrGroupService.deleteAttrRelation(relationIds);
         return new R<>().ok();
     }
 
-    @GetMapping("/withattr/{catalogId}")
-    @ApiOperation(value = "获取商品分类下的属性")
-    public R<List<AttrGroupVo>> withattrCatalogId(@PathVariable @ApiParam(value = "商品分类id") String catalogId){
-        List<AttrGroupVo> list = attrGroupService.queryWithAttr(catalogId);
-        return new R<List<AttrGroupVo>>().ok().put(list);
-    }
 
-    @PostMapping("/noattr/relation/{attrGroupId}")
-    @ApiOperation(value = "获取未与属性分组关联的属性")
-    public R<PageUtils> getNoattrAttrRelation(@PathVariable @ApiParam(value = "属性分组Id") String attrGroupId,@RequestBody @ApiParam(value = "分页查询参数") PageParamVo params){
-        PageUtils page = attrGroupService.queryNoAttrRelation(attrGroupId, params);
-        return new R<PageUtils>().ok().put(page);
-    }
-
-    /**
-     * 列表
-     */
-    @PostMapping("/list")
-    @ApiOperation(value = "属性分组条件查询")
-    public R<PageUtils> list(@RequestBody @ApiParam(value = "条件查询参数") AttrGroupQueryVo params){
-        PageUtils page = attrGroupService.queryPage(params);
-        return new R<PageUtils>().ok().put(page);
-    }
-
-
-    /**
-     * 信息
-     */
-    @GetMapping("/info/{attrGroupId}")
-    @ApiOperation(value = "查询属性分组信息")
-    public R<Object> info(@PathVariable @ApiParam("属性分组Id") Long attrGroupId){
-		AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
-
-        return new R<>().ok().put(attrGroup);
-    }
-
-    /**
-     * 保存
-     */
     @PostMapping("/save")
-    @ApiOperation("新增属性分组")
+    @ApiOperation(value = "新增属性分组")
+    @ApiOperationSupport(order = 8)
     public R<Object> save(@RequestBody @ApiParam(value = "新增的属性分组信息") AttrGroupVo attrGroup){
         AttrGroupEntity attrGroupEntity=new AttrGroupEntity();
         BeanUtils.copyProperties(attrGroup,attrGroupEntity);
-		attrGroupService.save(attrGroupEntity);
-
+        attrGroupService.save(attrGroupEntity);
         return new R<>().ok();
     }
 
-    /**
-     * 修改
-     */
+
+
     @PostMapping("/update")
-    @ApiOperation(value = "更属性新分组信息")
+    @ApiOperation(value = "更新属性分组")
+    @ApiOperationSupport(order = 9)
     public R<Object> update(@RequestBody @ApiParam("更新的属性分组信息") AttrGroupVo attrGroup){
         AttrGroupEntity attrGroupEntity=new AttrGroupEntity();
         BeanUtils.copyProperties(attrGroup,attrGroupEntity);
-		attrGroupService.updateById(attrGroupEntity);
+        attrGroupService.updateById(attrGroupEntity);
         return new R<>().ok();
     }
 
-    /**
-     * 删除
-     */
     @DeleteMapping("/delete")
     @ApiOperation(value = "删除属性分组")
+    @ApiOperationSupport(order = 10)
     public R<Object> delete(@RequestBody @ApiParam(value = "属性分组的id数组") Long[] attrGroupIds){
-		attrGroupService.removeByIds(Arrays.asList(attrGroupIds));
+        attrGroupService.removeByIds(Arrays.asList(attrGroupIds));
         return new R<>().ok();
     }
 

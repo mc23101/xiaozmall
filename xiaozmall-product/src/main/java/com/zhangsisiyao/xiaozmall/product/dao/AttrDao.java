@@ -15,5 +15,5 @@ import java.util.List;
  */
 @Mapper
 public interface AttrDao extends BaseMapper<AttrEntity> {
-    public List<AttrEntity> queryWithAttrGroup(String groupID);
+    List<AttrEntity> queryWithAttrGroup(String groupID);
 }

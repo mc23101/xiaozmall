@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
@@ -32,22 +33,20 @@ public class BrandController {
     @Autowired
     private BrandService brandService;
 
-    /**
-     * 列表
-     */
+
     @PostMapping("/list")
     @ApiOperation(value = "品牌条件查询")
-    public R<PageUtils> list(@RequestParam @ApiParam("条件查询参数") BrandQueryVo params){
+    @ApiOperationSupport(order = 1)
+    public R<PageUtils> list(@RequestBody @ApiParam("条件查询参数") BrandQueryVo params){
         PageUtils page = brandService.queryPage(params);
         return new R<PageUtils>().ok().put( page);
     }
 
 
-    /**
-     * 信息
-     */
+
     @GetMapping("/info/{brandId}")
     @ApiOperation(value = "查询品牌信息")
+    @ApiOperationSupport(order = 2)
     public R<BrandVo> info(@PathVariable("brandId") @ApiParam(value = "品牌Id") Long brandId){
 		BrandEntity brand = brandService.getById(brandId);
         BrandVo brandVo=new BrandVo();
@@ -55,11 +54,10 @@ public class BrandController {
         return new R<BrandVo>().ok().put(brandVo);
     }
 
-    /**
-     * 保存
-     */
+
     @PostMapping("/save")
-    @ApiOperation(value = "新增品牌")
+    @ApiOperation(value = "新增品牌信息")
+    @ApiOperationSupport(order = 3)
     public R<Object> save(@RequestBody @ApiParam(value = "品牌信息") BrandVo brandVo){
         BrandEntity brand=new BrandEntity();
         BeanUtils.copyProperties(brandVo,brand);
@@ -68,11 +66,10 @@ public class BrandController {
         return new R<>().ok();
     }
 
-    /**
-     * 修改
-     */
+
     @PostMapping("/update")
     @ApiOperation(value = "更新品牌信息")
+    @ApiOperationSupport(order = 4)
     public R<Object> update(@RequestBody @ApiParam(value = "品牌信息") BrandVo brandVo){
         BrandEntity brand=new BrandEntity();
         BeanUtils.copyProperties(brandVo,brand);
@@ -80,11 +77,9 @@ public class BrandController {
         return new R<>().ok();
     }
 
-    /**
-     * 删除
-     */
     @DeleteMapping("/delete")
     @ApiOperation(value = "删除品牌信息")
+    @ApiOperationSupport(order = 5)
     public R<Object> delete(@RequestBody @ApiParam(value = "品牌id数组") Long[] brandIds){
 		brandService.removeByIds(Arrays.asList(brandIds));
         return new R<>().ok();

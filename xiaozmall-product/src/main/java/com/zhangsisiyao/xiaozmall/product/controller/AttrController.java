@@ -90,9 +90,6 @@ public class AttrController {
         return new R<String>().ok();
     }
 
-    /**
-     * 修改
-     */
     @PostMapping("/update")
     @ApiOperation(value = "更新属性信息")
     @ApiOperationSupport(order = 6)
@@ -103,17 +100,7 @@ public class AttrController {
         return new R<String>().ok();
     }
 
-    @PostMapping("/update/{spuId}")
-    @ApiOperation("更新spu属性信息")
-    @ApiOperationSupport(order = 7)
-    public R<String> updateSpu(@RequestBody @ApiParam(value = "属性信息") List<AttrVo.AttrValueVo> attrs, @PathVariable @ApiParam(value = "spuId") String spuId){
-        attrService.UpdateAttrsBySpuId(attrs,spuId);
-        return new R<String>().ok();
-    }
 
-    /**
-     * 删除
-     */
     @DeleteMapping("/delete")
     @ApiOperation("批量删除属性")
     @ApiOperationSupport(order = 8)

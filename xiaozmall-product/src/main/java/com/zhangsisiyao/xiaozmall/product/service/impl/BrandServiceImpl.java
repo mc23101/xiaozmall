@@ -70,6 +70,10 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
     @Override
     @CacheEvict(value = {"brand"},allEntries = true)
     public boolean removeByIds(Collection<? extends Serializable> idList) {
+
+
+
+
         return super.removeByIds(idList);
     }
 

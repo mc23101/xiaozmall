@@ -37,10 +37,10 @@ public class CatalogVo implements Serializable {
     private String productUnit;
 
     @ApiModelProperty(value = "商品数量",position = 8)
-    private Integer productCount;
+    private Integer productCount=null;
 
     @ApiModelProperty(value = "子分类",position = 9)
-    List<CatalogVo> children;
+    List<CatalogVo> children=null;
 
     @Data
     @ApiModel(description = "商品分类和品牌关联信息")

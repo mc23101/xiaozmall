@@ -1,6 +1,6 @@
 <template>
   <div>
-      <base-attr :attrtype="0"></base-attr>
+      <base-attr :attrType="0"></base-attr>
   </div>
 </template>
 

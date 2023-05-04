@@ -57,9 +57,10 @@ export default {
   },
   // 方法集合
   methods: {
+    // 获取商品分类树形结构
     getCategories () {
       this.$http({
-        url: this.$http.adornUrl('/product/category/list/tree'),
+        url: this.$http.adornUrl('/product/product/category/list/tree'),
         method: 'get'
       }).then(({ data }) => {
         this.categories = data.data

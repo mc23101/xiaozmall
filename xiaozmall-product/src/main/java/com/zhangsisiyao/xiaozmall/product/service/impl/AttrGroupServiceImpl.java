@@ -67,7 +67,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
     @Override
     @Cacheable(value = {"attrGroup"},keyGenerator = "customKeyGenerator",sync = true)
-    public List<AttrGroupVo> queryWithAttr(String catalogId) {
+    public List<AttrGroupVo> queryWithAttrGroup(String catalogId) {
         //TODO 修改时间复杂度，使用联表查询
         List<AttrGroupEntity> attrGroup = this.query().eq("catalog_id", catalogId).list();
         List<AttrGroupVo> attrGroupVos=new ArrayList<>();
@@ -150,7 +150,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
     }
 
     @Override
-    @Cacheable(value = {"attrRelation"},key = "#root.methodName+#root.args",sync = true)
+    @Cacheable(value = {"attrRelation"},keyGenerator = "customKeyGenerator",sync = true)
     public List<AttrVo> queryAttrRelation(String attrGroupId) {
         List<AttrAttrgroupRelationEntity> attr_group_id = attrgroupRelationService.query().eq("attr_group_id", attrGroupId).list();
         List<AttrVo> attrVos=new ArrayList<>();
@@ -185,7 +185,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
     }
 
     @Override
-    @Cacheable(value = {"attrRelation"},key = "#root.methodName+#root.args",sync = true)
+    @Cacheable(value = {"attrRelation"},keyGenerator = "customKeyGenerator",sync = true)
     public PageUtils queryNoAttrRelation(String attrGroupId, PageParamVo params) {
         Long catalogId=this.query().eq("attr_group_id",attrGroupId).one().getCatalogId();
         List<AttrAttrgroupRelationEntity> exist = attrgroupRelationService.query().eq("attr_group_id", attrGroupId).list();

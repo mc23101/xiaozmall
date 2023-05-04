@@ -1,8 +1,10 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
+import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.common.vo.product.SpuInfoVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuInfoEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuInfoService;
@@ -42,6 +44,13 @@ public class SpuInfoController {
         return new R<ProductVo>().ok().put(product);
     }
 
+    @PostMapping("/addAttr/{spuId}")
+    @ApiOperation("更新spu属性信息")
+    @ApiOperationSupport(order = 7)
+    public R<String> updateSpu(@RequestBody @ApiParam(value = "属性信息") List<AttrVo.AttrValueVo> attrs, @PathVariable @ApiParam(value = "spuId") String spuId){
+        spuInfoService.addAttrs(spuId,attrs);
+        return new R<String>().ok();
+    }
 
     /**
      * 列表

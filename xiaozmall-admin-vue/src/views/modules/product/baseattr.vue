@@ -1,11 +1,11 @@
 <template>
-  <el-row :gutter="20">
-    <el-col :span="6">
-      <category @tree-node-click="treenodeclick"></category>
-    </el-col>
-    <el-col :span="18">
+  <el-row>
+    <el-col>
       <div class="mod-config">
         <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+          <el-form-item>
+            <category-cascader :catalog-path.sync="catalogPath"></category-cascader>
+          </el-form-item>
           <el-form-item>
             <el-input v-model="dataForm.key" placeholder="属性名" clearable></el-input>
           </el-form-item>
@@ -13,12 +13,10 @@
             <el-button @click="getDataLikeKey()">查询</el-button>
             <el-button type="success" @click="getAllDataList()">查询全部</el-button>
             <el-button
-              v-if="isAuth('product:attr:save')"
               type="primary"
               @click="addOrUpdateHandle()"
             >新增</el-button>
             <el-button
-              v-if="isAuth('product:attr:delete')"
               type="danger"
               @click="deleteHandle()"
               :disabled="dataListSelections.length <= 0"
@@ -60,7 +58,7 @@
 <!--            align="center"-->
 <!--            label="所属分组"-->
 <!--          ></el-table-column>-->
-          <el-table-column v-if="attrtype === 1" prop="showDesc" header-align="center" align="center" label="快速展示">
+          <el-table-column v-if="attrType === 1" prop="showDesc" header-align="center" align="center" label="快速展示">
             <template slot-scope="scope">
               <i class="el-icon-success" v-if="scope.row.showDesc===1"></i>
               <i class="el-icon-error" v-else></i>
@@ -73,7 +71,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            v-if="attrtype === 1"
+            v-if="attrType === 1"
             prop="searchType"
             header-align="center"
             align="center"
@@ -108,7 +106,7 @@
         ></el-pagination>
         <!-- 弹窗, 新增 / 修改 -->
         <add-or-update
-          :type="attrtype"
+          :type="attrType"
           v-if="addOrUpdateVisible"
           ref="addOrUpdate"
           @refreshDataList="getDataList"
@@ -121,11 +119,13 @@
 <script>
 import Category from '../common/category'
 import AddOrUpdate from './attr-add-or-update'
+import CategoryCascader from '../common/category-cascader.vue'
+import PubSub from 'pubsub-js'
 export default {
   // import引入的组件需要注入到对象中才能使用
-  components: { Category, AddOrUpdate },
+  components: {CategoryCascader, Category, AddOrUpdate },
   props: {
-    attrtype: {
+    attrType: {
       type: Number,
       default: 1
     }
@@ -133,6 +133,7 @@ export default {
   data () {
     return {
       catId: 0,
+      catalogPath: [],
       type: 1,
       dataForm: {
         key: ''
@@ -143,20 +144,18 @@ export default {
       totalPage: 0,
       dataListLoading: false,
       dataListSelections: [],
-      addOrUpdateVisible: false
+      addOrUpdateVisible: false,
+
+      // 组件消息订阅
+      PubSubscribe: {
+        catPathSub: null
+      }
     }
   },
   activated () {
     this.getDataList()
   },
   methods: {
-    // 感知树节点被点击
-    treenodeclick (data, node, component) {
-      if (node.level === 3) {
-        this.catId = data.catId
-        this.getDataList() // 重新查询
-      }
-    },
     getDataLikeKey () {
       this.pageIndex = 1
       this.getDataList()
@@ -170,20 +169,20 @@ export default {
     // 获取数据列表
     getDataList () {
       this.dataListLoading = true
-      let type = this.attrtype === 0 ? 'sale' : 'base'
+      let type = this.attrType === 0 ? 'sale' : 'base'
       this.$http({
         url: this.$http.adornUrl(`/product/product/attr/${type}/list/${this.catId}`),
-        method: 'get',
-        params: this.$http.adornParams({
+        method: 'post',
+        data: this.$http.adornData({
           pageIndex: this.pageIndex,
           pageSize: this.pageSize,
           key: this.dataForm.key
         })
-      }).then(({ data }) => {
+      }).then(({data}) => {
         console.log(data)
         if (data && data.code === 0) {
-          this.dataList = data.page.list
-          this.totalPage = data.page.totalCount
+          this.dataList = data.data.list
+          this.totalPage = data.data.totalCount
         } else {
           this.dataList = []
           this.totalPage = 0
@@ -249,6 +248,20 @@ export default {
         })
       })
     }
+  },
+  mounted () {
+    this.PubSubscribe.catPathSub = PubSub.subscribe('catPath', (mag, val) => {
+      if (val.length > 0) {
+        this.catId = val[val.length - 1]
+      } else {
+        this.catId = 0
+      }
+      this.catalogPath = val
+      this.getDataList()
+    })
+  },
+  beforeDestroy() {
+    PubSub.unsubscribe(this.PubSubscribe.catPathSub)
   }
 }
 </script>

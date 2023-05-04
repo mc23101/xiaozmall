@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
@@ -47,6 +48,7 @@ public class CategoryBrandRelationController {
 
     @GetMapping("catalog/list/{brandId}")
     @ApiOperation(value = "通过品牌id查询商品分类品牌关联信息")
+    @ApiOperationSupport(order = 1)
     public R<List<CatalogVo.CatalogBrandRelationVo>> catalogList(@PathVariable @ApiParam(value = "品牌Id") String brandId){
         List<CatalogVo.CatalogBrandRelationVo> result=new ArrayList<>();
         categoryBrandRelationService.query().eq("brand_id", brandId).list().forEach((relation)->{
@@ -57,21 +59,23 @@ public class CategoryBrandRelationController {
         return new R<List<CatalogVo.CatalogBrandRelationVo>>().ok().put(result);
     }
 
+    @GetMapping("/brands/list/{catId}")
+    @ApiOperation("通过分类Id查询关联的品牌信息")
+    @ApiOperationSupport(order = 2)
+    public R<List<BrandVo>> brandsList(@PathVariable @ApiParam("分类Id") String catId){
+        List<BrandVo> list = categoryBrandRelationService.queryBrand(catId);
+        return new R<List<BrandVo>>().ok().put(list);
+    }
+
     /**
      * 列表
      */
     @PostMapping("/list")
     @ApiOperation(value = "商品分类品牌关联信息条件查询")
+    @ApiOperationSupport(order = 3)
     public R<PageUtils> list(@RequestParam @ApiParam(value = "条件查询参数") CatalogBrandRelationQueryVo params){
         PageUtils page = categoryBrandRelationService.queryPage(params);
         return new  R<PageUtils>().ok().put(page);
-    }
-
-    @GetMapping("/brands/list/{catId}")
-    @ApiOperation("通过分类Id查询关联的品牌信息")
-    public R<List<BrandVo>> brandsList(@PathVariable @ApiParam("分类Id") String catId){
-        List<BrandVo> list = categoryBrandRelationService.queryBrand(catId);
-        return new R<List<BrandVo>>().ok().put(list);
     }
 
 
@@ -80,6 +84,7 @@ public class CategoryBrandRelationController {
      */
     @GetMapping("/info/{id}")
     @ApiOperation(value = "查询商品分类品牌关联信息")
+    @ApiOperationSupport(order = 4)
     public R<CatalogVo.CatalogBrandRelationVo> info(@PathVariable @ApiParam("商品分类品牌关联信息Id") Long id){
 		CategoryBrandRelationEntity categoryBrandRelation = categoryBrandRelationService.getById(id);
         CatalogVo.CatalogBrandRelationVo result=new CatalogVo.CatalogBrandRelationVo();
@@ -87,27 +92,19 @@ public class CategoryBrandRelationController {
         return new  R<CatalogVo.CatalogBrandRelationVo>().ok().put(result);
     }
 
-    /**
-     * 保存
-     */
+
+
     @PostMapping("/save")
     @ApiOperation(value = "新增商品分类品牌关联信息")
+    @ApiOperationSupport(order = 5)
     public R<Object> save(@RequestBody @ApiParam(value = "商品分类品牌关联信息") CatalogVo.CatalogBrandRelationVo catalogBrandRelationVo){
-        BrandEntity brand = brandService.query().eq("brand_id", catalogBrandRelationVo.getBrandId()).one();
-        CategoryEntity category=categoryService.query().eq("cat_id", catalogBrandRelationVo.getCatalogId()).one();
-        catalogBrandRelationVo.setBrandName(brand.getName());
-        catalogBrandRelationVo.setCatalogName(category.getName());
-        CategoryBrandRelationEntity entity=new CategoryBrandRelationEntity();
-        BeanUtils.copyProperties(catalogBrandRelationVo,entity);
-        categoryBrandRelationService.save(entity);
-        return new R<>().ok();
+        return categoryBrandRelationService.save(catalogBrandRelationVo);
     }
 
-    /**
-     * 修改
-     */
+
     @PostMapping("/update")
     @ApiOperation(value = "更新商品分类品牌关联信息")
+    @ApiOperationSupport(order = 6)
     public R<Object> update(@RequestBody @ApiParam(value = "商品分类品牌关联信息") CatalogVo.CatalogBrandRelationVo catalogBrandRelationVo){
         CategoryBrandRelationEntity entity=new CategoryBrandRelationEntity();
         BeanUtils.copyProperties(catalogBrandRelationVo,entity);
@@ -115,11 +112,11 @@ public class CategoryBrandRelationController {
         return new R<>().ok();
     }
 
-    /**
-     * 删除
-     */
+
+
     @DeleteMapping("/delete")
     @ApiOperation(value = "删除商品分类品牌关联信息")
+    @ApiOperationSupport(order = 7)
     public R<Object> delete(@RequestBody @ApiParam("商品分类品牌关联信息id数组") Long[] ids){
 		categoryBrandRelationService.removeByIds(Arrays.asList(ids));
 

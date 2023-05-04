@@ -77,6 +77,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         baseMapper.selectList(null).forEach((entity)->{
             CatalogVo cur=new CatalogVo();
             BeanUtils.copyProperties(entity,cur);
+            cur.setChildren(null);
             all.add(cur);
         });
         return all.stream()
@@ -95,19 +96,21 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         baseMapper.selectList(null).forEach((entity->{
             CatalogVo cur=new CatalogVo();
             BeanUtils.copyProperties(entity,cur);
+            cur.setChildren(null);
             map.put(entity.getCatId(),cur);
         }));
         return map;
     }
 
     public List<CatalogVo> getChildren(CatalogVo root, List<CatalogVo> all) {
-        return all.stream()
+        List<CatalogVo> collect = all.stream()
                 .filter((menu) -> Objects.equals(menu.getParentCid(), root.getCatId()))
                 .peek((menu) -> {
                     menu.setChildren(getChildren(menu, all));
                 })
                 .sorted(Comparator.comparingInt(CatalogVo::getSort))
                 .collect(Collectors.toList());
+        return collect.size()==0?null:collect;
     }
 
     @Override

@@ -9,13 +9,11 @@ import com.zhangsisiyao.common.utils.Query;
 import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.dao.AttrDao;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
-import com.zhangsisiyao.xiaozmall.product.entity.ProductAttrValueEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrService;
 import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
 import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrQueryVo;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -111,18 +109,6 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Override
     @Cacheable(value = {"attr"},keyGenerator = "customKeyGenerator",sync = true)
-    public List<AttrVo.AttrValueVo> queryListForSpu(Long spuId) {
-        List<AttrVo.AttrValueVo> result=new ArrayList<>();
-        productAttrValueService.query().eq("spu_id", spuId).list().forEach(attr->{
-            AttrVo.AttrValueVo cur=new AttrVo.AttrValueVo();
-            BeanUtils.copyProperties(attr,cur);
-            result.add(cur);
-        });
-        return result;
-    }
-
-    @Override
-    @Cacheable(value = {"attr"},keyGenerator = "customKeyGenerator",sync = true)
     public AttrEntity getById(Serializable attr) {
         return super.getById(attr);
     }
@@ -191,25 +177,6 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     @CacheEvict(value = {"attr"},allEntries = true)
     public boolean updateBatchById(Collection<AttrEntity> entityList) {
         return super.updateBatchById(entityList);
-    }
-
-
-    @Override
-    @CacheEvict(value = {"attr"},allEntries = true)
-    public void UpdateAttrsBySpuId(List<AttrVo.AttrValueVo> attrs, String spuId) {
-        attrs.forEach((attrVo)->{
-            ProductAttrValueEntity one = productAttrValueService.query().eq("spu_id", spuId).eq("attr_id", attrVo.getAttrId()).one();
-            if(one!=null){
-                one.setAttrValue(attrVo.getAttrValue());
-                productAttrValueService.updateById(one);
-            }else{
-                ProductAttrValueEntity newValue=new ProductAttrValueEntity();
-                newValue.setAttrValue(attrVo.getAttrValue());
-                newValue.setSpuId(Long.valueOf(spuId));
-                newValue.setAttrId(attrVo.getAttrId());
-                productAttrValueService.save(newValue);
-            }
-        });
     }
 
 

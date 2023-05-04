@@ -1,5 +1,6 @@
 package com.zhangsisiyao.xiaozmall.product.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
@@ -38,6 +39,7 @@ public class CategoryController {
 
     @GetMapping("/list/tree")
     @ApiOperation("获取树形商品分类列表")
+    @ApiOperationSupport(order = 1)
     public R<List<CatalogVo>> listWithTree(){
         List<CatalogVo> entities = categoryService.listWithTree();
         return new  R<List<CatalogVo>>().ok().put(entities);
@@ -45,6 +47,7 @@ public class CategoryController {
 
     @GetMapping("/list/map")
     @ApiOperation("获取商品分类列表")
+    @ApiOperationSupport(order = 2)
     public R<Map<Long, CatalogVo>> listWithMap(){
         Map<Long,CatalogVo> entityMap = categoryService.listWithMap();
         return new R<Map<Long, CatalogVo>>().ok().put(entityMap);
@@ -55,6 +58,7 @@ public class CategoryController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "条件查询商品分类信息")
+    @ApiOperationSupport(order = 3)
     public R<PageUtils> list(@RequestParam @ApiParam(value = "条件参数") CatalogQueryVo params){
         PageUtils page = categoryService.queryPage(params);
 
@@ -67,6 +71,7 @@ public class CategoryController {
      */
     @PostMapping("/info/{catId}")
     @ApiOperation(value = "查询商品分类信息")
+    @ApiOperationSupport(order = 4)
     public R<CategoryEntity> info(@PathVariable("catId") @ApiParam(value = "商品分类Id") Long catId){
 		CategoryEntity category = categoryService.getById(catId);
         return new  R<CategoryEntity>().ok().put( category);
@@ -77,6 +82,7 @@ public class CategoryController {
      */
     @PostMapping("/save")
     @ApiOperation(value = "新增商品分类")
+    @ApiOperationSupport(order = 5)
     public R<Object> save(@RequestBody @ApiParam(value = "商品分类信息") CatalogVo categoryVo){
         CategoryEntity category=new CategoryEntity();
         BeanUtils.copyProperties(categoryVo,category);
@@ -89,6 +95,7 @@ public class CategoryController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "更新商品分类")
+    @ApiOperationSupport(order = 6)
     public R<Object> update(@RequestBody @ApiParam(value = "商品分类信息") CatalogVo categoryVo){
         CategoryEntity entity=new CategoryEntity();
         BeanUtils.copyProperties(categoryVo,entity);
@@ -97,11 +104,10 @@ public class CategoryController {
         return new R<>().ok();
     }
 
-    /**
-     * 删除
-     */
+
     @PostMapping("/delete")
     @ApiOperation("删除商品分类")
+    @ApiOperationSupport(order = 7)
     public R<Object> delete(@RequestBody @ApiParam(value = "商品分类id数组") Long[] catIds){
 		categoryService.removeByIds(Arrays.asList(catIds));
 

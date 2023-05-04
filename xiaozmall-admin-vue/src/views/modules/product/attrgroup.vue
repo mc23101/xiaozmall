@@ -1,11 +1,11 @@
 <template>
-  <el-row :gutter="20">
-    <el-col :span="6">
-      <category @tree-node-click="treenodeclick"></category>
-    </el-col>
-    <el-col :span="18">
+  <el-row>
+    <el-col>
       <div class="mod-config">
         <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+          <el-form-item>
+            <category-cascader></category-cascader>
+          </el-form-item>
           <el-form-item>
             <el-input v-model="dataForm.key" placeholder="组名" clearable></el-input>
           </el-form-item>
@@ -13,12 +13,10 @@
             <el-button @click="getDataLikeKey">查询</el-button>
             <el-button type="success" @click="getAllDataList()">查询全部</el-button>
             <el-button
-              v-if="isAuth('product:attrgroup:save')"
               type="primary"
               @click="addOrUpdateHandle()"
             >新增</el-button>
             <el-button
-              v-if="isAuth('product:attrgroup:delete')"
               type="danger"
               @click="deleteHandle()"
               :disabled="dataListSelections.length <= 0"
@@ -86,15 +84,17 @@
 import Category from '../common/category'
 import AddOrUpdate from './attrgroup-add-or-update'
 import RelationUpdate from './attr-group-relation'
+import CategoryCascader from "../common/category-cascader.vue";
+import PubSub from "pubsub-js";
 export default {
   // import引入的组件需要注入到对象中才能使用
-  components: { Category, AddOrUpdate, RelationUpdate },
+  components: {CategoryCascader, Category, AddOrUpdate, RelationUpdate },
   props: {},
   data () {
     return {
-      catId: 0,
+      catId: null,
       dataForm: {
-        key: ''
+        key: null
       },
       dataList: [],
       pageIndex: 1,
@@ -103,7 +103,11 @@ export default {
       dataListLoading: false,
       dataListSelections: [],
       addOrUpdateVisible: false,
-      relationVisible: false
+      relationVisible: false,
+
+      PubSubscribe: {
+        catPathSub: null
+      }
     }
   },
   activated () {
@@ -124,13 +128,6 @@ export default {
         this.$refs.relationUpdate.init(groupId)
       })
     },
-    // 感知树节点被点击
-    treenodeclick (data, node, component) {
-      if (node.level === 3) {
-        this.catId = data.catId
-        this.getDataList() // 重新查询
-      }
-    },
     getAllDataList () {
       this.catId = 0
       this.dataForm.key = ''
@@ -141,17 +138,24 @@ export default {
     getDataList () {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl(`/product/product/attrgroup/list/${this.catId}`),
-        method: 'get',
-        params: this.$http.adornParams({
-          page: this.pageIndex,
-          limit: this.pageSize,
-          key: this.dataForm.key
-        })
+        url: this.$http.adornUrl(`/product/product/attrgroup/list`),
+        method: 'post',
+        data: this.$http.adornData(
+          {
+            attrGroupVo: {
+              catalogId: this.catId
+            },
+            pageParams: {
+              pageIndex: this.pageIndex,
+              pageSize: this.pageSize,
+              key: this.dataForm.key
+            }
+          }
+        )
       }).then(({ data }) => {
         if (data && data.code === 0) {
-          this.dataList = data.page.list
-          this.totalPage = data.page.totalCount
+          this.dataList = data.data.list
+          this.totalPage = data.data.totalCount
           console.log(this.dataList)
         } else {
           this.dataList = []
@@ -219,6 +223,20 @@ export default {
         })
       })
     }
+  },
+  mounted () {
+    this.PubSubscribe.catPathSub = PubSub.subscribe('catPath', (mag, val) => {
+      if (val.length > 0) {
+        this.catId = val[val.length - 1]
+      } else {
+        this.catId = null
+      }
+      this.catalogPath = val
+      this.getDataList()
+    })
+  },
+  beforeDestroy () {
+    PubSub.unsubscribe(this.PubSubscribe.catPathSub)
   }
 }
 </script>

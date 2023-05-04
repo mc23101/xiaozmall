@@ -107,19 +107,6 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Override
     public boolean saveProduct(ProductVo product) {
-        long catalogId=product.getCatalogId();
-        int size1=0;
-        List<AttrGroupEntity> groups = this.attrGroupService.query().eq("catalog_id", catalogId).list();
-        for(AttrGroupEntity group:groups){
-            size1+=attrService.queryWithAttrGroup(String.valueOf(group.getAttrGroupId())).size();
-        }
-        int size2=0;
-        for(AttrGroupWithAttrValueVo group:product.getSpuAttrGroup()){
-           size2+=group.getAttrs().size();
-        }
-        if(size1!=size2){
-            return false;
-        }
 
         //TODO 优化储存
         //存储SpuInfo
@@ -305,6 +292,23 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     }
 
     @Override
+    public void addAttrs(String spuId, List<AttrVo.AttrValueVo> attrs) {
+        attrs.forEach((attrVo)->{
+            ProductAttrValueEntity one = productAttrValueService.query().eq("spu_id", spuId).eq("attr_id", attrVo.getAttrId()).one();
+            if(one!=null){
+                one.setAttrValue(attrVo.getAttrValue());
+                productAttrValueService.updateById(one);
+            }else{
+                ProductAttrValueEntity newValue=new ProductAttrValueEntity();
+                newValue.setAttrValue(attrVo.getAttrValue());
+                newValue.setSpuId(Long.valueOf(spuId));
+                newValue.setAttrId(attrVo.getAttrId());
+                productAttrValueService.save(newValue);
+            }
+        });
+    }
+
+    @Override
     public void deleteSpu(Long[] ids) {
         for (Long spuId : ids) {
             //删除SpuInfoEntity
@@ -347,7 +351,6 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
         }
     }
-
 
     @Override
     @CacheEvict(value = {"SpuInfo"},allEntries = true)

@@ -14,9 +14,6 @@
     <el-form-item label="介绍" prop="descript">
       <el-input v-model="dataForm.descript" placeholder="介绍"></el-input>
     </el-form-item>
-    <el-form-item label="显示状态" prop="showStatus">
-      <el-input v-model="dataForm.showStatus" placeholder="显示状态[0-不显示；1-显示]"></el-input>
-    </el-form-item>
     <el-form-item label="检索首字母" prop="firstLetter">
       <el-input v-model="dataForm.firstLetter" placeholder="检索首字母"></el-input>
     </el-form-item>
@@ -44,7 +41,7 @@ export default {
         name: '',
         logo: '',
         descript: '',
-        showStatus: '',
+        showStatus: 1,
         firstLetter: '',
         sort: ''
       },
@@ -82,13 +79,14 @@ export default {
             method: 'get',
             params: this.$http.adornParams()
           }).then(({data}) => {
+            console.log(data)
             if (data && data.code === 0) {
-              this.dataForm.name = data.brand.name
-              this.dataForm.logo = data.brand.logo
-              this.dataForm.descript = data.brand.descript
-              this.dataForm.showStatus = data.brand.showStatus
-              this.dataForm.firstLetter = data.brand.firstLetter
-              this.dataForm.sort = data.brand.sort
+              this.dataForm.name = data.data.name
+              this.dataForm.logo = data.data.logo
+              this.dataForm.descript = data.data.descript
+              this.dataForm.showStatus = data.data.showStatus
+              this.dataForm.firstLetter = data.data.firstLetter
+              this.dataForm.sort = data.data.sort
             }
           })
         }
@@ -117,9 +115,9 @@ export default {
                 type: 'success',
                 duration: 1500,
                 onClose: () => {
-                    this.visible = false
-                    this.$emit('refreshDataList')
-                  }
+                  this.visible = false
+                  this.$emit('refreshDataList')
+                }
               })
             } else {
               this.$message.error(data.msg)
