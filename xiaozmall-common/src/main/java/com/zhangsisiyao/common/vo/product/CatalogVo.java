@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -41,6 +42,9 @@ public class CatalogVo implements Serializable {
 
     @ApiModelProperty(value = "子分类",position = 9)
     List<CatalogVo> children=null;
+
+    @ApiModelProperty(value = "完整路径",position = 10)
+    List<Long> path=new ArrayList<>();
 
     @Data
     @ApiModel(description = "商品分类和品牌关联信息")

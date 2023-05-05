@@ -45,6 +45,7 @@ export default {
         label: 'name',
         children: 'children'
       },
+      catalogMap: null,
       visible: false,
       categories: [],
       catalogPath: [],
@@ -60,7 +61,10 @@ export default {
         attrGroupName: [
           { required: true, message: '组名不能为空', trigger: 'blur' }
         ],
-        sort: [{ required: true, message: '排序不能为空', trigger: 'blur' }],
+        sort: [
+          { required: true, message: '排序不能为空', trigger: 'blur' },
+          {type: 'number',message: '请输入数字类型',trigger: 'blue'}
+        ],
         descript: [
           { required: true, message: '描述不能为空', trigger: 'blur' }
         ],
@@ -81,7 +85,7 @@ export default {
     dialogClose () {
       this.catalogPath = []
     },
-    getcategories () {
+    getCatalogs () {
       this.$http({
         url: this.$http.adornUrl('/product/product/category/list/tree'),
         method: 'get'
@@ -93,26 +97,40 @@ export default {
       this.dataForm.attrGroupId = id || 0
       this.visible = true
       this.$nextTick(() => {
-        this.$refs['dataForm'].resetFields()
-        if (this.dataForm.attrGroupId) {
+        new Promise((resolve, reject) => {
           this.$http({
             url: this.$http.adornUrl(
-              `/product/product/attrgroup/info/${this.dataForm.attrGroupId}`
+              '/product/product/category/list/map'
             ),
-            method: 'get',
-            params: this.$http.adornParams()
+            method: 'get'
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.attrGroupName = data.attrGroup.attrGroupName
-              this.dataForm.sort = data.attrGroup.sort
-              this.dataForm.descript = data.attrGroup.descript
-              this.dataForm.icon = data.attrGroup.icon
-              this.dataForm.catalogId = data.attrGroup.catalogId
-              // 查出catalogId的完整路径
-              this.catalogPath = data.attrGroup.catalogPath
+              this.catalogMap = data.data
+              resolve()
             }
           })
-        }
+        }).then(() => {
+          this.$refs['dataForm'].resetFields()
+          if (this.dataForm.attrGroupId) {
+            this.$http({
+              url: this.$http.adornUrl(
+                `/product/product/attrgroup/info/${this.dataForm.attrGroupId}`
+              ),
+              method: 'get',
+              params: this.$http.adornParams()
+            }).then(({ data }) => {
+              if (data && data.code === 0) {
+                this.dataForm.attrGroupName = data.data.attrGroupName
+                this.dataForm.sort = data.data.sort
+                this.dataForm.descript = data.data.descript
+                this.dataForm.icon = data.data.icon
+                this.dataForm.catalogId = data.data.catalogId
+                // 查出catalogId的完整路径
+                this.catalogPath = this.catalogMap[data.data.catalogId].path
+              }
+            })
+          }
+        })
       })
     },
     // 表单提交
@@ -154,7 +172,7 @@ export default {
     }
   },
   created () {
-    this.getcategories()
+    this.getCatalogs()
   }
 }
 </script>

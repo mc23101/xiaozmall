@@ -56,8 +56,8 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
             wrapper.eq("catalog_name",relationVo.getCatalogName());
         }
         IPage<CategoryBrandRelationEntity> page = this.page(
-                new Query<CategoryBrandRelationEntity>().getPage(params.getPageParamVo().getPageIndex(),params.getPageParamVo().getPageSize())
-
+                new Query<CategoryBrandRelationEntity>().getPage(params.getPageParamVo().getPageIndex(),params.getPageParamVo().getPageSize()),
+                wrapper
         );
         return new PageUtils(page);
     }

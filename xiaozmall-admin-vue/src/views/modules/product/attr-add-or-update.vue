@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="!dataForm.attrId  ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible"
     @closed="dialogClose"
@@ -171,30 +171,7 @@ export default {
   watch: {
     catalogPath (path) {
       // 监听到路径变化需要查出这个三级分类的分组信息
-      console.log('路径变了', path)
-      this.attrGroups = []
-      this.dataForm.attrGroupId = ''
       this.dataForm.catalogId = path[path.length - 1]
-      if (path && path.length === 3) {
-        this.$http({
-          url: this.$http.adornUrl(
-            `/product/product/attrgroup/list/${path[path.length - 1]}`
-          ),
-          method: 'get',
-          params: this.$http.adornParams({ page: 1, limit: 10000000 })
-        }).then(({ data }) => {
-          if (data && data.code === 0) {
-            this.attrGroups = data.page.list
-          } else {
-            this.$message.error(data.msg)
-          }
-        })
-      } else if (path.length === 0) {
-        this.dataForm.catalogId = ''
-      } else {
-        this.$message.error('请选择正确的分类')
-        this.dataForm.catalogId = ''
-      }
     }
   },
   components: { CategoryCascader },
@@ -206,30 +183,43 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].resetFields()
         if (this.dataForm.attrId) {
-          this.$http({
-            url: this.$http.adornUrl(
-              `/product/product/attr/info/${this.dataForm.attrId}`
-            ),
-            method: 'get',
-            params: this.$http.adornParams()
-          }).then(({ data }) => {
-            if (data && data.code === 0) {
-              this.dataForm.attrName = data.attr.attrName
-              this.dataForm.searchType = data.attr.searchType
-              this.dataForm.valueType = data.attr.valueType
-              this.dataForm.icon = data.attr.icon
-              this.dataForm.valueSelect = data.attr.valueSelect.split(';')
-              this.dataForm.attrType = data.attr.attrType
-              this.dataForm.enable = data.attr.enable
-              this.dataForm.catalogId = data.attr.catalogId
-              this.dataForm.showDesc = data.attr.showDesc
-              // attrGroupId
-              // catalogPath
-              this.catalogPath = data.attr.catalogPath
-              this.$nextTick(() => {
-                this.dataForm.attrGroupId = data.attr.attrGroupId
-              })
-            }
+          new Promise((resolve, reject) => {
+            this.$http({
+              url: this.$http.adornUrl(
+                '/product/product/category/list/map'
+              ),
+              method: 'get'
+            }).then(({ data }) => {
+              if (data && data.code === 0) {
+                resolve(data.data)
+              }
+            })
+          }).then((catalogMap) => {
+            this.$http({
+              url: this.$http.adornUrl(
+                `/product/product/attr/info/${this.dataForm.attrId}`
+              ),
+              method: 'get',
+              params: this.$http.adornParams()
+            }).then(({ data }) => {
+              if (data && data.code === 0) {
+                this.dataForm.attrName = data.data.attrName
+                this.dataForm.searchType = data.data.searchType
+                this.dataForm.valueType = data.data.valueType
+                this.dataForm.icon = data.data.icon
+                this.dataForm.valueSelect = data.data.valueSelect.split(';')
+                this.dataForm.attrType = data.data.attrType
+                this.dataForm.enable = data.data.enable
+                this.dataForm.catalogId = data.data.catalogId
+                this.dataForm.showDesc = data.data.showDesc
+                // // attrGroupId
+                // // catalogPath
+                this.catalogPath = catalogMap[data.data.catalogId].path
+                // this.$nextTick(() => {
+                //   this.dataForm.attrGroupId = data.attr.attrGroupId
+                // })
+              }
+            })
           })
         }
       })

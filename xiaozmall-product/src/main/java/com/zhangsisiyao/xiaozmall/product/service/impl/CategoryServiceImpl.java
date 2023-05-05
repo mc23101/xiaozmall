@@ -83,6 +83,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return all.stream()
                 .filter((menu) -> menu.getCatLevel() == 1)
                 .peek((menu) -> {
+                    menu.getPath().add(menu.getCatId());
                     menu.setChildren(getChildren(menu, all));
                 })
                 .sorted(Comparator.comparingInt(CatalogVo::getSort))
@@ -93,12 +94,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Cacheable(cacheNames = {"Category"},keyGenerator = "customKeyGenerator",sync = true)
     public Map<Long, CatalogVo> listWithMap() {
         Map<Long,CatalogVo> map=new HashMap<>();
-        baseMapper.selectList(null).forEach((entity->{
-            CatalogVo cur=new CatalogVo();
-            BeanUtils.copyProperties(entity,cur);
-            cur.setChildren(null);
-            map.put(entity.getCatId(),cur);
-        }));
+        List<CatalogVo> tree=listWithTree();
+        Queue<CatalogVo> queue = new LinkedList<>(tree);
+        while (!queue.isEmpty()) {
+            CatalogVo poll = queue.poll();
+            if(poll.getChildren()!=null){
+                queue.addAll(poll.getChildren());
+            }
+            map.put(poll.getCatId(),poll);
+        }
+        for(Long key:map.keySet()){
+            map.get(key).setChildren(null);
+        }
         return map;
     }
 
@@ -106,6 +113,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         List<CatalogVo> collect = all.stream()
                 .filter((menu) -> Objects.equals(menu.getParentCid(), root.getCatId()))
                 .peek((menu) -> {
+                    menu.setPath(new ArrayList<>(root.getPath()));
+                    menu.getPath().add(menu.getCatId());
                     menu.setChildren(getChildren(menu, all));
                 })
                 .sorted(Comparator.comparingInt(CatalogVo::getSort))

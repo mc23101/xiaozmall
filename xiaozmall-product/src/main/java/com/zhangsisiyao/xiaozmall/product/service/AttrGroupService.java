@@ -25,12 +25,15 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
 
     public List<AttrGroupVo> queryWithAttrGroup(String catalogId);
 
-    public List<AttrVo> queryAttrRelation(String attrGroupId);
+    public PageUtils queryAttrRelation(String attrGroupId,PageParamVo params);
 
     public void addAttrRelation(List<AttrAttrgroupRelationVo> relationEntities);
 
-    public void deleteAttrRelation(Long[] relationIds);
+    public void deleteAttrRelation(List<AttrAttrgroupRelationVo> relationVos);
+
     public PageUtils queryNoAttrRelation(String attrGroupId, PageParamVo params);
+
+    public void deleteAttrGroup(Long[] ids);
 
 
 

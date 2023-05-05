@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Consumer;
 
 
 @Service("attrGroupService")
@@ -66,6 +67,56 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
     }
 
     @Override
+    @Cacheable(value = {"attrRelation"},keyGenerator = "customKeyGenerator",sync = true)
+    public PageUtils queryNoAttrRelation(String attrGroupId, PageParamVo params) {
+        Long catalogId=this.query().eq("attr_group_id",attrGroupId).one().getCatalogId();
+        List<AttrAttrgroupRelationEntity> exist = attrgroupRelationService.query().eq("attr_group_id", attrGroupId).list();
+        Set<Long> set=new HashSet<>();
+        for(AttrAttrgroupRelationEntity entity:exist){
+            set.add(entity.getAttrId());
+        }
+        QueryWrapper<AttrEntity> wrapper = new QueryWrapper<AttrEntity>().and(attrEntityQueryWrapper -> attrEntityQueryWrapper.eq("catalog_id", catalogId).eq("attr_type",1).or().eq("attr_type",2));
+        if(set.size()!=0){
+            wrapper=wrapper.notIn("attr_id", set);
+        }
+        if(StringUtils.isNotEmpty(params.getKey())){
+            wrapper=wrapper.like("attr_name",params.getKey());
+        }
+
+        IPage<AttrEntity> page = attrService.page(
+                new Query<AttrEntity>().getPage(params.getPageIndex(),params.getPageSize()),
+                wrapper
+        );
+        return new PageUtils(page);
+    }
+
+    @Override
+    @Cacheable(value = {"attrRelation"},keyGenerator = "customKeyGenerator",sync = true)
+    public PageUtils queryAttrRelation(String attrGroupId,PageParamVo params) {
+        QueryWrapper<AttrAttrgroupRelationEntity> attrEntityQueryWrapper = new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_group_id", attrGroupId);
+
+        IPage<AttrAttrgroupRelationEntity> page = attrgroupRelationService.page(
+                new Query<AttrAttrgroupRelationEntity>().getPage(params.getPageIndex(),params.getPageSize()),
+                attrEntityQueryWrapper
+        );
+        List<AttrVo> attrs=new ArrayList<>();
+        page.getRecords().forEach((attrAttrgroupRelationEntity -> {
+            AttrEntity attr = attrService.getById(attrAttrgroupRelationEntity.getAttrId());
+            AttrVo attrVo=new AttrVo();
+            if(attr!=null){
+                BeanUtils.copyProperties(attr,attrVo);
+            }else {
+                attrVo.setAttrId(attrAttrgroupRelationEntity.getAttrId());
+                attrVo.setAttrName("属性不存在，请删除");
+            }
+            attrs.add(attrVo);
+        }));
+        PageUtils pageUtils = new PageUtils(page);
+        pageUtils.setList(attrs);
+        return pageUtils;
+    }
+
+    @Override
     @Cacheable(value = {"attrGroup"},keyGenerator = "customKeyGenerator",sync = true)
     public List<AttrGroupVo> queryWithAttrGroup(String catalogId) {
         //TODO 修改时间复杂度，使用联表查询
@@ -84,10 +135,42 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         }
         return attrGroupVos;
     }
+
+
+
     @Override
-    @CacheEvict(value = {"attrGroup"},allEntries = true)
-    public boolean save(AttrGroupEntity attrGroup){
-        return super.save(attrGroup);
+    @CacheEvict(value = {"attrRelation"},allEntries = true)
+    public void addAttrRelation(List<AttrAttrgroupRelationVo> relationEntities) {
+        relationEntities.forEach((vo)->{
+            if(attrgroupRelationService.query().eq("attr_id", vo.getAttrId()).eq("attr_group_id", vo.getAttrGroupId()).list().size()==0){
+                AttrAttrgroupRelationEntity relation=new AttrAttrgroupRelationEntity();
+                BeanUtils.copyProperties(vo,relation);
+                attrgroupRelationService.save(relation);
+            }
+        });
+    }
+
+    @Override
+    @CacheEvict(value = {"attrRelation"},allEntries = true)
+    public void deleteAttrRelation(List<AttrAttrgroupRelationVo> relationVos) {
+        for(AttrAttrgroupRelationVo relation:relationVos){
+            QueryWrapper<AttrAttrgroupRelationEntity> wrapper=new QueryWrapper<>();
+            wrapper.eq("attr_id", relation.getAttrId()).eq("attr_group_id", relation.getAttrGroupId());
+            attrgroupRelationService.remove(wrapper);
+        }
+    }
+
+    @Override
+    public void deleteAttrGroup(Long[] ids) {
+        //删除关联属性
+        for(Long id:ids){
+            attrgroupRelationService.query().eq("attr_group_id",id).list().forEach((relation)->{
+                this.attrgroupRelationService.removeById(relation);
+            });
+        }
+
+        //删除属性分组
+        this.removeByIds(Arrays.asList(ids));
     }
 
     @Override
@@ -95,6 +178,20 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
     public boolean removeByIds(Collection<? extends Serializable> idList){
         return super.removeByIds(idList);
     }
+
+    @Override
+    @CacheEvict(value = {"attrGroup"},allEntries = true)
+    public boolean updateBatchById(Collection<AttrGroupEntity> entityList) {
+        return super.updateBatchById(entityList);
+    }
+
+    @Override
+    @CacheEvict(value = {"attrGroup"},allEntries = true)
+    public boolean save(AttrGroupEntity attrGroup){
+        return super.save(attrGroup);
+    }
+
+
 
     @Override
     @CacheEvict(value = {"attrGroup"},allEntries = true)
@@ -143,66 +240,4 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         return super.update(entity, updateWrapper);
     }
 
-    @Override
-    @CacheEvict(value = {"attrGroup"},allEntries = true)
-    public boolean updateBatchById(Collection<AttrGroupEntity> entityList) {
-        return super.updateBatchById(entityList);
-    }
-
-    @Override
-    @Cacheable(value = {"attrRelation"},keyGenerator = "customKeyGenerator",sync = true)
-    public List<AttrVo> queryAttrRelation(String attrGroupId) {
-        List<AttrAttrgroupRelationEntity> attr_group_id = attrgroupRelationService.query().eq("attr_group_id", attrGroupId).list();
-        List<AttrVo> attrVos=new ArrayList<>();
-        for(AttrAttrgroupRelationEntity entity:attr_group_id){
-            List<AttrVo> cur=new ArrayList<>();
-            attrService.query().eq("attr_id",entity.getAttrId()).list().forEach((attr)->{
-                AttrVo curVo=new AttrVo();
-                BeanUtils.copyProperties(attr,curVo);
-                cur.add(curVo);
-            });
-            attrVos.addAll(cur);
-        }
-        return attrVos;
-    }
-
-    @Override
-    @CacheEvict(value = {"attrRelation"},allEntries = true)
-    public void addAttrRelation(List<AttrAttrgroupRelationVo> relationEntities) {
-        relationEntities.forEach((vo)->{
-            AttrAttrgroupRelationEntity relation=new AttrAttrgroupRelationEntity();
-            BeanUtils.copyProperties(vo,relation);
-            attrgroupRelationService.save(relation);
-        });
-    }
-
-    @Override
-    @CacheEvict(value = {"attrRelation"},allEntries = true)
-    public void deleteAttrRelation(Long[] ids) {
-        for(Long relationId:ids){
-            attrgroupRelationService.removeById(relationId);
-        }
-    }
-
-    @Override
-    @Cacheable(value = {"attrRelation"},keyGenerator = "customKeyGenerator",sync = true)
-    public PageUtils queryNoAttrRelation(String attrGroupId, PageParamVo params) {
-        Long catalogId=this.query().eq("attr_group_id",attrGroupId).one().getCatalogId();
-        List<AttrAttrgroupRelationEntity> exist = attrgroupRelationService.query().eq("attr_group_id", attrGroupId).list();
-        Set<Long> set=new HashSet<>();
-        for(AttrAttrgroupRelationEntity entity:exist){
-            set.add(entity.getAttrId());
-        }
-        QueryWrapper<AttrEntity> attrEntityQueryWrapper = new QueryWrapper<AttrEntity>().eq("catalog_id", catalogId).eq("attr_type",1).or().eq("attr_type",2);
-        if(set.size()!=0){
-            attrEntityQueryWrapper=attrEntityQueryWrapper.notIn("attr_id", set);
-        }
-
-        IPage<AttrEntity> page = attrService.page(
-                new Query<AttrEntity>().getPage(params.getPageIndex(),params.getPageSize()),
-                attrEntityQueryWrapper
-
-        );
-        return new PageUtils(page);
-    }
 }

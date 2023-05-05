@@ -38,12 +38,13 @@ public class AttrGroupController {
     private AttrGroupService attrGroupService;
 
 
-    @PostMapping("/attr/relation/get/{attrGroupId}")
+    @PostMapping("/attr/relation/{attrGroupId}")
     @ApiOperation(value = "获取与属性分组关联的属性")
     @ApiOperationSupport(order = 1)
-    public R<List<AttrVo>> getAttrRelation(@ApiParam(value = "属性分类组Id") @PathVariable(value = "attrGroupId")  String attrGroupId){
-        List<AttrVo> attrEntities = attrGroupService.queryAttrRelation(attrGroupId);
-        return new R<List<AttrVo>>().put(attrEntities);
+    public R<PageUtils> getAttrRelation( @ApiParam(value = "属性分组Id")  @PathVariable(value = "attrGroupId")String attrGroupId,
+                                            @RequestBody @ApiParam(value = "分页查询参数") PageParamVo params){
+        PageUtils page = attrGroupService.queryAttrRelation(attrGroupId,params);
+        return new R<PageUtils>().put(page);
     }
     @PostMapping("/noattr/relation/{attrGroupId}")
     @ApiOperation(value = "获取未与属性分组关联的属性")
@@ -67,7 +68,7 @@ public class AttrGroupController {
     @ApiOperation(value = "属性分组条件查询")
     @ApiOperationSupport(order = 4)
     public R<PageUtils> list(@RequestBody @ApiParam(value = "条件查询参数") AttrGroupQueryVo params){
-        System.out.println(params);
+
         PageUtils page = attrGroupService.queryPage(params);
         return new R<PageUtils>().ok().put(page);
     }
@@ -93,8 +94,8 @@ public class AttrGroupController {
     @DeleteMapping("/attr/relation/delete")
     @ApiOperation(value = "删除属性分组关联信息")
     @ApiOperationSupport(order = 7)
-    public R<Object> deleteAttrRelation(@RequestBody @ApiParam(value = "删除的关联信息id") Long[] relationIds){
-        attrGroupService.deleteAttrRelation(relationIds);
+    public R<Object> deleteAttrRelation(@RequestBody @ApiParam(value = "删除的关联信息id")  List<AttrAttrgroupRelationVo> relationEntities){
+        attrGroupService.deleteAttrRelation(relationEntities);
         return new R<>().ok();
     }
 
@@ -125,7 +126,7 @@ public class AttrGroupController {
     @ApiOperation(value = "删除属性分组")
     @ApiOperationSupport(order = 10)
     public R<Object> delete(@RequestBody @ApiParam(value = "属性分组的id数组") Long[] attrGroupIds){
-        attrGroupService.removeByIds(Arrays.asList(attrGroupIds));
+        attrGroupService.deleteAttrGroup(attrGroupIds);
         return new R<>().ok();
     }
 

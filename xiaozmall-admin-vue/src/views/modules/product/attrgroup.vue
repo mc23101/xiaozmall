@@ -4,7 +4,7 @@
       <div class="mod-config">
         <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
           <el-form-item>
-            <category-cascader></category-cascader>
+            <category-cascader :catalog-path.sync="catalogPath"></category-cascader>
           </el-form-item>
           <el-form-item>
             <el-input v-model="dataForm.key" placeholder="组名" clearable></el-input>
@@ -45,7 +45,7 @@
             label="操作"
           >
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="relationHandle(scope.row.attrGroupId)">关联</el-button>
+              <el-button type="text" size="small" @click="relationHandle(scope.row.attrGroupId)">关联属性</el-button>
               <el-button
                 type="text"
                 size="small"
@@ -84,15 +84,22 @@
 import Category from '../common/category'
 import AddOrUpdate from './attrgroup-add-or-update'
 import RelationUpdate from './attr-group-relation'
-import CategoryCascader from "../common/category-cascader.vue";
-import PubSub from "pubsub-js";
+import CategoryCascader from '../common/category-cascader.vue'
+import PubSub from 'pubsub-js'
 export default {
   // import引入的组件需要注入到对象中才能使用
   components: {CategoryCascader, Category, AddOrUpdate, RelationUpdate },
   props: {},
+  watch: {
+    catalogPath (path) {
+      this.catId = path[path.length - 1]
+      this.getDataList()
+    }
+  },
   data () {
     return {
       catId: null,
+      catalogPath: [],
       dataForm: {
         key: null
       },
@@ -103,11 +110,7 @@ export default {
       dataListLoading: false,
       dataListSelections: [],
       addOrUpdateVisible: false,
-      relationVisible: false,
-
-      PubSubscribe: {
-        catPathSub: null
-      }
+      relationVisible: false
     }
   },
   activated () {
@@ -160,7 +163,6 @@ export default {
         } else {
           this.dataList = []
           this.totalPage = 0
-          console.log(this.dataList)
         }
         this.dataListLoading = false
       })
@@ -205,7 +207,7 @@ export default {
       ).then(() => {
         this.$http({
           url: this.$http.adornUrl('/product/product/attrgroup/delete'),
-          method: 'post',
+          method: 'delete',
           data: this.$http.adornData(ids, false)
         }).then(({ data }) => {
           if (data && data.code === 0) {
@@ -223,20 +225,6 @@ export default {
         })
       })
     }
-  },
-  mounted () {
-    this.PubSubscribe.catPathSub = PubSub.subscribe('catPath', (mag, val) => {
-      if (val.length > 0) {
-        this.catId = val[val.length - 1]
-      } else {
-        this.catId = null
-      }
-      this.catalogPath = val
-      this.getDataList()
-    })
-  },
-  beforeDestroy () {
-    PubSub.unsubscribe(this.PubSubscribe.catPathSub)
   }
 }
 </script>

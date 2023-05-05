@@ -55,14 +55,13 @@ export default {
         descript: [
             { required: true, message: '介绍不能为空', trigger: 'blur' }
         ],
-        showStatus: [
-            { required: true, message: '显示状态[0-不显示；1-显示]不能为空', trigger: 'blur' }
-        ],
         firstLetter: [
-            { required: true, message: '检索首字母不能为空', trigger: 'blur' }
+          { required: true, message: '检索首字母不能为空', trigger: 'blur' },
+          {max: 1, min: 1, message: '首字母长度为1', trigger: 'blur'}
         ],
         sort: [
-            { required: true, message: '排序不能为空', trigger: 'blur' }
+          { required: true, message: '排序不能为空', trigger: 'blur' },
+          { type: 'number', message: '请输入数字类型', trigger: 'blur'}
         ]
       }
     }

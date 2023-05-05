@@ -46,34 +46,13 @@ public class CategoryBrandRelationController {
     @Autowired
     private BrandService brandService;
 
-    @GetMapping("catalog/list/{brandId}")
-    @ApiOperation(value = "通过品牌id查询商品分类品牌关联信息")
-    @ApiOperationSupport(order = 1)
-    public R<List<CatalogVo.CatalogBrandRelationVo>> catalogList(@PathVariable @ApiParam(value = "品牌Id") String brandId){
-        List<CatalogVo.CatalogBrandRelationVo> result=new ArrayList<>();
-        categoryBrandRelationService.query().eq("brand_id", brandId).list().forEach((relation)->{
-            CatalogVo.CatalogBrandRelationVo cur=new CatalogVo.CatalogBrandRelationVo();
-            BeanUtils.copyProperties(relation,cur);
-            result.add(cur);
-        });
-        return new R<List<CatalogVo.CatalogBrandRelationVo>>().ok().put(result);
-    }
-
-    @GetMapping("/brands/list/{catId}")
-    @ApiOperation("通过分类Id查询关联的品牌信息")
-    @ApiOperationSupport(order = 2)
-    public R<List<BrandVo>> brandsList(@PathVariable @ApiParam("分类Id") String catId){
-        List<BrandVo> list = categoryBrandRelationService.queryBrand(catId);
-        return new R<List<BrandVo>>().ok().put(list);
-    }
-
     /**
      * 列表
      */
     @PostMapping("/list")
     @ApiOperation(value = "商品分类品牌关联信息条件查询")
     @ApiOperationSupport(order = 3)
-    public R<PageUtils> list(@RequestParam @ApiParam(value = "条件查询参数") CatalogBrandRelationQueryVo params){
+    public R<PageUtils> list(@RequestBody @ApiParam(value = "条件查询参数") CatalogBrandRelationQueryVo params){
         PageUtils page = categoryBrandRelationService.queryPage(params);
         return new  R<PageUtils>().ok().put(page);
     }

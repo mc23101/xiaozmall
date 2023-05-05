@@ -19,12 +19,12 @@
             <el-button
               type="danger"
               @click="deleteHandle()"
-              :disabled="dataListSelections.length <= 0"
+              :disabled="dataList.dataListSelections&&dataList.dataListSelections.length <= 0"
             >批量删除</el-button>
           </el-form-item>
         </el-form>
         <el-table
-          :data="dataList"
+          :data="dataList.list"
           border
           v-loading="dataListLoading"
           @selection-change="selectionChangeHandle"
@@ -98,10 +98,10 @@
         <el-pagination
           @size-change="sizeChangeHandle"
           @current-change="currentChangeHandle"
-          :current-page="pageIndex"
+          :current-page="dataForm.pageIndex"
           :page-sizes="[5,10, 20, 50, 100]"
-          :page-size="pageSize"
-          :total="totalPage"
+          :page-size="dataForm.pageSize"
+          :total="dataList.totalCount"
           layout="total, sizes, prev, pager, next, jumper"
         ></el-pagination>
         <!-- 弹窗, 新增 / 修改 -->
@@ -120,14 +120,20 @@
 import Category from '../common/category'
 import AddOrUpdate from './attr-add-or-update'
 import CategoryCascader from '../common/category-cascader.vue'
-import PubSub from 'pubsub-js'
 export default {
   // import引入的组件需要注入到对象中才能使用
+  // eslint-disable-next-line standard/object-curly-even-spacing
   components: {CategoryCascader, Category, AddOrUpdate },
   props: {
     attrType: {
       type: Number,
       default: 1
+    }
+  },
+  watch: {
+    catalogPath (val) {
+      this.catId = val[val.length - 1]
+      this.getDataList()
     }
   },
   data () {
@@ -136,20 +142,19 @@ export default {
       catalogPath: [],
       type: 1,
       dataForm: {
+        pageIndex: 1,
+        pageSize: 5,
         key: ''
       },
-      dataList: [],
-      pageIndex: 1,
-      pageSize: 5,
-      totalPage: 0,
+      dataList: {
+        list: [],
+        totalCount: 0,
+        totalPage: 0,
+        dataListSelections: []
+      },
       dataListLoading: false,
-      dataListSelections: [],
-      addOrUpdateVisible: false,
+      addOrUpdateVisible: false
 
-      // 组件消息订阅
-      PubSubscribe: {
-        catPathSub: null
-      }
     }
   },
   activated () {
@@ -157,12 +162,12 @@ export default {
   },
   methods: {
     getDataLikeKey () {
-      this.pageIndex = 1
+      this.dataForm.pageIndex = 1
       this.getDataList()
     },
     getAllDataList () {
       this.catId = 0
-      this.pageIndex = 1
+      this.dataForm.pageIndex = 1
       this.dataForm.key = ''
       this.getDataList()
     },
@@ -173,37 +178,30 @@ export default {
       this.$http({
         url: this.$http.adornUrl(`/product/product/attr/${type}/list/${this.catId}`),
         method: 'post',
-        data: this.$http.adornData({
-          pageIndex: this.pageIndex,
-          pageSize: this.pageSize,
-          key: this.dataForm.key
-        })
+        data: this.$http.adornData(this.dataForm)
       }).then(({data}) => {
-        console.log(data)
         if (data && data.code === 0) {
-          this.dataList = data.data.list
-          this.totalPage = data.data.totalCount
+          this.dataList = data.data
         } else {
-          this.dataList = []
-          this.totalPage = 0
+          this.dataList = null
         }
         this.dataListLoading = false
       })
     },
     // 每页数
     sizeChangeHandle (val) {
-      this.pageSize = val
-      this.pageIndex = 1
+      this.dataForm.pageSize = val
+      this.dataForm.pageIndex = 1
       this.getDataList()
     },
     // 当前页
     currentChangeHandle (val) {
-      this.pageIndex = val
+      this.dataForm.pageIndex = val
       this.getDataList()
     },
     // 多选
     selectionChangeHandle (val) {
-      this.dataListSelections = val
+      this.dataList.dataListSelections = val
     },
     // 新增 / 修改
     addOrUpdateHandle (id) {
@@ -216,7 +214,7 @@ export default {
     deleteHandle (id) {
       var ids = id
         ? [id]
-        : this.dataListSelections.map(item => {
+        : this.dataList.dataListSelections.map(item => {
           return item.attrId
         })
       this.$confirm(
@@ -230,7 +228,7 @@ export default {
       ).then(() => {
         this.$http({
           url: this.$http.adornUrl('/product/product/attr/delete'),
-          method: 'post',
+          method: 'delete',
           data: this.$http.adornData(ids, false)
         }).then(({ data }) => {
           if (data && data.code === 0) {
@@ -239,6 +237,7 @@ export default {
               type: 'success',
               duration: 1500,
               onClose: () => {
+                this.dataForm.pageIndex = 1
                 this.getDataList()
               }
             })
@@ -248,20 +247,6 @@ export default {
         })
       })
     }
-  },
-  mounted () {
-    this.PubSubscribe.catPathSub = PubSub.subscribe('catPath', (mag, val) => {
-      if (val.length > 0) {
-        this.catId = val[val.length - 1]
-      } else {
-        this.catId = 0
-      }
-      this.catalogPath = val
-      this.getDataList()
-    })
-  },
-  beforeDestroy() {
-    PubSub.unsubscribe(this.PubSubscribe.catPathSub)
   }
 }
 </script>

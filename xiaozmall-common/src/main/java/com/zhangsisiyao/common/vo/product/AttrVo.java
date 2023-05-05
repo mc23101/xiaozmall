@@ -45,6 +45,8 @@ public class AttrVo implements Serializable {
     @ApiModelProperty(value = "是否快速展示",position = 8)
     private Integer showDesc;
 
+    private Integer valueType;
+
     @Data
     @ApiModel(description = "商品spu或sku属性值信息")
     public static class AttrValueVo implements Serializable {

@@ -1,11 +1,11 @@
 <template>
   <div class="mod-config">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+    <el-form :inline="true" :model="brandDataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.pageParamVo.key" placeholder="品牌名" clearable></el-input>
+        <el-input v-model="brandDataForm.pageParamVo.key" placeholder="品牌名" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="dataForm.pageParamVo.pageIndex=1;this.getDataList">查询</el-button>
+        <el-button @click="searchBrand">查询</el-button>
         <el-button
           type="primary"
           @click="addOrUpdateHandle()"
@@ -13,15 +13,15 @@
         <el-button
           type="danger"
           @click="deleteHandle()"
-          :disabled="dataListSelections.length <= 0"
+          :disabled="this.brandDataList.dataListSelections&&this.brandDataList.dataListSelections.length <= 0"
         >批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
-      :data="dataList"
+      :data="brandDataList.list"
       border
       :load="getDataListLoading"
-      @selection-change="selectionChangeHandle"
+      @selection-change="brandSelectionChangeHandle"
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
@@ -59,27 +59,27 @@
       </el-table-column>
     </el-table>
     <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="dataForm.pageParamVo.pageIndex"
+      @size-change="brandSizeChangeHandle"
+      @current-change="brandCurrentChangeHandle"
+      :current-page="brandDataForm.pageParamVo.pageIndex"
       :page-sizes="[5,10, 20, 50, 100]"
-      :page-size="dataForm.pageParamVo.pageSize"
-      :total="totalPage"
+      :page-size="brandDataForm.pageParamVo.pageSize"
+      :total="brandDataList.totalCount"
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
 
-    <el-dialog title="关联分类" :visible.sync="cateRelationDialogVisible" width="30%">
+    <el-dialog title="关联分类" :visible.sync="cateRelationDialogVisible" width="40%">
       <el-popover placement="right-end" v-model="popCatalogSelectVisible">
         <category-cascader :catalogPath.sync="catalogPath"></category-cascader>
         <div style="text-align: right; margin: 0">
           <el-button size="mini" type="text" @click="popCatalogSelectVisible = false">取消</el-button>
           <el-button type="primary" size="mini" @click="addCatalogSelect">确定</el-button>
         </div>
-        <el-button slot="reference">新增关联</el-button>
+        <el-button slot="default">新增关联</el-button>
       </el-popover>
-      <el-table :data="cateRelationTableData" style="width: 100%">
+      <el-table :data="brandCatalogRelationDataList.list" style="width: 100%">
         <el-table-column prop="id" label="#"></el-table-column>
         <el-table-column prop="brandName" label="品牌名"></el-table-column>
         <el-table-column prop="catalogName" label="分类名"></el-table-column>
@@ -93,6 +93,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        @size-change="relationSizeChangeHandle"
+        @current-change="relationCurrentChangeHandle"
+        :current-page="brandCatalogRelationDataForm.pageParamVo.pageIndex"
+        :page-sizes="[5,10, 20, 50, 100]"
+        :page-size="brandCatalogRelationDataForm.pageParamVo.pageSize"
+        :total="brandCatalogRelationDataList.totalCount"
+        layout="total, sizes, prev, pager, next, jumper"
+      ></el-pagination>
       <span slot="footer" class="dialog-footer">
         <el-button @click="cateRelationDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="cateRelationDialogVisible = false">确 定</el-button>
@@ -108,7 +117,8 @@ import PubSub from 'pubsub-js'
 export default {
   data () {
     return {
-      dataForm: {
+      // 品牌信息数据
+      brandDataForm: {
         brandVo: {
           brandId: null,
           name: null,
@@ -124,14 +134,40 @@ export default {
           key: null
         }
       },
+      brandDataList: {
+        list: [],
+        totalPage: 0,
+        totalCount: 0,
+        dataListSelections: []
+      },
+
       // 品牌分类关联数据
-      brandId: 0,
+      // 查询参数
+      brandCatalogRelationDataForm: {
+        catalogBrandRelationVo: {
+          id: null,
+          brandId: null,
+          catalogId: null,
+          brandName: null,
+          catalogName: null
+        },
+        pageParamVo: {
+          pageIndex: 1,
+          pageSize: 5,
+          key: null
+        }
+      },
+      // 返回结果
+      brandCatalogRelationDataList: {
+        list: [],
+        totalPage: 0,
+        totalCount: 0,
+        dataListSelections: []
+      },
       catalogPath: [],
-      dataList: [],
-      cateRelationTableData: [],
-      totalPage: 0,
+
+      // 组件显示
       dataListLoading: false,
-      dataListSelections: [],
       addOrUpdateVisible: false,
       cateRelationDialogVisible: false,
       popCatalogSelectVisible: false
@@ -142,6 +178,10 @@ export default {
     CategoryCascader
   },
   methods: {
+    searchBrand () {
+      this.brandDataForm.pageParamVo.pageIndex = 1
+      this.getDataList()
+    },
     getDataListLoading () {
       return this.dataListLoading
     },
@@ -150,9 +190,10 @@ export default {
       this.$http({
         url: this.$http.adornUrl('/product/product/categorybrandrelation/save'),
         method: 'post',
-        data: this.$http.adornData({brandId: this.brandId, catalogId: this.catalogPath[this.catalogPath.length - 1]}, false)
+        data: this.$http.adornData({brandId: this.brandCatalogRelationDataForm.catalogBrandRelationVo.brandId, catalogId: this.catalogPath[this.catalogPath.length - 1]}, false)
       }).then(({ data }) => {
         if (data && data.code === 0) {
+          this.$message.success('关联成功')
           this.getCateRelation()
         } else {
           this.$message.error(data.msg)
@@ -170,15 +211,18 @@ export default {
     },
     updateCatalogHandle (brandId) {
       this.cateRelationDialogVisible = true
-      this.brandId = brandId
+      this.brandCatalogRelationDataForm.catalogBrandRelationVo.brandId = brandId
+      console.log(this.brandCatalogRelationDataForm)
       this.getCateRelation()
     },
     getCateRelation () {
       this.$http({
-        url: this.$http.adornUrl(`/product/product/categorybrandrelation/catalog/list/${this.brandId}`),
-        method: 'get'
+        url: this.$http.adornUrl(`/product/product/categorybrandrelation/list`),
+        method: 'post',
+        data: this.$http.adornData(this.brandCatalogRelationDataForm)
       }).then(({ data }) => {
-        this.cateRelationTableData = data.data
+        console.log(data.data)
+        this.brandCatalogRelationDataList = data.data
       })
     },
     // 获取数据列表
@@ -187,14 +231,18 @@ export default {
       this.$http({
         url: this.$http.adornUrl('/product/product/brand/list'),
         method: 'post',
-        data: this.$http.adornData(this.dataForm, false)
+        data: this.$http.adornData(this.brandDataForm, false)
       }).then(({ data }) => {
         if (data && data.code === 0) {
-          this.dataList = data.data.list
-          this.totalPage = data.data.totalCount
+          console.log(data.data)
+          this.brandDataList = data.data
         } else {
-          this.dataList = []
-          this.totalPage = 0
+          this.brandDataList =
+          {
+            list: [],
+            totalPage: 0,
+            totalCount: 0
+          }
         }
         this.dataListLoading = false
       })
@@ -220,20 +268,29 @@ export default {
         }
       })
     },
+    relationSizeChangeHandle (val) {
+      this.brandCatalogRelationDataForm.pageParamVo.pageSize = val
+      this.brandCatalogRelationDataForm.pageParamVo.pageIndex = 1
+      this.getCateRelation()
+    },
+    relationCurrentChangeHandle (val) {
+      this.brandCatalogRelationDataForm.pageParamVo.pageIndex = val
+      this.getCateRelation()
+    },
     // 每页数
-    sizeChangeHandle (val) {
-      this.pageSize = val
-      this.pageIndex = 1
+    brandSizeChangeHandle (val) {
+      this.brandDataForm.pageParamVo.pageSize = val
+      this.brandDataForm.pageParamVo.pageIndex = 1
       this.getDataList()
     },
     // 当前页
-    currentChangeHandle (val) {
-      this.pageIndex = val
+    brandCurrentChangeHandle (val) {
+      this.brandDataForm.pageParamVo.pageIndex = val
       this.getDataList()
     },
     // 多选
-    selectionChangeHandle (val) {
-      this.dataListSelections = val
+    brandSelectionChangeHandle (val) {
+      this.brandDataList.dataListSelections = val
     },
     // 新增 / 修改
     addOrUpdateHandle (id) {
@@ -246,7 +303,7 @@ export default {
     deleteHandle (id) {
       let ids = id
         ? [id]
-        : this.dataListSelections.map(item => {
+        : this.brandDataList.dataListSelections.map(item => {
           return item.brandId
         })
       this.$confirm(
@@ -260,7 +317,7 @@ export default {
       ).then(() => {
         this.$http({
           url: this.$http.adornUrl('/product/product/brand/delete'),
-          method: 'post',
+          method: 'delete',
           data: this.$http.adornData(ids, false)
         }).then(({ data }) => {
           if (data && data.code === 0) {
