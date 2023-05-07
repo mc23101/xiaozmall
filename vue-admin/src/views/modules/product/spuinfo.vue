@@ -1,7 +1,7 @@
 <template>
   <div class="mod-config">
     <el-table
-      :data="dataList"
+      :data="dataList.list"
       border
       :load="getDataListLoading"
       @selection-change="selectionChangeHandle"
@@ -45,10 +45,10 @@
     <el-pagination
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
-      :current-page="pageIndex"
+      :current-page="dataForm.pageParams.pageIndex"
       :page-sizes="[5,10, 20, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
+      :page-size="dataForm.pageParams.pageSize"
+      :total="dataList.totalCount"
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
   </div>
@@ -60,20 +60,36 @@ export default {
   data () {
     return {
       dataSub: null,
-      dataForm: {},
-      dataList: [],
+      dataForm: {
+        spuInfoVo: {
+          id: undefined,
+          catalogId: undefined,
+          brandId: undefined
+        },
+        pageParams: {
+          pageIndex: 1,
+          pageSize: 5,
+          key: ''
+        }
+      },
+      dataList: {
+        totalCount: 0,
+        pageSize: 0,
+        totalPage: 0,
+        currPage: 0,
+        list: []
+      },
       pageIndex: 1,
       pageSize: 5,
       totalPage: 0,
       dataListLoading: false,
-      dataListSelections: [],
       addOrUpdateVisible: false
     }
   },
   props: {
-    catId: {
-      type: Number,
-      default: 0
+    dataListSelections: {
+      type: Array,
+      default: []
     }
   },
   components: {},
@@ -87,7 +103,7 @@ export default {
     getDataListLoading () {
       return this.dataListLoading
     },
-    setPublishStatus (id,val) {
+    setPublishStatus (id, val) {
       console.log(val === 0 ? 'down' : 'up')
       this.$http({
         url: this.$http.adornUrl(`/product/product/spuinfo/${val === 0 ? 'down' : 'up'}/${id}`),
@@ -116,22 +132,15 @@ export default {
     // 获取数据列表
     getDataList () {
       this.dataListLoading = true
-      let param = {}
-      Object.assign(param, this.dataForm, {
-        page: this.pageIndex,
-        limit: this.pageSize
-      })
       this.$http({
         url: this.$http.adornUrl('/product/product/spuinfo/list'),
-        method: 'get',
-        params: this.$http.adornParams(param)
+        method: 'post',
+        data: this.$http.adornData(this.dataForm)
       }).then(({ data }) => {
         if (data && data.code === 0) {
-          this.dataList = data.page.list
-          this.totalPage = data.page.totalCount
+          this.dataList = data.data
         } else {
-          this.dataList = []
-          this.totalPage = 0
+          this.dataList = {}
         }
         this.dataListLoading = false
       })
@@ -150,14 +159,12 @@ export default {
     // 多选
     selectionChangeHandle (val) {
       this.dataListSelections = val
-      PubSub.publish('selectionChange', this.dataListSelections)
     },
     // 新增 / 修改
     addOrUpdateHandle (id) {}
   },
   mounted () {
-    this.dataSub = PubSub.subscribe('dataForm', (msg, val) => {
-      console.log('~~~~~', val)
+    this.dataSub = PubSub.subscribe('spuList', (msg, val) => {
       this.dataForm = val
       this.pageIndex = 1
       this.getDataList()

@@ -7,7 +7,7 @@
             <category-cascader :catalogPath.sync="catalogPath"></category-cascader>
           </el-form-item>
           <el-form-item label="品牌">
-            <brand-select style="width:160px"></brand-select>
+            <brand-select :cat-id.sync="catId" :brand-id.sync="dataForm.brandId" style="width:160px"></brand-select>
           </el-form-item>
           <el-form-item label="状态">
             <el-select style="width:160px" v-model="dataForm.status" clearable>
@@ -21,7 +21,6 @@
           <el-form-item>
             <el-button type="primary" @click="searchSpuInfo">查询</el-button>
             <el-button
-              v-if="isAuth('product:brand:delete')"
               type="danger"
               @click="deleteHandle()"
               :disabled="dataListSelections.length <= 0"
@@ -30,7 +29,7 @@
         </el-form>
       </el-col>
       <el-col :span="24">
-        <spuinfo :catId="catId"></spuinfo>
+        <spuinfo :data-list-selections="dataListSelections"></spuinfo>
       </el-col>
     </el-row>
   </div>
@@ -54,7 +53,7 @@ export default {
       dataForm: {
         status: '',
         key: '',
-        brandId: 0,
+        brandId: undefined,
         catalogId: 0
       },
       catPathSub: null,
@@ -64,7 +63,11 @@ export default {
   },
   computed: {},
   // 监控data中的数据变化
-  watch: {},
+  watch: {
+    catalogPath (val) {
+      this.catId = val[val.length - 1]
+    }
+  },
   // 方法集合
   methods: {
     deleteHandle () {
@@ -87,7 +90,7 @@ export default {
               type: 'success',
               message: '删除spu商品成功!'
             })
-            PubSub.publish('dataForm', this.dataForm)
+            PubSub.publish('spuList', this.dataForm)
           } else {
             this.$message({
               type: 'error',
@@ -105,26 +108,10 @@ export default {
     searchSpuInfo () {
       console.log('搜索条件', this.dataForm)
       this.dataForm.catalogId = this.catalogPath[this.catalogPath.length - 1]
-      PubSub.publish('dataForm', this.dataForm)
+      PubSub.publish('spuList', this.dataForm)
     }
   },
-  created () {},
-  mounted () {
-    this.catPathSub = PubSub.subscribe('catPath', (msg, val) => {
-      this.dataForm.catalogId = val[val.length - 1]
-    })
-    this.brandIdSub = PubSub.subscribe('brandId', (msg, val) => {
-      this.dataForm.brandId = val
-    })
-    this.selectSub = PubSub.subscribe('selectionChange', (msg, val) => {
-      this.dataListSelections = val
-    })
-  },
-  beforeDestroy () {
-    PubSub.unsubscribe(this.catPathSub)
-    PubSub.unsubscribe(this.brandIdSub)
-    PubSub.unsubscribe(this.selectSub)
-  }
+  created () {}
 }
 </script>
 <style scoped>

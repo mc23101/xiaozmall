@@ -86,6 +86,7 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
     }
 
     @Override
+    @CacheEvict(value = {"CategoryBrandRelation"},allEntries = true)
     public R<Object> save(CatalogVo.CatalogBrandRelationVo catalogBrandRelationVo) {
         if(this.query().eq("brand_id",catalogBrandRelationVo.getBrandId()).eq("catalog_id",catalogBrandRelationVo.getCatalogId()).list().size()>0){
             return new R<>().error("添加失败,关联已经存在");

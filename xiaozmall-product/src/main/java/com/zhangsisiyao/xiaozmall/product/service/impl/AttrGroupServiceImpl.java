@@ -124,6 +124,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         List<AttrGroupVo> attrGroupVos=new ArrayList<>();
         for(AttrGroupEntity attrGroupEntity:attrGroup){
             AttrGroupVo cur=new AttrGroupVo();
+            cur.setAttrs(new ArrayList<>());
             BeanUtils.copyProperties(attrGroupEntity,cur);
             List<AttrEntity> attrEntities = attrService.queryWithAttrGroup(String.valueOf(attrGroupEntity.getAttrGroupId()));
             attrEntities.forEach(attr -> {

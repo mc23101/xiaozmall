@@ -57,7 +57,7 @@ public class SpuInfoController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "条件查询商品spu信息")
-    public R<PageUtils> list(@RequestParam @ApiParam(value = "条件查询参数") SpuInfoQueryVo params){
+    public R<PageUtils> list(@RequestBody @ApiParam(value = "条件查询参数") SpuInfoQueryVo params){
         PageUtils page = spuInfoService.queryPage(params);
         return new  R<PageUtils>().ok().put( page);
     }

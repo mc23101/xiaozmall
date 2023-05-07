@@ -51,13 +51,6 @@
           </el-table-column>
           <el-table-column prop="icon" header-align="center" align="center" label="图标"></el-table-column>
           <el-table-column prop="catalogId" header-align="center" align="center" label="所属分类"></el-table-column>
-<!--          <el-table-column-->
-<!--            v-if="attrtype === 1"-->
-<!--            prop="groupName"-->
-<!--            header-align="center"-->
-<!--            align="center"-->
-<!--            label="所属分组"-->
-<!--          ></el-table-column>-->
           <el-table-column v-if="attrType === 1" prop="showDesc" header-align="center" align="center" label="快速展示">
             <template slot-scope="scope">
               <i class="el-icon-success" v-if="scope.row.showDesc===1"></i>
@@ -176,7 +169,7 @@ export default {
       this.dataListLoading = true
       let type = this.attrType === 0 ? 'sale' : 'base'
       this.$http({
-        url: this.$http.adornUrl(`/product/product/attr/${type}/list/${this.catId}`),
+        url: this.$http.adornUrl(`/product/product/attr/${type}/list/${this.catId ? this.catId : 0}`),
         method: 'post',
         data: this.$http.adornData(this.dataForm)
       }).then(({data}) => {

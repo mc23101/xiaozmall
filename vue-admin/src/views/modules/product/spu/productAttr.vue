@@ -68,10 +68,10 @@ export default {
     showBaseAttrs () {
       this.$http({
         url: this.$http.adornUrl(
-          `/product/attrgroup/withattr/${this.baseInfo.catalogId}`
+          `/product/product/attrgroup/withattr/${this.baseInfo.catalogId}`
         ),
         method: 'get',
-        params: this.$http.adornParams({})
+        params: this.$http.adornParams({},false)
       }).then(({ data }) => {
         // 先对表单的baseAttrs进行初始化
         console.log(data)

@@ -62,16 +62,16 @@ export default {
       // 获取当前分类可以使用的销售属性
       this.$http({
         url: this.$http.adornUrl(
-          `/product/attr/sale/list/${this.baseInfo.catalogId}`
+          `/product/product/attr/sale/list/${this.baseInfo.catalogId}`
         ),
-        method: 'get',
-        params: this.$http.adornParams({
-          page: 1,
-          limit: 500
+        method: 'post',
+        data: this.$http.adornData({
+          pageIndex: 1,
+          pageSize: 500
         })
-      }).then(({ data }) => {
-        this.dataResp.saleAttrs = data.page.list
-        data.page.list.forEach(item => {
+      }).then(({data}) => {
+        this.dataResp.saleAttrs = data.data.list
+        this.dataResp.saleAttrs.forEach(item => {
           this.saleAttrs.push({
             attrId: item.attrId,
             attrValues: [],

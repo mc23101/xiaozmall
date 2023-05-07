@@ -77,7 +77,8 @@ public class CategoryBrandRelationController {
     @ApiOperation(value = "新增商品分类品牌关联信息")
     @ApiOperationSupport(order = 5)
     public R<Object> save(@RequestBody @ApiParam(value = "商品分类品牌关联信息") CatalogVo.CatalogBrandRelationVo catalogBrandRelationVo){
-        return categoryBrandRelationService.save(catalogBrandRelationVo);
+        categoryBrandRelationService.save(catalogBrandRelationVo);
+        return new R<>().ok();
     }
 
 

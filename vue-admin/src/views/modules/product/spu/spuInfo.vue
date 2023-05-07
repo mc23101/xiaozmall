@@ -11,7 +11,7 @@
         <category-cascader :catalog-path.sync="catalogPath"></category-cascader>
       </el-form-item>
       <el-form-item label="选择品牌" prop="brandId">
-        <brand-select></brand-select>
+        <brand-select :cat-id.sync="baseInfo.catalogId" :brand-id.sync="baseInfo.brandId"></brand-select>
       </el-form-item>
       <el-form-item label="商品重量(Kg)" prop="weight">
         <el-input-number v-model.number="baseInfo.weight" :min="0" :precision="3" :step="0.1"></el-input-number>
@@ -58,10 +58,10 @@ import CategoryCascader from '../../common/category-cascader'
 import BrandSelect from '../../common/brand-select'
 import MultiUpload from '../../../../components/upload/multiUpload'
 import PubSub from 'pubsub-js'
-import SingleUpload from "../../../../components/upload/singleUpload.vue";
+import SingleUpload from '../../../../components/upload/singleUpload.vue'
 
 export default {
-  components: { CategoryCascader, BrandSelect, MultiUpload,SingleUpload },
+  components: { CategoryCascader, BrandSelect, MultiUpload, SingleUpload },
   data () {
     return {
       catPathSub: '',
@@ -71,10 +71,10 @@ export default {
       baseInfo: {
         spuName: '',
         spuDescription: '',
-        catalogId: '',
-        brandId: '',
+        catalogId: 0,
+        brandId: undefined,
         weight: '',
-        defaultImg:'',
+        defaultImg: '',
         bounds: {
           buyBounds: '',
           growBounds: ''
@@ -115,6 +115,11 @@ export default {
       }
     }
   },
+  watch: {
+    catalogPath (val) {
+      this.baseInfo.catalogId = val[val.length - 1]
+    }
+  },
   methods: {
     collectSpuBaseInfo () {
       // spuBaseForm
@@ -127,18 +132,6 @@ export default {
         }
       })
     }
-  },
-  mounted () {
-    this.catPathSub = PubSub.subscribe('catPath', (msg, val) => {
-      this.baseInfo.catalogId = val[val.length - 1]
-    })
-    this.brandIdSub = PubSub.subscribe('brandId', (msg, val) => {
-      this.baseInfo.brandId = val
-    })
-  },
-  beforeDestroy () {
-    PubSub.unsubscribe(this.catPathSub)
-    PubSub.unsubscribe(this.brandIdSub)
   }
 }
 </script>

@@ -77,7 +77,7 @@
           <el-button size="mini" type="text" @click="popCatalogSelectVisible = false">取消</el-button>
           <el-button type="primary" size="mini" @click="addCatalogSelect">确定</el-button>
         </div>
-        <el-button slot="default">新增关联</el-button>
+        <el-button slot="reference">新增关联</el-button>
       </el-popover>
       <el-table :data="brandCatalogRelationDataList.list" style="width: 100%">
         <el-table-column prop="id" label="#"></el-table-column>
@@ -187,17 +187,21 @@ export default {
     },
     addCatalogSelect () {
       this.popCatalogSelectVisible = false
-      this.$http({
-        url: this.$http.adornUrl('/product/product/categorybrandrelation/save'),
-        method: 'post',
-        data: this.$http.adornData({brandId: this.brandCatalogRelationDataForm.catalogBrandRelationVo.brandId, catalogId: this.catalogPath[this.catalogPath.length - 1]}, false)
-      }).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.$message.success('关联成功')
-          this.getCateRelation()
-        } else {
-          this.$message.error(data.msg)
-        }
+      new Promise((resolve, reject) => {
+        this.$http({
+          url: this.$http.adornUrl('/product/product/categorybrandrelation/save'),
+          method: 'post',
+          data: this.$http.adornData({brandId: this.brandCatalogRelationDataForm.catalogBrandRelationVo.brandId, catalogId: this.catalogPath[this.catalogPath.length - 1]}, false)
+        }).then(({ data }) => {
+          if (data && data.code === 0) {
+            this.$message.success('关联成功')
+          } else {
+            this.$message.error(data.msg)
+          }
+          resolve()
+        })
+      }).then(() => {
+        this.getCateRelation()
       })
     },
     deleteCateRelationHandle (id, brandId) {
@@ -221,8 +225,8 @@ export default {
         method: 'post',
         data: this.$http.adornData(this.brandCatalogRelationDataForm)
       }).then(({ data }) => {
-        console.log(data.data)
         this.brandCatalogRelationDataList = data.data
+        console.log(data.data)
       })
     },
     // 获取数据列表
@@ -234,7 +238,6 @@ export default {
         data: this.$http.adornData(this.brandDataForm, false)
       }).then(({ data }) => {
         if (data && data.code === 0) {
-          console.log(data.data)
           this.brandDataList = data.data
         } else {
           this.brandDataList =
