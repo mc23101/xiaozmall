@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.Query;
 import com.zhangsisiyao.common.vo.product.CommentVo;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.dao.SpuCommentDao;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuCommentEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuCommentService;

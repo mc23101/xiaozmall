@@ -39,7 +39,7 @@ public class MemberLevelController {
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = memberLevelService.queryPage(params);
 
-        return R.ok().put("page", page);
+        return new R<>().ok().put( page);
     }
 
 
@@ -51,7 +51,7 @@ public class MemberLevelController {
     public R info(@PathVariable("id") Long id){
 		MemberLevelEntity memberLevel = memberLevelService.getById(id);
 
-        return R.ok().put("memberLevel", memberLevel);
+        return new R<>().ok().put( memberLevel);
     }
 
     /**
@@ -62,7 +62,7 @@ public class MemberLevelController {
     public R save(@RequestBody MemberLevelEntity memberLevel){
 		memberLevelService.save(memberLevel);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
@@ -73,7 +73,7 @@ public class MemberLevelController {
     public R update(@RequestBody MemberLevelEntity memberLevel){
 		memberLevelService.updateById(memberLevel);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
@@ -84,7 +84,7 @@ public class MemberLevelController {
     public R delete(@RequestBody Long[] ids){
 		memberLevelService.removeByIds(Arrays.asList(ids));
 
-        return R.ok();
+        return new R<>().ok();
     }
 
 }

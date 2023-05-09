@@ -9,7 +9,7 @@ import com.zhangsisiyao.common.utils.Query;
 import com.zhangsisiyao.common.vo.product.AttrGroupVo.*;
 import com.zhangsisiyao.common.vo.product.AttrGroupVo;
 import com.zhangsisiyao.common.vo.product.AttrVo;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.common.vo.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.dao.AttrGroupDao;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrAttrgroupRelationEntity;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.function.Consumer;
 
 
 @Service("attrGroupService")

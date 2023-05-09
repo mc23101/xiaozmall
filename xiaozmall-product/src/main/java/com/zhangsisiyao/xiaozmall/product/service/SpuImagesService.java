@@ -2,11 +2,8 @@ package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuImagesEntity;
 import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.ImageQueryVo;
-
-import java.util.Map;
 
 /**
  * spu图片

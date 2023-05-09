@@ -2,9 +2,8 @@ package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
-import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.common.vo.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrQueryVo;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.zhangsisiyao.xiaozmall.search.service;
+package com.zhangsisiyao.xiaozmall.search.feign;
 
 import com.zhangsisiyao.common.utils.R;
 import org.springframework.cloud.openfeign.FeignClient;

@@ -43,6 +43,6 @@ public class IntegrationChangeHistoryEntity implements Serializable {
 	/**
 	 * 来源[0->购物；1->管理员修改;2->活动]
 	 */
-	private Integer sourceTyoe;
+	private Integer sourceType;
 
 }

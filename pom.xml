@@ -22,6 +22,7 @@
 		<module>xiaozmall-store</module>
         <module>xiaozmall-search</module>
 		<module>xiaozmall-apidoc</module>
+		<module>xiaozmall-auth</module>
     </modules>
 
 </project>

@@ -11,7 +11,7 @@ import com.zhangsisiyao.xiaozmall.product.dao.AttrDao;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrService;
 import com.zhangsisiyao.xiaozmall.product.service.ProductAttrValueService;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.common.vo.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrQueryVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

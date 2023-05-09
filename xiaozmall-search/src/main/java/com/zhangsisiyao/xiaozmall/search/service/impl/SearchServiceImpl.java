@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.common.vo.product.BrandVo;
 import com.zhangsisiyao.common.vo.product.CatalogVo;
-import com.zhangsisiyao.xiaozmall.search.service.ProductService;
+import com.zhangsisiyao.xiaozmall.search.feign.ProductService;
 import com.zhangsisiyao.xiaozmall.search.service.SearchService;
 import com.zhangsisiyao.xiaozmall.search.vo.*;
 import lombok.SneakyThrows;

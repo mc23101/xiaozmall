@@ -6,7 +6,6 @@ import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.common.vo.product.ImageVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuImagesEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SkuImagesService;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.ImageQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

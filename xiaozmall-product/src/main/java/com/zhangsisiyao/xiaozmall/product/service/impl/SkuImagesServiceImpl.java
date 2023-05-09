@@ -10,7 +10,6 @@ import com.zhangsisiyao.common.vo.product.ImageVo;
 import com.zhangsisiyao.xiaozmall.product.dao.SkuImagesDao;
 import com.zhangsisiyao.xiaozmall.product.entity.SkuImagesEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SkuImagesService;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.ImageQueryVo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;

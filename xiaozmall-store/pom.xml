@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>com.zhangsisiyao</groupId>
-    <artifactId>xiaozmall-system</artifactId>
+    <artifactId>xiaozmall-store</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>xiaozmall-system</name>
     <description>xiaozmall-system</description>

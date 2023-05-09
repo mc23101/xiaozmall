@@ -39,7 +39,7 @@ public class MemberLoginLogController {
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = memberLoginLogService.queryPage(params);
 
-        return R.ok().put("page", page);
+        return new R<>().ok().put( page);
     }
 
 
@@ -51,7 +51,7 @@ public class MemberLoginLogController {
     public R info(@PathVariable("id") Long id){
 		MemberLoginLogEntity memberLoginLog = memberLoginLogService.getById(id);
 
-        return R.ok().put("memberLoginLog", memberLoginLog);
+        return new R<>().ok().put( memberLoginLog);
     }
 
     /**
@@ -62,7 +62,7 @@ public class MemberLoginLogController {
     public R save(@RequestBody MemberLoginLogEntity memberLoginLog){
 		memberLoginLogService.save(memberLoginLog);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
@@ -73,7 +73,7 @@ public class MemberLoginLogController {
     public R update(@RequestBody MemberLoginLogEntity memberLoginLog){
 		memberLoginLogService.updateById(memberLoginLog);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
@@ -84,7 +84,7 @@ public class MemberLoginLogController {
     public R delete(@RequestBody Long[] ids){
 		memberLoginLogService.removeByIds(Arrays.asList(ids));
 
-        return R.ok();
+        return new R<>().ok();
     }
 
 }

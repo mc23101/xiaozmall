@@ -4,7 +4,6 @@ import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.common.vo.product.CommentVo;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuCommentEntity;
 import com.zhangsisiyao.xiaozmall.product.service.SpuCommentService;
 import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.CommentQueryVo;
@@ -16,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.Map;
-
 
 
 /**

@@ -2,11 +2,8 @@ package com.zhangsisiyao.xiaozmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhangsisiyao.common.utils.PageUtils;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.entity.SpuCommentEntity;
 import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.CommentQueryVo;
-
-import java.util.Map;
 
 /**
  * 商品评价

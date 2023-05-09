@@ -39,7 +39,7 @@ public class MemberCollectSubjectController {
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = memberCollectSubjectService.queryPage(params);
 
-        return R.ok().put("page", page);
+        return new R<>().ok().put( page);
     }
 
 
@@ -51,7 +51,7 @@ public class MemberCollectSubjectController {
     public R info(@PathVariable("id") Long id){
 		MemberCollectSubjectEntity memberCollectSubject = memberCollectSubjectService.getById(id);
 
-        return R.ok().put("memberCollectSubject", memberCollectSubject);
+        return new R<>().ok().put( memberCollectSubject);
     }
 
     /**
@@ -62,7 +62,7 @@ public class MemberCollectSubjectController {
     public R save(@RequestBody MemberCollectSubjectEntity memberCollectSubject){
 		memberCollectSubjectService.save(memberCollectSubject);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
@@ -73,7 +73,7 @@ public class MemberCollectSubjectController {
     public R update(@RequestBody MemberCollectSubjectEntity memberCollectSubject){
 		memberCollectSubjectService.updateById(memberCollectSubject);
 
-        return R.ok();
+        return new R<>().ok();
     }
 
     /**
@@ -84,7 +84,7 @@ public class MemberCollectSubjectController {
     public R delete(@RequestBody Long[] ids){
 		memberCollectSubjectService.removeByIds(Arrays.asList(ids));
 
-        return R.ok();
+        return new R<>().ok();
     }
 
 }

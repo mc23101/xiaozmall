@@ -1,11 +1,10 @@
 package com.zhangsisiyao.xiaozmall.product.vo.QueryVo;
 
 import com.zhangsisiyao.common.vo.product.AttrGroupVo;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.common.vo.PageParamVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 

@@ -6,10 +6,9 @@ import com.zhangsisiyao.common.utils.PageUtils;
 import com.zhangsisiyao.common.utils.R;
 import com.zhangsisiyao.common.vo.product.AttrGroupVo.*;
 import com.zhangsisiyao.common.vo.product.AttrGroupVo;
-import com.zhangsisiyao.common.vo.product.AttrVo;
 import com.zhangsisiyao.xiaozmall.product.entity.AttrGroupEntity;
 import com.zhangsisiyao.xiaozmall.product.service.AttrGroupService;
-import com.zhangsisiyao.common.vo.product.PageParamVo;
+import com.zhangsisiyao.common.vo.PageParamVo;
 import com.zhangsisiyao.xiaozmall.product.vo.QueryVo.AttrGroupQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +17,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 

@@ -24,6 +24,8 @@ public class MemberCollectSubjectEntity implements Serializable {
 	 */
 	@TableId
 	private Long id;
+
+	private Long memberId;
 	/**
 	 * subject_id
 	 */
@@ -39,6 +41,6 @@ public class MemberCollectSubjectEntity implements Serializable {
 	/**
 	 * 活动url
 	 */
-	private String subjectUrll;
+	private String subjectUrl;
 
 }
